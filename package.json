@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Desktop environment in the browser.",
   "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -10,5 +14,10 @@
     "url": "https://github.com/Luki1235512/Browser-OS.git"
   },
   "author": "Luki1235512",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "next": "13.2.3",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  }
 }
