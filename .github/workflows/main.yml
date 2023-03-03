@@ -11,6 +11,6 @@ jobs:
         with:
           node-version: 16
       - name: Install Modules
-        run: npm install
+        run: npm install --force
       - name: Run Tests
         run: npm test
