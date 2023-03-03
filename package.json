@@ -18,14 +18,14 @@
   "author": "Luki1235512",
   "license": "ISC",
   "dependencies": {
-    "next": "13.2.3",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "next": "^13.2.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "sass": "^1.58.3"
   },
   "devDependencies": {
-    "@types/node": "18.14.4",
-    "@types/react": "18.0.28",
+    "@types/node": "^18.14.4",
+    "@types/react": "^18.0.28",
     "@typescript-eslint/eslint-plugin": "^5.54.0",
     "@typescript-eslint/parser": "^5.54.0",
     "eslint": "^8.35.0",
