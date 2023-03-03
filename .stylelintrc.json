@@ -1,4 +1,7 @@
 {
-    "extends": "stylelint-config-standard",
-    "rules": {}
+  "extends": [
+    "stylelint-config-prettier",
+    "stylelint-config-standard"
+  ],
+  "rules": {}
 }
