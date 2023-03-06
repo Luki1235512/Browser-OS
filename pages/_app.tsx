@@ -1,4 +1,4 @@
-import { AppProps } from 'next/app';
+import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { description, name } from 'package.json';
 import type { ReactElement } from 'react';
