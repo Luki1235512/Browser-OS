@@ -6,7 +6,7 @@
     "node": true
   },
   "extends": [
-    "airbnb",
+    // "airbnb",
     "airbnb/hooks",
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
@@ -29,14 +29,25 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint", "jest", "jest-dom", "react", "simple-import-sort", "testing-library"],
+  "plugins": [
+    "@typescript-eslint",
+    "jest",
+    "jest-dom",
+    "react",
+    "simple-import-sort",
+    "testing-library"
+  ],
   "rules": {
-    "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      { "prefer": "type-imports" }
+    ],
     "comma-dangle": ["error", "never"],
     "linebreak-style": "off",
     "max-lines": ["error", 80],
     "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }],
     "react/jsx-props-no-spreading": "off",
+    "react/prop-types": "off",
     "semi": ["error", "always"],
     "simple-import-sort/exports": "error",
     "simple-import-sort/imports": "error"
