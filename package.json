@@ -2,6 +2,12 @@
   "name": "browser-os",
   "version": "1.0.0",
   "description": "Desktop environment in the browser.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Luki1235512/Browser-OS.git"
+  },
+  "author": "Luki1235512",
+  "license": "ISC",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -12,12 +18,16 @@
     "test": "jest",
     "test:watch": "jest --watch"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Luki1235512/Browser-OS.git"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
-  "author": "Luki1235512",
-  "license": "ISC",
+  "lint-staged": {
+    "*": "prettier --write",
+    "*.{js,ts,tsx}": "eslint --fix",
+    "*.tsx": "stylelint --fix"
+  },
   "dependencies": {
     "next": "^13.2.3",
     "postcss-scss": "^4.0.6",
@@ -58,15 +68,5 @@
     "stylelint-config-standard": "^30.0.1",
     "stylelint-config-styled-components": "^0.1.1",
     "typescript": "4.9.5"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*": "prettier --write",
-    "*.{js,ts,tsx}": "eslint --fix",
-    "*.tsx": "stylelint --fix"
   }
 }
