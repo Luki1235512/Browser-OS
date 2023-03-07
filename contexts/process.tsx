@@ -6,7 +6,11 @@ import processDirectory from 'utils/processDirectory';
 
 const ProcessContext = createContext<ProcessContextState>({ processes: {} });
 
-export const ProcessProvider: FC = ({ children }) => (
+interface ProcessProviderProps {
+  children: React.ReactNode;
+}
+
+export const ProcessProvider: FC<ProcessProviderProps> = ({ children }) => (
   <ProcessContext.Provider value={useProcessContextState(processDirectory)}>
     {children}
   </ProcessContext.Provider>
