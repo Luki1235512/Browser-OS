@@ -5,11 +5,9 @@ import type { SessionContextState } from 'types/contexts/session';
 
 const SessionContext = createContext<SessionContextState>({});
 
-interface SessionProviderProps {
-  children: React.ReactNode;
-}
-
-export const SessionProvider: FC<SessionProviderProps> = ({ children }) => (
+export const SessionProvider: FC<{ children: React.ReactNode }> = ({
+  children
+}) => (
   <SessionContext.Provider value={useSessionContextState()}>
     {children}
   </SessionContext.Provider>

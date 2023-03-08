@@ -4,11 +4,7 @@ import { ThemeProvider } from 'styled-components';
 import GlobalStyle from 'styles/GlobalStyle';
 import themes from 'styles/themes.json';
 
-interface StyledAppProps {
-  children: React.ReactNode;
-}
-
-const StyledApp: FC<StyledAppProps> = ({ children }) => (
+const StyledApp: FC<{ children: React.ReactNode }> = ({ children }) => (
   <>
     <GlobalStyle />
     <SessionConsumer>
