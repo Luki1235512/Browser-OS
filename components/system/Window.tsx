@@ -5,6 +5,8 @@ interface WindowProps {
   children: React.ReactNode;
 }
 
-const Window: FC<WindowProps> = ({ children }) => <StyledWindow>{children}</StyledWindow>;
+const Window: FC<WindowProps> = ({ children }) => (
+  <StyledWindow>{children}</StyledWindow>
+);
 
 export default Window;
