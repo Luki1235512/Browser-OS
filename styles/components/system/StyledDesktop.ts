@@ -3,7 +3,7 @@ import styled from 'styled-components';
 const StyledDesktop = styled.main`
   height: 100vh;
   width: 100vw;
-  background-color: #ffc0cb;
+  background-color: ${({ theme }) => theme.colors.backgroundcolor};
   position: fixed;
   top: 0;
   bottom: 0;
