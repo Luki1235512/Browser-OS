@@ -1,7 +1,6 @@
-import type { FC } from 'react';
 import StyledDesktop from 'styles/components/system/StyledDesktop';
 
-const Desktop: FC<{ children: React.ReactNode }> = ({ children }) => (
+const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <StyledDesktop>{children}</StyledDesktop>
 );
 
