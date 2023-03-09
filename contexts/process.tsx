@@ -11,12 +11,7 @@ const { Consumer, Provider } = createContext<ProcessContextState>(
 );
 
 export const ProcessProvider: React.FC<ProcessProviderProps> = ({
-  children,
-  startupProcesses
-}) => (
-  <Provider value={useProcessContextState(startupProcesses)}>
-    {children}
-  </Provider>
-);
+  children
+}) => <Provider value={useProcessContextState()}>{children}</Provider>;
 
 export const ProcessConsumer = Consumer;

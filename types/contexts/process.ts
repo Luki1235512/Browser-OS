@@ -13,5 +13,4 @@ export type ProcessContextState = {
 
 export type ProcessProviderProps = {
   children: React.ReactNode;
-  startupProcesses: Processes;
 };
