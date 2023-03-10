@@ -4,7 +4,7 @@ const StyledTaskbar = styled.nav`
   height: ${({ theme }) => theme.sizes.taskbar.height};
   width: 100vw;
   background-color: pink;
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
   right: 0;

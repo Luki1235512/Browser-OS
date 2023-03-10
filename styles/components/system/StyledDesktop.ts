@@ -4,7 +4,7 @@ const StyledDesktop = styled.main`
   height: 100vh;
   width: 100vw;
   background-color: ${({ theme }) => theme.colors.background};
-  position: fixed;
+  position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
