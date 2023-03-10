@@ -5,8 +5,8 @@ const StyledTaskbarEntries = styled.ol`
   width: 100%;
   background-color: purple;
   position: absolute;
-  left: 30px;
-  right: 70px;
+  left: ${({ theme }) => theme.sizes.startButton.width};
+  right: ${({ theme }) => theme.sizes.clock.width};
 `;
 
 export default StyledTaskbarEntries;

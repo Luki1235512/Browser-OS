@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const StyledStartButton = styled.button`
   height: 100%;
-  width: 30px;
+  width: ${({ theme }) => theme.sizes.startButton.width};
   background-color: white;
   position: absolute;
   bottom: 0;

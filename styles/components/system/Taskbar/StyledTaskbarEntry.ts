@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const StyledTaskbarEntries = styled.li`
   height: 100%;
-  width: 80px;
+  width: ${({ theme }) => theme.sizes.taskbar.entry.width};
   background-color: yellow;
 `;
 
