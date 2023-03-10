@@ -5,7 +5,9 @@ const StyledStartButton = styled.button`
   width: ${({ theme }) => theme.sizes.startButton.width};
   background-color: white;
   position: absolute;
-  bottom: 0;
+  display: flex;
+  place-content: center;
+  place-items: center;
   left: 0;
 `;
 

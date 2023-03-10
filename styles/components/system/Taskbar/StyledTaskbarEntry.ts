@@ -4,6 +4,9 @@ const StyledTaskbarEntries = styled.li`
   height: 100%;
   width: ${({ theme }) => theme.sizes.taskbar.entry.width};
   background-color: yellow;
+  display: flex;
+  place-content: center;
+  place-items: center;
 `;
 
 export default StyledTaskbarEntries;

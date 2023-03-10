@@ -5,6 +5,9 @@ const StyledClock = styled.time`
   width: ${({ theme }) => theme.sizes.clock.width};
   background-color: red;
   position: absolute;
+  display: flex;
+  place-content: center;
+  place-items: center;
   right: 0;
 `;
 
