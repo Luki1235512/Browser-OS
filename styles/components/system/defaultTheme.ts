@@ -6,12 +6,18 @@ const colors = {
   window: '#fdeef4'
 };
 
+const fonts = {
+  clock: {
+    size: '12px'
+  }
+};
+
 const sizes = {
   clock: {
-    width: '70px'
+    width: '76px'
   },
   startButton: {
-    width: '30px'
+    width: '36px'
   },
   taskbar: {
     entry: {
@@ -31,6 +37,7 @@ const wallpaper = vantaWaves({
 
 const defaultTheme = {
   colors,
+  fonts,
   sizes,
   wallpaper
 };
