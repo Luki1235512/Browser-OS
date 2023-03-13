@@ -1,6 +1,10 @@
 import type { ProcessContextState } from 'types/contexts/process';
 import type { SessionContextState } from 'types/contexts/session';
 
+// export const initialFileSystemContextState: FileSystemContextState = {
+//   fs: null
+// };
+
 export const initialProcessContextState: ProcessContextState = {
   processes: {}
 };
