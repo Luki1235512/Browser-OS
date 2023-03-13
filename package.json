@@ -29,6 +29,10 @@
     "*.ts": "stylelint --fix"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.3.0",
+    "@fortawesome/free-regular-svg-icons": "^6.3.0",
+    "@fortawesome/free-solid-svg-icons": "^6.3.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "next": "^13.2.3",
     "postcss-scss": "^4.0.6",
     "react": "^18.2.0",
