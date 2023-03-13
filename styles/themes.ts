@@ -1,6 +1,9 @@
-import type { Themes } from 'types/styles/themes';
+import type { DefaultTheme } from 'styled-components';
+import defaultTheme from 'styles/defaultTheme';
 
-import defaultTheme from './components/system/defaultTheme';
+type Themes = {
+  [key: string]: DefaultTheme;
+};
 
 const themes: Themes = { defaultTheme };
 
