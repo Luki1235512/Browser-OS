@@ -12,6 +12,8 @@ declare module 'styled-components' {
       taskbar: string;
       window: string;
     };
+    formatDate: Intl.DateTimeFormatOptions;
+    formatTime: Intl.DateTimeFormatOptions;
     sizes: {
       clock: {
         fontSize: string;

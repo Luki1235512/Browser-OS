@@ -10,6 +10,20 @@ const colors = {
   window: '#fdeef4'
 };
 
+const formatDate: Intl.DateTimeFormatOptions = {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric'
+};
+
+const formatTime: Intl.DateTimeFormatOptions = {
+  hour: 'numeric',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false
+};
+
 const sizes = {
   clock: {
     fontSize: '12px',
@@ -38,6 +52,8 @@ const wallpaper = vantaWaves({
 
 const defaultTheme: DefaultTheme = {
   colors,
+  formatDate,
+  formatTime,
   sizes,
   wallpaper
 };
