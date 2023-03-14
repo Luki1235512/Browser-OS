@@ -28,11 +28,15 @@
     "*.{js,ts,tsx}": "eslint --fix",
     "*.ts": "stylelint --fix"
   },
+  "engines": {
+    "node": ">=16 <17"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
     "@fortawesome/free-regular-svg-icons": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "browserfs": "https://github.com/jvilk/BrowserFS.git#a96aa2d",
     "next": "^13.2.3",
     "postcss-scss": "^4.0.6",
     "react": "^18.2.0",
@@ -72,8 +76,6 @@
     "lint-staged": "^13.1.2",
     "prettier": "2.8.4",
     "stylelint": "^15.2.0",
-    "stylelint-config-prettier": "^9.0.5",
-    "stylelint-config-sass-guidelines": "^9.0.1",
     "stylelint-config-standard": "^30.0.1",
     "stylelint-config-styled-components": "^0.1.1",
     "typescript": "4.9.5"

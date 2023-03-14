@@ -2,7 +2,3 @@
 /node_modules
 /out
 package-lock.json
-
-contexts/fileSystem.tsx
-hooks/useFileSystemContextState.ts
-types/contexts/fileSystem.ts
