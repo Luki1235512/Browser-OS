@@ -46,6 +46,10 @@
       "error",
       { "prefer": "type-imports" }
     ],
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_" }
+    ],
     "comma-dangle": ["error", "never"],
     "linebreak-style": "off",
     "max-lines": ["error", 80],
