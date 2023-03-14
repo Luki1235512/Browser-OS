@@ -2,12 +2,13 @@ import type { DefaultTheme } from 'styled-components';
 import vantaWaves from 'utils/vantaWaves';
 
 const colors = {
-  background: '#ffc0cb',
+  background: '#FFC0CB',
+  highlight: '#F5C9EC',
   opaqueWhite: 'rgba(255, 255, 255, 80%)',
-  primary: '#ffc0cb',
+  primary: '#FFC0CB',
   startButton: '#FFF',
   taskbar: 'rgba(220, 40, 230, 40%)',
-  window: '#fdeef4'
+  window: '#FDEEF4'
 };
 
 const formatDate: Intl.DateTimeFormatOptions = {
@@ -36,6 +37,12 @@ const sizes = {
   taskbar: {
     blur: '5px',
     entry: {
+      borderSize: '2px',
+      fontSize: '12px',
+      icon: {
+        margin: '0 5px',
+        size: '16px'
+      },
       maxWidth: '161px'
     },
     height: '30px'
