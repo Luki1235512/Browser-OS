@@ -32,10 +32,12 @@
   },
   "plugins": [
     "@typescript-eslint",
+    "import",
     "jest",
     "jest-dom",
     "prettier",
     "react",
+    "react-hooks",
     "simple-import-sort",
     "testing-library"
   ],
