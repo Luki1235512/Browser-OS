@@ -10,6 +10,10 @@ const StyledClock = styled.time`
   place-content: center;
   place-items: center;
   right: 0;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.taskbarHover};
+  }
 `;
 
 export default StyledClock;

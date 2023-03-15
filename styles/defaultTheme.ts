@@ -6,8 +6,9 @@ const colors = {
   highlight: '#F5C9EC',
   opaqueWhite: 'rgba(255, 255, 255, 80%)',
   primary: '#FFC0CB',
-  startButton: '#FFF',
+  startButton: '#FFFFFF',
   taskbar: 'rgba(220, 40, 230, 40%)',
+  taskbarHover: 'hsla(0, 0%, 80%, 40%)',
   window: '#FDEEF4'
 };
 
