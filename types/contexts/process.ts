@@ -18,7 +18,3 @@ export type ProcessContextState = {
   open: (id: string) => void;
   mapProcesses: ProcessesMap;
 };
-
-export type ProcessProviderProps = {
-  children: React.ReactNode;
-};
