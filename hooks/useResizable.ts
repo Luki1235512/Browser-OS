@@ -10,13 +10,13 @@ type Resizable = Size & {
   updateSize: RndResizeCallback;
 };
 
-const defaultWindowsSize = {
+const defaultWindowSize = {
   height: '200px',
   width: '250px'
 };
 
 const useResizable = (maximized = false): Resizable => {
-  const [{ height, width }, setSize] = useState<Size>(defaultWindowsSize);
+  const [{ height, width }, setSize] = useState<Size>(defaultWindowSize);
   const updateSize = useCallback<RndResizeCallback>(
     (
       _event,
