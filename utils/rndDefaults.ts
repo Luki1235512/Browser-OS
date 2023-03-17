@@ -1,8 +1,10 @@
+import type { HandleStyles } from 'react-rnd';
+
 const rndDefaults = {
   cancel: '.cancel',
   dragHandleClassName: 'handle',
   enableUserSelectHack: false,
-  resizeHandleStyles: {
+  resizeHandleStyles: <HandleStyles>{
     bottom: {
       bottom: '-3px',
       cursor: 'ns-resize',
@@ -45,7 +47,7 @@ const rndDefaults = {
       width: '12px'
     },
     topRight: {
-      cursor: 'nwse-resize',
+      cursor: 'nesw-resize',
       height: '12px',
       right: '-3px',
       top: '-3px',
