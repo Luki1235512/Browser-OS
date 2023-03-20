@@ -5,6 +5,12 @@ const colors = {
   taskbar: 'rgba(220, 40, 230, 40%)',
   taskbarHover: 'hsla(0, 0%, 80%, 40%)',
   text: 'rgba(255, 255, 255, 80%)',
+  titleBar: {
+    background: '#E628E6',
+    backgroundHover: 'rgb(190, 30, 190)',
+    closeHover: 'rgb(150, 10, 150)',
+    text: '#FFFFFF'
+  },
   window: '#FDEEF4'
 };
 
