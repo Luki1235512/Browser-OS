@@ -12,7 +12,7 @@ const StyledStartButton = styled(Button)`
   left: 0;
 
   svg {
-    height: 19px;
+    height: ${({ theme }) => theme.sizes.startButton.iconSize};
   }
 
   &:hover {
