@@ -20,7 +20,11 @@ declare module 'styled-components' {
         closeHover: string;
         text: string;
       };
-      window: string;
+      window: {
+        background: string;
+        outline: string;
+        shadow: string;
+      };
     };
     formatDate: Intl.DateTimeFormatOptions;
     formatTime: Intl.DateTimeFormatOptions;
@@ -53,6 +57,9 @@ declare module 'styled-components' {
         height: string;
         iconMargin: string;
         iconSize: string;
+      };
+      window: {
+        outline: string;
       };
     };
     wallpaper?: WallpaperEffect;

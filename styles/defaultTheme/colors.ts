@@ -13,7 +13,11 @@ const colors = {
     closeHover: 'rgb(150, 10, 150)',
     text: '#FFFFFF'
   },
-  window: '#FDEEF4'
+  window: {
+    background: '#FDEEF4',
+    outline: 'hsl(300deg 70% 50%)',
+    shadow: '0 0 12px 0 rgba(255, 0, 255, 100%)'
+  }
 };
 
 export default colors;
