@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic';
 const Window = dynamic(() => import('components/system/Window'));
 
 export type ProcessComponentProps = {
-  children?: React.ReactNode;
   id: string;
 };
 
