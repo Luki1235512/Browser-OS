@@ -18,7 +18,6 @@ declare module 'styled-components' {
         background: string;
         hover: string;
       };
-      taskbarHover: string;
       text: string;
       titleBar: {
         background: string;
