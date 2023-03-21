@@ -52,7 +52,6 @@
     ],
     "comma-dangle": ["error", "never"],
     "linebreak-style": "off",
-    "max-lines": ["error", 80],
     "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }],
     "react/jsx-props-no-spreading": "off",
     "react/prop-types": "off",
