@@ -76,6 +76,7 @@ declare module 'styled-components' {
         iconSize: string;
       };
       window: {
+        lineHeight: string;
         outline: string;
       };
     };
