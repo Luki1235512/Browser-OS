@@ -4,6 +4,8 @@ import useFileDrop from 'components/system/Files/useFileDrop';
 import useFiles from 'components/system/Files/useFiles';
 import { basename, extname, resolve } from 'path';
 
+import StyledFileEntry from './StyledFileEntry';
+
 type FileManagerProps = {
   directory: string;
 };
@@ -14,11 +16,12 @@ const FileManager = ({ directory }: FileManagerProps): JSX.Element => {
   return (
     <StyledFileManager {...useFileDrop(directory, getFiles)}>
       {files.map((file) => (
-        <FileEntry
-          key={file}
-          name={basename(file, extname(file))}
-          path={resolve(directory, file)}
-        />
+        <StyledFileEntry key={file}>
+          <FileEntry
+            name={basename(file, extname(file))}
+            path={resolve(directory, file)}
+          />
+        </StyledFileEntry>
       ))}
     </StyledFileManager>
   );
