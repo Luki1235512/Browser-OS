@@ -1,5 +1,5 @@
+import type { CSSProperties } from 'react';
 import type { HandleStyles } from 'react-rnd';
-import type { CSSProperties } from 'styled-components';
 
 const rndDefaults = {
   bounds: 'main',
