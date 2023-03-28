@@ -13,9 +13,7 @@ const useRnd = (id: string, maximized = false): Props => {
       [id]: { autoSizing }
     }
   } = useProcesses();
-  const {
-    windowStates: { [id]: WindowState }
-  } = useSession();
+  const { windowStates: { [id]: WindowState } = {} } = useSession();
   const { position: statePosition, size: stateSize } = WindowState || {};
   const [position, setPosition] = useDraggable(maximized, statePosition);
   const [size, setSize] = useResizable(maximized, autoSizing, stateSize);
