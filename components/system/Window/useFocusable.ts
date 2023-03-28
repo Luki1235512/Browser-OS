@@ -23,7 +23,7 @@ const useFocusable = (
     }
   } = useProcesses();
   const onBlur = useCallback(
-    ({ relatedTarget }) => {
+    ({ relatedTarget }: React.FocusEvent<HTMLElement>) => {
       if (isForeground && relatedTarget !== taskbarEntry) setForegroundId('');
     },
     [isForeground, setForegroundId, taskbarEntry]
