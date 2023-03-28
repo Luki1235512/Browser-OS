@@ -21,10 +21,12 @@ const colors = {
   highlight: '#F5C9EC',
   startButton: '#FFFFFF',
   taskbar: {
-    background: 'rgba(220, 40, 230, 40%)',
+    active: 'hsla(300, 100%, 80%, 40%)',
+    activeHover: 'hsla(300, 100%, 90%, 40%)',
+    background: 'hsla(300, 100%, 70%, 40%)',
     hover: 'hsla(0, 0%, 80%, 40%)'
   },
-  text: 'rgba(255, 255, 255, 80%)',
+  text: 'rgba(255, 255, 255, 90%)',
   titleBar: {
     background: '#E628E6',
     backgroundHover: 'rgb(190, 30, 190)',
