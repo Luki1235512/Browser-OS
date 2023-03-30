@@ -28,10 +28,13 @@ const colors = {
   },
   text: 'rgba(255, 255, 255, 90%)',
   titleBar: {
-    background: '#E628E6',
+    background: 'rgb(230, 40, 230)',
     backgroundHover: 'rgb(190, 30, 190)',
+    backgroundInactive: 'rgb(160, 55, 160)',
+    buttonInactive: 'rgb(170, 170, 170)',
     closeHover: 'rgb(150, 10, 150)',
-    text: '#FFFFFF'
+    text: 'rgb(255, 255, 255)',
+    textInactive: 'rgb(170, 170, 170)'
   },
   window: {
     background: '#FDEEF4',
