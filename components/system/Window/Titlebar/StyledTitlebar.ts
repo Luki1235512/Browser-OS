@@ -70,6 +70,14 @@ const StyledTitlebar = styled.header`
         }
       }
 
+      &:active {
+        background-color: rgb(0, 0, 0);
+
+        &.close {
+          background-color: rgb(0, 0, 0);
+        }
+      }
+
       &:disabled {
         svg {
           fill: rgb(150, 0, 150);
