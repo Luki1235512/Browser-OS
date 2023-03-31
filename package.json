@@ -46,9 +46,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-rnd": "^10.4.1",
-    "styled-components": "^5.3.9",
-    "three": "^0.151.2",
-    "vanta": "^0.5.24"
+    "styled-components": "^5.3.9"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",

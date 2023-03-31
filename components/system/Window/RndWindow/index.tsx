@@ -36,6 +36,7 @@ const RndWindow = ({ children, id, style }: RndWindowProps): JSX.Element => {
     const { current } = rndRef || {};
     const [windowContainer, resizeHandleContainer] =
       current?.resizableElement?.current?.children || [];
+    // eslint-disable-next-line no-unsafe-optional-chaining
     const resizeHandles = [...resizeHandleContainer?.children];
 
     resizeHandles.forEach(reRouteFocus(windowContainer as HTMLElement));
