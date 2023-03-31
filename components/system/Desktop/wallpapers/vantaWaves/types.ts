@@ -16,7 +16,7 @@ type VantaWavesSettings = VantaWavesConfig & {
 type VantaWaves = {
   destroy: () => void;
   onDestroy: () => void;
-  setOptions: (setting: Partial<VantaWavesConfig>) => void;
+  setOptions: (settings: Partial<VantaWavesConfig>) => void;
 };
 
 declare global {

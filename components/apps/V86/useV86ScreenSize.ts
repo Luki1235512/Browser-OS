@@ -4,11 +4,11 @@ import type {
   V86Starter
 } from 'components/apps/V86/types';
 import useWindowSize from 'components/system/Window/useWindowSize';
-import { stripUnit } from 'polished';
 import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { useCallback, useEffect } from 'react';
 import { useTheme } from 'styled-components';
+import { pxToNum } from 'utils/functions';
 
 const SET_SCREEN_MODE = 'screen-set-mode';
 const SET_SCREEN_GFX = 'screen-set-size-graphical';
@@ -39,8 +39,8 @@ const useV86ScreenSize = (
   const setScreenText = useCallback<SizeCallback>(
     ([cols, rows]) =>
       updateWindowSize(
-        rows * Number(stripUnit(lineHeight)) + 3,
-        (cols / 2 + 4) * Number(stripUnit(lineHeight))
+        rows * pxToNum(lineHeight) + 3,
+        (cols / 2 + 4) * pxToNum(lineHeight)
       ),
     [lineHeight, updateWindowSize]
   );
