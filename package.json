@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "browserfs": "https://github.com/jvilk/BrowserFS.git#a96aa2d",
+    "framer-motion": "^10.10.0",
     "ini": "^4.0.0",
     "jszip": "^3.10.1",
     "next": "^13.2.4",

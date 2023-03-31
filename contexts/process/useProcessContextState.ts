@@ -10,7 +10,7 @@ import {
 import { useCallback, useState } from 'react';
 
 export type ProcessContextState = {
-  close: (id: string) => void;
+  close: (id: string, closing?: boolean) => void;
   linkElement: (
     id: string,
     name: keyof ProcessElements,
@@ -26,7 +26,10 @@ export type ProcessContextState = {
 const useProcessContextState = (): ProcessContextState => {
   const [processes, setProcesses] = useState<Processes>({});
 
-  const close = useCallback((id: string) => setProcesses(closeProcess(id)), []);
+  const close = useCallback(
+    (id: string, closing?: boolean) => setProcesses(closeProcess(id, closing)),
+    []
+  );
   const open = useCallback(
     (id: string, url: string) => setProcesses(openProcess(id, url)),
     []
