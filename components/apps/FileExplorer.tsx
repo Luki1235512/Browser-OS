@@ -1,18 +1,21 @@
 import FileManager from 'components/system/Files/FileManager';
 import type { ProcessComponentProps } from 'components/system/Processes/RenderProcess';
 import { useProcesses } from 'contexts/process';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 
 const FileExplorer = ({ id }: ProcessComponentProps): JSX.Element => {
   const {
     title,
     processes: { [id]: { url = '' } = {} }
   } = useProcesses();
-  const path = useMemo(() => url || '/', [url]);
 
-  useEffect(() => title(id, path), [id, path, title]);
+  useEffect(() => {
+    if (url) {
+      title(id, url);
+    }
+  }, [id, url, title]);
 
-  return <FileManager directory={path} />;
+  return url ? <FileManager directory={url} /> : <></>;
 };
 
 export default FileExplorer;
