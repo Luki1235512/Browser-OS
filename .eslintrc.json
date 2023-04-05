@@ -51,6 +51,8 @@
       { "argsIgnorePattern": "^_", "ignoreRestSiblings": true }
     ],
     "comma-dangle": ["error", "never"],
+    "import/no-cycle": "off",
+    "import/prefer-default-export": "off",
     "linebreak-style": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }],
     "react/jsx-props-no-spreading": "off",
