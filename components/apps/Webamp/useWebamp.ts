@@ -3,7 +3,7 @@ import {
   getWebampElement,
   updateWebampPosition
 } from 'components/apps/Webamp/functions';
-import type { WebampCI } from 'components/apps/Webamp/types';
+import type { WebampCI, WebampOptions } from 'components/apps/Webamp/types';
 import { useProcesses } from 'contexts/process';
 import { useSession } from 'contexts/session';
 import { useCallback } from 'react';
@@ -25,11 +25,26 @@ const useWebamp = (id: string): Webamp => {
       taskbar: { height: taskbarHeight }
     }
   } = useTheme();
-
   const loadWebamp = useCallback(
     (containerElement: HTMLDivElement | null, file?: Buffer): void => {
       if (containerElement) {
-        const options: any = { zIndex: 1 };
+        const options: WebampOptions = {
+          __butterchurnOptions: {
+            importButterchurn: () => Promise.resolve(window.butterchurn),
+            getPresets: () => {
+              const presets = window.butterchurnPresets.getPresets();
+
+              return Object.keys(presets).map((name) => {
+                return {
+                  name,
+                  butterchurnPresetObject: presets[name]
+                };
+              });
+            },
+            butterchurnOpen: true
+          },
+          zIndex: 1
+        };
 
         if (file) {
           options.initialTracks = [
