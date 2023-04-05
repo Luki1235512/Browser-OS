@@ -6,7 +6,7 @@ type WebampCloseWindowDispatch = {
 
 type WebampUpdatePositionDispatch = {
   absolute: boolean;
-  position: {
+  positions: {
     main: Position;
     playlist: Position;
   };
