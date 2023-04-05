@@ -31,9 +31,9 @@ const RndWindow = ({ children, id, style }: RndWindowProps): JSX.Element => {
   const { setWindowStates } = useSession();
 
   useEffect(() => {
-    const { current } = rndRef || {};
+    const { current: currentWindow } = rndRef || {};
     const [windowContainer, resizeHandleContainer] =
-      current?.resizableElement?.current?.children || [];
+      currentWindow?.resizableElement?.current?.children || [];
     // eslint-disable-next-line no-unsafe-optional-chaining
     const resizeHandles = [...resizeHandleContainer?.children];
 
@@ -43,11 +43,11 @@ const RndWindow = ({ children, id, style }: RndWindowProps): JSX.Element => {
       setWindowStates((currentWindowStates) => ({
         ...currentWindowStates,
         [id]: {
-          position: current?.props.position,
-          size: autoSizing ? DEFAULT_WINDOW_SIZE : current?.props.size
+          position: currentWindow?.props?.position,
+          size: autoSizing ? DEFAULT_WINDOW_SIZE : currentWindow?.props?.size
         }
       }));
-  }, [autoSizing, id, maximized, setWindowStates]);
+  }, [autoSizing, id, setWindowStates]);
 
   return (
     <Rnd ref={rndRef} style={style} {...rndProps}>
