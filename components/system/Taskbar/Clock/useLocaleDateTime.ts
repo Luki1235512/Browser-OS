@@ -9,8 +9,14 @@ type LocaleTimeDate = {
 
 const useLocaleDateTime = (now: Date): LocaleTimeDate => {
   const { formatDate, formatTime } = useTheme();
-
-  const date = new Intl.DateTimeFormat(DEFAULT_LOCALE, formatDate).format(now);
+  const formattedDate = new Intl.DateTimeFormat(
+    DEFAULT_LOCALE,
+    formatDate
+  ).format(now);
+  const day = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
+    weekday: 'long'
+  }).format(now);
+  const date = `${formattedDate}\n${day}`;
   const time = new Intl.DateTimeFormat(DEFAULT_LOCALE, formatTime).format(now);
   const dateTime = now.toISOString();
 
