@@ -54,7 +54,6 @@ declare module 'styled-components' {
         iconSize: string;
       };
       fileManager: {
-        columnGap: string;
         gridEntryHeight: string;
         gridEntryWidth: string;
         padding: string;
