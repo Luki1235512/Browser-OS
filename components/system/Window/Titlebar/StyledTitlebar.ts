@@ -94,10 +94,10 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
       }
 
       &:active {
-        background-color: rgb(0, 0, 0);
+        background-color: rgb(160, 30, 160);
 
         &.close {
-          background-color: rgb(0, 0, 0);
+          background-color: rgb(120, 10, 120);
         }
       }
 

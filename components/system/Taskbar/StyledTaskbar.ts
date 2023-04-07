@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 
 const StyledTaskbar = styled.nav`
-  height: ${({ theme }) => theme.sizes.taskbar.height};
-  width: 100vw;
-  background-color: ${({ theme }) => theme.colors.taskbar.background};
   backdrop-filter: ${({ theme }) => `blur(${theme.sizes.taskbar.blur})`};
-  position: absolute;
+  background-color: ${({ theme }) => theme.colors.taskbar.background};
   bottom: 0;
+  height: ${({ theme }) => theme.sizes.taskbar.height};
   left: 0;
+  position: absolute;
   right: 0;
+  width: 100vw;
   z-index: 1000;
 `;
 
