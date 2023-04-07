@@ -39,9 +39,9 @@
   "dependencies": {
     "browserfs": "https://github.com/jvilk/BrowserFS.git#a96aa2d",
     "fflate": "^0.7.4",
-    "framer-motion": "^10.10.0",
+    "framer-motion": "^10.11.2",
     "ini": "^4.0.0",
-    "next": "^13.2.4",
+    "next": "^13.3.0",
     "polished": "^4.2.2",
     "postcss-scss": "^4.0.6",
     "react": "^18.2.0",
