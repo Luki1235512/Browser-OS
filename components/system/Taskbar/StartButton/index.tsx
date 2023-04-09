@@ -3,10 +3,14 @@ import StyledStartButton from 'components/system/Taskbar/StartButton/StyledStart
 import { useSession } from 'contexts/session';
 
 const StartButton = (): JSX.Element => {
-  const { toggleStartMenu } = useSession();
+  const { startMenuVisible, toggleStartMenu } = useSession();
 
   return (
-    <StyledStartButton title="Start" onClick={() => toggleStartMenu()}>
+    <StyledStartButton
+      active={startMenuVisible}
+      title="Start"
+      onClick={() => toggleStartMenu()}
+    >
       <PawIcon />
     </StyledStartButton>
   );

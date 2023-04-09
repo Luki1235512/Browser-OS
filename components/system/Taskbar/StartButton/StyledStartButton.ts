@@ -1,25 +1,40 @@
 import styled from 'styled-components';
 import Button from 'styles/common/Button';
 
-const StyledStartButton = styled(Button)`
-  height: 100%;
-  width: ${({ theme }) => theme.sizes.startButton.width};
-  fill: ${({ theme }) => theme.colors.startButton};
-  position: absolute;
+type StyledStartButtonProps = {
+  active: boolean;
+};
+
+const StyledStartButton = styled(Button)<StyledStartButtonProps>`
+  background-color: ${({ active, theme }) =>
+    active && theme.colors.taskbar.active};
   display: flex;
+  fill: ${({ theme }) => theme.colors.startButton};
+  height: 100%;
+  left: 0;
   place-content: center;
   place-items: center;
-  left: 0;
+  position: absolute;
+  width: ${({ theme }) => theme.sizes.startButton.width};
 
   svg {
     height: ${({ theme }) => theme.sizes.startButton.iconSize};
   }
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.taskbar.hover};
+    background-color: ${({ active, theme }) =>
+      !active && theme.colors.taskbar.hover};
 
     svg {
-      color: ${({ theme }) => theme.colors.highlight};
+      fill: ${({ theme }) => theme.colors.highlight};
+    }
+  }
+
+  &:active {
+    background-color: hsla(0 0%, 20%, 70%);
+
+    svg {
+      fill: hsl(300, 100%, 60%, 80%);
     }
   }
 `;
