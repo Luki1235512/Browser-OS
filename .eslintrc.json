@@ -51,11 +51,19 @@
       "error",
       { "argsIgnorePattern": "^_", "ignoreRestSiblings": true }
     ],
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
     "comma-dangle": ["error", "never"],
     "import/no-cycle": "off",
     "import/prefer-default-export": "off",
     "linebreak-style": "off",
-    "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }],
+    "react/jsx-filename-extension": ["warn", { "extensions": [".tsx"] }],
     "react/jsx-props-no-spreading": "off",
     "react/prop-types": "off",
     "react/require-default-props": "off",
