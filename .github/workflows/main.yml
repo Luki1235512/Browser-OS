@@ -11,8 +11,8 @@ jobs:
         with:
           node-version: 16
       - name: Install Modules
-        run: npm install --force
+        run: yarn install --force
       - name: Run Build
-        run: npm run build
+        run: yarn run build
       - name: Run Tests
-        run: npm test
+        run: yarn test
