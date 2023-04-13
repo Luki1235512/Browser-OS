@@ -3,6 +3,7 @@ import Sidebar from 'components/system/StartMenu/Sidebar';
 import StyledStartMenu from 'components/system/StartMenu/StyledStartMenu';
 import { useSession } from 'contexts/session';
 import { useEffect, useRef } from 'react';
+import { PREVENT_SCROLL } from 'utils/constants';
 
 const StartMenu = (): JSX.Element => {
   const { toggleStartMenu } = useSession();
@@ -10,17 +11,19 @@ const StartMenu = (): JSX.Element => {
   const maybeCloseMenu: React.FocusEventHandler<HTMLElement> = ({
     relatedTarget
   }) => {
-    if (!menuRef.current?.contains(relatedTarget as HTMLElement)) {
-      if (
-        menuRef.current?.nextSibling &&
-        ![
-          relatedTarget,
-          (relatedTarget as HTMLElement)?.parentElement
-        ].includes(menuRef.current?.nextSibling)
-      ) {
+    const focusedElement = relatedTarget as HTMLElement | null;
+    const focusedInsideMenu =
+      focusedElement && menuRef.current?.contains(focusedElement);
+
+    if (!focusedInsideMenu) {
+      const focusedTaskbar = focusedElement === menuRef.current?.nextSibling;
+      const focusedStartButton =
+        focusedElement?.parentElement === menuRef.current?.nextSibling;
+
+      if (!focusedTaskbar && !focusedStartButton) {
         toggleStartMenu(false);
       } else {
-        menuRef.current?.focus();
+        menuRef.current?.focus(PREVENT_SCROLL);
       }
     }
   };

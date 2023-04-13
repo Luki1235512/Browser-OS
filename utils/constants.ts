@@ -41,6 +41,8 @@ export const MILLISECONDS_IN_SECOND = 1000;
 
 export const MOUNTABLE_EXTENSIONS = ['.iso', '.zip'];
 
+export const PREVENT_SCROLL = { preventScroll: true };
+
 export const PROCESS_DELIMITER = '__';
 
 export const SHORTCUT_EXTENSTION = '.url';
