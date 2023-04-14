@@ -18,7 +18,6 @@ type Webamp = {
 const useWebamp = (id: string): Webamp => {
   const { onClose, onMinimize } = useWindowActions(id);
   const {
-    removeFromStack,
     setWindowStates,
     stackOrder,
     windowStates: { [id]: { position = undefined } = {} } = {}
@@ -79,7 +78,6 @@ const useWebamp = (id: string): Webamp => {
             position: { x, y }
           }
         }));
-        removeFromStack(id);
 
         if (options.initialTracks) {
           const [{ url: objectUrl }] = options.initialTracks;
