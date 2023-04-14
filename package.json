@@ -44,6 +44,7 @@
     "fflate": "^0.7.4",
     "framer-motion": "^10.11.4",
     "ini": "^4.0.0",
+    "music-metadata-browser": "^2.5.9",
     "next": "^13.3.0",
     "polished": "^4.2.2",
     "postcss-scss": "^4.0.6",
