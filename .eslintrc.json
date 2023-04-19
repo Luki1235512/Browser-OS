@@ -1,7 +1,7 @@
 {
   "env": {
     "browser": true,
-    "es2021": true,
+    "es2022": true,
     "jest": true,
     "node": true
   },
@@ -18,20 +18,13 @@
     "plugin:react-hooks/recommended",
     "plugin:testing-library/react",
     "plugin:prettier/recommended",
-    "prettier"
+    "prettier",
+    "next",
+    "next/core-web-vitals",
+    "plugin:@next/next/recommended"
   ],
-  "globals": {
-    "React": "readonly"
-  },
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
-    },
-    "ecmaVersion": "latest",
-    "sourceType": "module"
-  },
   "plugins": [
+    "@next/next",
     "@typescript-eslint",
     "import",
     "jest",
@@ -43,10 +36,7 @@
     "testing-library"
   ],
   "rules": {
-    "@typescript-eslint/consistent-type-imports": [
-      "error",
-      { "prefer": "type-imports" }
-    ],
+    "@next/next/no-img-element": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
       { "argsIgnorePattern": "^_", "ignoreRestSiblings": true }
@@ -59,24 +49,22 @@
         "tsx": "never"
       }
     ],
-    "comma-dangle": ["error", "never"],
     "import/no-cycle": "off",
     "import/prefer-default-export": "off",
-    "linebreak-style": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-nointeractive-element-interactions": "off",
     "react/jsx-filename-extension": ["warn", { "extensions": [".tsx"] }],
     "react/jsx-props-no-spreading": "off",
     "react/prop-types": "off",
     "react/require-default-props": "off",
-    "semi": ["error", "always"],
     "simple-import-sort/exports": "error",
     "simple-import-sort/imports": "error"
   },
   "settings": {
-    "import/parser": {
-      "@typescript/parser": [".ts", ".tsx"]
-    },
     "import/resolver": {
-      "typescript": {}
+      "typescript": {
+        "project": "tsconfig.json"
+      }
     }
   }
 }
