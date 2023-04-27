@@ -49,6 +49,9 @@ declare module 'styled-components' {
         fontSize: string;
         width: string;
       };
+      contextMenu: {
+        subMenuOffset: number;
+      };
       fileEntry: {
         fontSize: string;
         iconSize: string;
