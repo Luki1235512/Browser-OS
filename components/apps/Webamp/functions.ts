@@ -2,12 +2,28 @@ import type { Track, WebampCI } from 'components/apps/Webamp/types';
 import { centerPosition } from 'components/system/Window/functions';
 import { IAudioMetadata, parseBuffer } from 'music-metadata-browser';
 import type { Position } from 'react-rnd';
-import { bufferToBlob } from 'utils/functions';
+import { bufferToBlob, cleanUpBufferUrl } from 'utils/functions';
+
+export const BASE_WEBAMP_OPTIONS = {
+  availableSkins: [
+    { url: '/skns/cuteamp.wsz', name: 'Cuteamp' },
+    { url: '/skins/Morbamp.wsz', name: 'Morbamp' },
+    { url: '/skins/Bathory.wsz', name: 'Bathory' }
+  ]
+};
 
 const BASE_WINDOW_SIZE = {
   height: 116,
   width: 275
 };
+
+export const cleanBufferOnSkinLoad = (
+  webamp: WebampCI,
+  url = ''
+): Promise<void> =>
+  webamp.skinIsLoaded().then(() => {
+    if (url) cleanUpBufferUrl(url);
+  });
 
 export const closeEqualizer = (webamp: WebampCI): void =>
   webamp.store.dispatch({
