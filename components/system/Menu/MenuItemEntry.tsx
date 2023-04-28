@@ -2,7 +2,7 @@ import Menu from 'components/system/Menu';
 import { ChevronRight } from 'components/system/Menu/MenuIcons';
 import type { MenuItem } from 'contexts/menu/useMenuContextState';
 import { useEffect, useRef, useState } from 'react';
-import { Position } from 'react-rnd';
+import type { Position } from 'react-rnd';
 import { useTheme } from 'styled-components';
 import Icon from 'styles/common/Icon';
 

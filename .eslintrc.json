@@ -33,11 +33,16 @@
     "prettier",
     "react",
     "react-hooks",
+    "simple-import-sort",
     "sonarjs",
     "testing-library"
   ],
   "rules": {
     "@next/next/no-img-element": "off",
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      { "prefer": "type-imports" }
+    ],
     "@typescript-eslint/no-unused-vars": [
       "error",
       { "argsIgnorePattern": "^_", "ignoreRestSiblings": true }

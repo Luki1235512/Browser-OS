@@ -1,6 +1,7 @@
 import type { Track, WebampCI } from 'components/apps/Webamp/types';
 import { centerPosition } from 'components/system/Window/functions';
-import { IAudioMetadata, parseBuffer } from 'music-metadata-browser';
+import type { IAudioMetadata } from 'music-metadata-browser';
+import { parseBuffer } from 'music-metadata-browser';
 import type { Position } from 'react-rnd';
 import { bufferToBlob, cleanUpBufferUrl } from 'utils/functions';
 
