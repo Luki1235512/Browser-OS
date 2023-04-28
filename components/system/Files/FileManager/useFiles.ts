@@ -1,7 +1,7 @@
-import { useFileSystem } from 'contexts/fileSystem';
-import { basename } from 'path';
-import { useCallback, useEffect, useState } from 'react';
-import { SHORTCUT_EXTENSTION } from 'utils/constants';
+import { useFileSystem } from "contexts/fileSystem";
+import { basename } from "path";
+import { useCallback, useEffect, useState } from "react";
+import { SHORTCUT_EXTENSTION } from "utils/constants";
 
 type Files = {
   deleteFile: (path: string) => void;
@@ -14,7 +14,7 @@ const useFiles = (directory: string): Files => {
   const [files, setFiles] = useState<string[]>([]);
   const { fs } = useFileSystem();
   const updateFiles = useCallback(
-    (appendFile = '') =>
+    (appendFile = "") =>
       fs?.readdir(directory, (_error, contents = []) =>
         setFiles((currentFiles) =>
           appendFile ? [...currentFiles, basename(appendFile)] : contents
@@ -33,7 +33,7 @@ const useFiles = (directory: string): Files => {
   const renameFile = (path: string, name?: string) => {
     if (name) {
       const newPath = `${directory}/${name}${
-        path.endsWith(SHORTCUT_EXTENSTION) ? SHORTCUT_EXTENSTION : ''
+        path.endsWith(SHORTCUT_EXTENSTION) ? SHORTCUT_EXTENSTION : ""
       }`;
 
       fs?.rename(path, newPath, () =>
@@ -52,7 +52,7 @@ const useFiles = (directory: string): Files => {
     deleteFile,
     files,
     renameFile,
-    updateFiles
+    updateFiles,
   };
 };
 

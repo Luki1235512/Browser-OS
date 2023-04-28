@@ -1,9 +1,9 @@
-import type { DocumentContext, DocumentInitialProps } from 'next/document';
-import { Head, Html, Main } from 'next/document';
-import { NextScript } from 'next/document';
-import Document from 'next/document';
-import withStyledComponents from 'styles/withStyledComponents';
-import { DEFAULT_LOCALE } from 'utils/constants';
+import type { DocumentContext, DocumentInitialProps } from "next/document";
+import { Head, Html, Main } from "next/document";
+import { NextScript } from "next/document";
+import Document from "next/document";
+import withStyledComponents from "styles/withStyledComponents";
+import { DEFAULT_LOCALE } from "utils/constants";
 
 class MyDocument extends Document {
   static async getInitialProps(

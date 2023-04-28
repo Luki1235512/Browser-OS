@@ -1,5 +1,5 @@
-import { useFileSystem } from 'contexts/fileSystem';
-import { basename, dirname, extname } from 'path';
+import { useFileSystem } from "contexts/fileSystem";
+import { basename, dirname, extname } from "path";
 
 const haltDragEvent = (event: React.DragEvent<HTMLElement>): void => {
   event.preventDefault();
@@ -36,8 +36,8 @@ const useFileDrop = (
       ): void => {
         const writePath = !iteration ? path : iterateFileName(path, iteration);
 
-        fs?.writeFile(writePath, fileBuffer, { flag: 'wx' }, (error) => {
-          if (error?.code == 'EEXIST') {
+        fs?.writeFile(writePath, fileBuffer, { flag: "wx" }, (error) => {
+          if (error?.code == "EEXIST") {
             writeUniqueName(path, fileBuffer, iteration + 1);
           } else if (!error) {
             updateFiles(writePath);
@@ -62,7 +62,7 @@ const useFileDrop = (
 
   return {
     onDragOver: haltDragEvent,
-    onDrop
+    onDrop,
   };
 };
 

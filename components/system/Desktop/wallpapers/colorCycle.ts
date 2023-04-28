@@ -1,5 +1,5 @@
-import { adjustHue } from 'polished';
-import { MILLISECONDS_IN_SECOND } from 'utils/constants';
+import { adjustHue } from "polished";
+import { MILLISECONDS_IN_SECOND } from "utils/constants";
 
 const fps = 10;
 const timePerFrame = MILLISECONDS_IN_SECOND / fps;
@@ -31,7 +31,7 @@ const colorCycle = (
 
       callback(
         Number(
-          adjustHue(degree, `#${initialColor.toString(16)}`).replace('#', '0x')
+          adjustHue(degree, `#${initialColor.toString(16)}`).replace("#", "0x")
         )
       );
     }

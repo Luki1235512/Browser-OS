@@ -1,7 +1,7 @@
 const NextConfig = {
   experimental: {},
   future: {},
-  reactStrictMode: true
+  reactStrictMode: true,
 };
 
 module.exports = NextConfig;

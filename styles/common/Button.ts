@@ -1,9 +1,9 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const Button = styled.button.attrs({
   onKeyDown: (event: { preventDefault: () => unknown }) =>
     event?.preventDefault(),
-  type: 'button'
+  type: "button",
 })`
   background-color: transparent;
   font-family: inherit;
