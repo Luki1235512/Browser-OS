@@ -18,6 +18,7 @@
     "plugin:react-hooks/recommended",
     "plugin:testing-library/react",
     "plugin:prettier/recommended",
+    "plugin:sonarjs/recommended",
     "prettier",
     "next",
     "next/core-web-vitals",
@@ -32,7 +33,7 @@
     "prettier",
     "react",
     "react-hooks",
-    "simple-import-sort",
+    "sonarjs",
     "testing-library"
   ],
   "rules": {
@@ -55,10 +56,10 @@
     "jsx-a11y/no-nointeractive-element-interactions": "off",
     "react/jsx-filename-extension": ["warn", { "extensions": [".tsx"] }],
     "react/jsx-props-no-spreading": "off",
-    "react/prop-types": "off",
     "react/require-default-props": "off",
     "simple-import-sort/exports": "error",
-    "simple-import-sort/imports": "error"
+    "simple-import-sort/imports": "error",
+    "sonarjs/cognitive-complexity": "off"
   },
   "settings": {
     "import/resolver": {
