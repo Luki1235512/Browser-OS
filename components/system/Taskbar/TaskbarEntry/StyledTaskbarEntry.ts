@@ -40,7 +40,6 @@ const StyledTaskbarEntry = styled.li<StyledTaskbarEnntryProps>`
   figure {
     align-items: center;
     display: flex;
-    margin-bottom: ${({ theme }) => theme.sizes.taskbar.entry.borderSize};
     margin-left: 4px;
     padding: 4px;
 
@@ -48,6 +47,7 @@ const StyledTaskbarEntry = styled.li<StyledTaskbarEnntryProps>`
       color: ${({ theme }) => theme.colors.text};
       font-size: ${({ theme }) => theme.sizes.taskbar.entry.fontSize};
       letter-spacing: -0.1px;
+      margin-bottom: ${({ theme }) => theme.sizes.taskbar.entry.borderSize};
       margin-left: 5px;
       overflow-x: hidden;
       text-overflow: ellipsis;
