@@ -1,7 +1,7 @@
 import { useFileSystem } from "contexts/fileSystem";
 import { basename } from "path";
 import { useCallback, useEffect, useState } from "react";
-import { SHORTCUT_EXTENSTION } from "utils/constants";
+import { SHORTCUT_EXTENSION } from "utils/constants";
 
 type Files = {
   deleteFile: (path: string) => void;
@@ -33,7 +33,7 @@ const useFiles = (directory: string): Files => {
   const renameFile = (path: string, name?: string) => {
     if (name) {
       const newPath = `${directory}/${name}${
-        path.endsWith(SHORTCUT_EXTENSTION) ? SHORTCUT_EXTENSTION : ""
+        path.endsWith(SHORTCUT_EXTENSION) ? SHORTCUT_EXTENSION : ""
       }`;
 
       fs?.rename(path, newPath, () =>

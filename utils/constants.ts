@@ -44,6 +44,6 @@ export const PREVENT_SCROLL = { preventScroll: true };
 
 export const PROCESS_DELIMITER = "__";
 
-export const SHORTCUT_EXTENSTION = ".url";
+export const SHORTCUT_EXTENSION = ".url";
 
 export const WINDOW_TRANSITION_DURATION_IN_MILLISECONDS = 250;

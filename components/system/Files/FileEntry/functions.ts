@@ -3,7 +3,7 @@ import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
 import ini from "ini";
 import { parseBuffer } from "music-metadata-browser";
-import { IMAGE_FILE_EXTENSIONS, SHORTCUT_EXTENSTION } from "utils/constants";
+import { IMAGE_FILE_EXTENSIONS, SHORTCUT_EXTENSION } from "utils/constants";
 import { bufferToUrl } from "utils/functions";
 
 const getIconByFileExtension = (extension: string): string =>
@@ -43,7 +43,7 @@ export const getInfoWithExtension = (
       url: path,
     });
 
-  if (extension === SHORTCUT_EXTENSTION) {
+  if (extension === SHORTCUT_EXTENSION) {
     fs.readFile(path, (error, contents = Buffer.from("")) => {
       if (error) {
         getInfoByFileExtension();

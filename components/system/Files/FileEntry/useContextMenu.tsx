@@ -4,7 +4,7 @@ import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { dirname, extname } from "path";
-import { SHORTCUT_EXTENSTION } from "utils/constants";
+import { SHORTCUT_EXTENSION } from "utils/constants";
 
 const useContextMenu = (
   url: string,
@@ -25,7 +25,7 @@ const useContextMenu = (
 
   if (pid) {
     const isShortcut =
-      extname(path) === SHORTCUT_EXTENSTION && url && url !== "/";
+      extname(path) === SHORTCUT_EXTENSION && url && url !== "/";
 
     menuItems.unshift({ separator: 1 });
 
