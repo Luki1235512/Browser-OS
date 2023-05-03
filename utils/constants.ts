@@ -34,6 +34,8 @@ export const MILLISECONDS_IN_SECOND = 1000;
 
 export const MOUNTABLE_EXTENSIONS = new Set([".iso", ".zip"]);
 
+export const MP3_MIME_TYPE = "audio/mpeg";
+
 export const PREVENT_SCROLL = { preventScroll: true };
 
 export const PROCESS_DELIMITER = "__";
