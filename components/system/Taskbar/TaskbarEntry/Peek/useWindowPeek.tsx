@@ -1,6 +1,5 @@
 import PeekWindow from "components/system/Taskbar/TaskbarEntry/Peek/PeekWindow";
 import { useProcesses } from "contexts/process";
-import { toPng } from "html-to-image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
 
@@ -21,17 +20,20 @@ const useWindowPeek = (id: string): WindowPeek => {
   const previewTimer = useRef<NodeJS.Timer>();
   const [showPeek, setShowPeek] = useState(false);
   const [previewSrc, setPreviewSrc] = useState("");
+
   const onMouseEnter = () => {
     const renderFrame = () => {
       const previewElement = peekElement || componentWindow;
 
       if (previewElement) {
-        toPng(previewElement).then((dataUrl) => {
-          const previewImage = new Image();
+        import("html-to-image").then(({ toPng }) =>
+          toPng(previewElement).then((dataUrl) => {
+            const previewImage = new Image();
 
-          previewImage.src = dataUrl;
-          previewImage.onload = () => setPreviewSrc(dataUrl);
-        });
+            previewImage.src = dataUrl;
+            previewImage.onload = () => setPreviewSrc(dataUrl);
+          })
+        );
       }
     };
 
