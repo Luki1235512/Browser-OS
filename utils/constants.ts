@@ -36,6 +36,11 @@ export const MOUNTABLE_EXTENSIONS = new Set([".iso", ".zip"]);
 
 export const MP3_MIME_TYPE = "audio/mpeg";
 
+export const ONE_TIME_PASSIVE_EVENT = {
+  once: true,
+  passive: true,
+} as AddEventListenerOptions;
+
 export const PREVENT_SCROLL = { preventScroll: true };
 
 export const PROCESS_DELIMITER = "__";

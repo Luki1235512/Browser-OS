@@ -1,5 +1,6 @@
 import { useFileSystem } from "contexts/fileSystem";
 import { basename, dirname, extname } from "path";
+import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
 const haltDragEvent = (event: React.DragEvent<HTMLElement>): void => {
   event.preventDefault();
@@ -37,7 +38,7 @@ const useFileDrop = (
         const writePath = !iteration ? path : iterateFileName(path, iteration);
 
         fs?.writeFile(writePath, fileBuffer, { flag: "wx" }, (error) => {
-          if (error?.code == "EEXIST") {
+          if (error?.code === "EEXIST") {
             writeUniqueName(path, fileBuffer, iteration + 1);
           } else if (!error) {
             updateFiles(writePath);
@@ -48,12 +49,15 @@ const useFileDrop = (
       files.forEach((file) => {
         const reader = new FileReader();
 
-        reader.onload = ({ target }) => {
-          writeUniqueName(
-            `${directory}/${file.name}`,
-            Buffer.from(new Uint8Array(target?.result as ArrayBuffer))
-          );
-        };
+        reader.addEventListener(
+          "load",
+          ({ target }) =>
+            writeUniqueName(
+              `${directory}/${file.name}`,
+              Buffer.from(new Uint8Array(target?.result as ArrayBuffer))
+            ),
+          ONE_TIME_PASSIVE_EVENT
+        );
 
         reader.readAsArrayBuffer(file);
       });
