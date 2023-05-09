@@ -45,7 +45,7 @@ const useWindowPeek = (id: string): WindowPeek => {
   const onMouseEnter = () => {
     const previewElement = peekElement || componentWindow;
 
-    if (previewElement) {
+    if (!mouseTimer.current && !previewTimer.current && previewElement) {
       const render = () => renderFrame(previewElement, setPreviewSrc);
 
       mouseTimer.current = setTimeout(() => {
@@ -58,6 +58,9 @@ const useWindowPeek = (id: string): WindowPeek => {
   const onMouseLeave = useCallback(() => {
     if (mouseTimer?.current) clearTimeout(mouseTimer.current);
     if (previewTimer?.current) clearInterval(previewTimer.current);
+
+    mouseTimer.current = undefined;
+    previewTimer.current = undefined;
 
     setShowPeek(false);
     setPreviewSrc("");
