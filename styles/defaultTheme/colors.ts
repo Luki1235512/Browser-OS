@@ -22,8 +22,10 @@ const colors = {
   startButton: "#FFFFFF",
   taskbar: {
     active: "hsla(300, 100%, 80%, 40%)",
-    activeHover: "hsla(300, 100%, 90%, 40%)",
+    activeForeground: "hsla(300, 100%, 90%, 40%)",
     background: "hsla(300, 100%, 50%, 40%)",
+    foreground: "hsla(300, 100%, 70%, 40%)",
+    foregroundHover: "hsla(300, 100%, 100%, 40%)",
     hover: "hsla(0, 0%, 80%, 40%)",
   },
   text: "rgba(255, 255, 255, 90%)",
