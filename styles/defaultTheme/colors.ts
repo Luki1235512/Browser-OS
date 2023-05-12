@@ -18,15 +18,16 @@ const colors = {
     0 2px 3px rgba(0, 0, 0, 75%),
     0 2px 3px rgba(0, 0, 0, 50%)`,
   },
+  //
   highlight: "#F5C9EC",
   startButton: "#FFFFFF",
   taskbar: {
     active: "hsla(300, 100%, 80%, 40%)",
     activeForeground: "hsla(300, 100%, 90%, 40%)",
     background: "hsla(300, 100%, 50%, 40%)",
-    foreground: "hsla(300, 100%, 70%, 40%)",
+    foreground: "hsla(0, 0%, 80%, 40%)",
     foregroundHover: "hsla(300, 100%, 100%, 40%)",
-    hover: "hsla(0, 0%, 80%, 40%)",
+    hover: "hsla(300, 100%, 70%, 40%)",
   },
   text: "rgba(255, 255, 255, 90%)",
   titleBar: {
