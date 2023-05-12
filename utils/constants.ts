@@ -47,5 +47,6 @@ export const SHORTCUT_EXTENSION = ".url";
 
 export const TRANSITIONS_IN_MILLISECONDS = {
   DOUBLE_CLICK: 500,
+  START_MENU: 400,
   WINDOW: 250,
 };

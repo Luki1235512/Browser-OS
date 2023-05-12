@@ -1,11 +1,12 @@
+import { motion } from "framer-motion";
 import styled from "styled-components";
 
-const StyledStartMenu = styled.nav`
+const StyledStartMenu = styled(motion.nav)`
   backdrop-filter: blur(12px);
   background-color: hsla(300, 100%, 60%, 40%);
   bottom: ${({ theme }) => theme.sizes.taskbar.height};
   display: flex;
-  height: 350px;
+  height: ${({ theme }) => theme.sizes.startMenu.height};
   left: 0;
   position: absolute;
   width: 320px;

@@ -1,6 +1,7 @@
 import FileManager from "components/system/Files/FileManager";
 import Sidebar from "components/system/StartMenu/Sidebar";
 import StyledStartMenu from "components/system/StartMenu/StyledStartMenu";
+import useStartMenuTransition from "components/system/StartMenu/useStartMenuTransition";
 import { useSession } from "contexts/session";
 import { useEffect, useRef } from "react";
 import { PREVENT_SCROLL } from "utils/constants";
@@ -31,7 +32,12 @@ const StartMenu = (): JSX.Element => {
   useEffect(() => menuRef.current?.focus(), []);
 
   return (
-    <StyledStartMenu onBlur={maybeCloseMenu} tabIndex={-1} ref={menuRef}>
+    <StyledStartMenu
+      onBlur={maybeCloseMenu}
+      tabIndex={-1}
+      ref={menuRef}
+      {...useStartMenuTransition()}
+    >
       <Sidebar />
       <FileManager url="/start" view="list" />
     </StyledStartMenu>
