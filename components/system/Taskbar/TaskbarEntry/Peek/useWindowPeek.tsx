@@ -36,8 +36,7 @@ const useWindowPeek = (id: string): WindowPeek => {
   const {
     processes: { [id]: process },
   } = useProcesses();
-  const { closing, componentWindow, maximized, minimized, peekElement } =
-    process || {};
+  const { closing, componentWindow, peekElement } = process || {};
   const mouseTimer = useRef<NodeJS.Timer>();
   const previewTimer = useRef<NodeJS.Timer>();
   const [showPeek, setShowPeek] = useState(false);
@@ -67,10 +66,6 @@ const useWindowPeek = (id: string): WindowPeek => {
     setPreviewSrc("");
   }, []);
 
-  useEffect(() => {
-    if (maximized || minimized) onMouseLeave();
-  }, [maximized, minimized, onMouseLeave]);
-
   useEffect(() => onMouseLeave, [onMouseLeave]);
 
   return {
@@ -78,13 +73,10 @@ const useWindowPeek = (id: string): WindowPeek => {
       showPeek && previewSrc && !closing
         ? () => <PeekWindow id={id} image={previewSrc} />
         : undefined,
-    peekEvents:
-      maximized || minimized
-        ? {}
-        : {
-            onMouseEnter,
-            onMouseLeave,
-          },
+    peekEvents: {
+      onMouseEnter,
+      onMouseLeave,
+    },
   };
 };
 
