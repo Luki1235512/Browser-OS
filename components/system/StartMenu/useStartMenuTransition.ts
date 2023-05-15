@@ -19,8 +19,14 @@ const useStartMenuTransition = (): MotionProps => {
       ease: [-0.15, 1, 0, 1],
     },
     variants: {
-      active: { height: startMenu.height },
-      initial: { height: 0 },
+      active: {
+        height: startMenu.height,
+        paddingTop: 0,
+      },
+      inital: {
+        height: 0,
+        paddingTop: startMenu.height,
+      },
     },
   };
 };
