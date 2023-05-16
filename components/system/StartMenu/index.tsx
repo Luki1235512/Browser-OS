@@ -33,7 +33,7 @@ const StartMenu = (): JSX.Element => {
 
   return (
     <StyledStartMenu
-      onBlur={maybeCloseMenu}
+      onBlurCapture={maybeCloseMenu}
       tabIndex={-1}
       ref={menuRef}
       {...useStartMenuTransition()}
