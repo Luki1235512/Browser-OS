@@ -7,10 +7,10 @@ const StyledStartMenu = styled(motion.nav)`
   background-color: hsla(300, 100%, 60%, 40%);
   bottom: ${({ theme }) => theme.sizes.taskbar.height};
   display: flex;
-  height: ${({ theme }) => theme.sizes.startMenu.height};
+  height: ${({ theme }) => theme.sizes.startMenu.size};
   left: 0;
   position: absolute;
-  width: 320px;
+  width: ${({ theme }) => theme.sizes.startMenu.size};
   z-index: 1000;
 
   ${StyledFileManager} {
