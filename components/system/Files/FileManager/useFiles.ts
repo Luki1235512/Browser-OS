@@ -54,7 +54,7 @@ const useFiles = (directory: string): Files => {
 
   const renameFile = (path: string, name?: string) => {
     if (name) {
-      const newPath = `${directory}/${name}${
+      const newPath = `${directory}${directory === "/" ? "" : "/"}${name}${
         path.endsWith(SHORTCUT_EXTENSION) ? SHORTCUT_EXTENSION : ""
       }`;
 
