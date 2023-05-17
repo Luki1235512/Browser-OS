@@ -28,14 +28,15 @@ const useFolder = (directory: string): Folder => {
   const [downloadLink, setDownloadLink] = useState<string>("");
   const { fs } = useFileSystem();
   const updateFiles = useCallback(
-    (appendFile = "") =>
-      fs?.readdir(directory, (_error, contents = []) =>
-        setFiles((currentFiles) =>
-          appendFile
-            ? [...currentFiles, basename(appendFile)]
-            : contents.filter(filterSystemFiles(directory))
-        )
-      ),
+    (appendFile = "") => {
+      if (appendFile) {
+        setFiles((currentFiles) => [...currentFiles, basename(appendFile)]);
+      } else {
+        fs?.readdir(directory, (_error, contents = []) =>
+          setFiles(contents.filter(filterSystemFiles(directory)))
+        );
+      }
+    },
     [directory, fs]
   );
 
