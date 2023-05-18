@@ -21,6 +21,11 @@ const StyledMenu = styled.nav<StyledMenuProps>`
   z-index: ${({ isSubMenu }) => isSubMenu && 1};
 
   ol {
+    li.disabled {
+      color: rgb(200, 200, 200);
+      pointer-events: none;
+    }
+
     hr {
       background-color: rgb(200, 50, 200);
       height: 1px;
