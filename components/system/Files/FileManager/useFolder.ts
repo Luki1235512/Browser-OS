@@ -52,9 +52,9 @@ const useFolder = (directory: string): Folder => {
 
     fs?.stat(path, (_error, stats) => {
       if (stats?.isDirectory()) {
-        fs?.rmdir(path, removeFile);
+        fs.rmdir(path, removeFile);
       } else {
-        fs?.unlink(path, removeFile);
+        fs.unlink(path, removeFile);
       }
     });
   };
