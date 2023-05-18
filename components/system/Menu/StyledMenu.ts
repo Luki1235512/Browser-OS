@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import styled from "styled-components";
 
 type StyledMenuProps = {
@@ -6,7 +7,7 @@ type StyledMenuProps = {
   y: number;
 };
 
-const StyledMenu = styled.nav<StyledMenuProps>`
+const StyledMenu = styled(motion.nav)<StyledMenuProps>`
   background-color: rgb(220, 55, 210);
   border: 1px solid rgb(210, 35, 160);
   box-shadow: 1px 1px 1px hsla(300, 80%, 60%, 70%),
