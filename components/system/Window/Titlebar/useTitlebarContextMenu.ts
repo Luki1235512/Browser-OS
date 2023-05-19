@@ -2,6 +2,7 @@ import useWindowActions from "components/system/Window/Titlebar/useWindowActions
 import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
+import { MENU_SEPARATOR } from "utils/constants";
 
 const useTitlebarContextMenu = (
   id: string
@@ -28,7 +29,7 @@ const useTitlebarContextMenu = (
       disabled: maximized,
       action: () => onMaximize(),
     },
-    { group: 1 },
+    MENU_SEPARATOR,
     {
       label: "Close",
       action: () => onClose(),

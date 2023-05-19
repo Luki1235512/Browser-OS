@@ -19,7 +19,7 @@ const MenuItemEntry = ({
   menu,
   primary,
   resetMenu,
-  group,
+  separator,
 }: MenuItemEntryProps): JSX.Element => {
   const entryRef = useRef<HTMLLIElement | null>(null);
   const [subMenuOffset, setSubMenuOffset] = useState<Position>({ x: 0, y: 0 });
@@ -54,7 +54,7 @@ const MenuItemEntry = ({
       ref={entryRef}
       {...subMenuEvents}
     >
-      {group ? (
+      {separator ? (
         <hr />
       ) : (
         <Button
