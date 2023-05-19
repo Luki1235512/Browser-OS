@@ -4,6 +4,7 @@ import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
 import processDirectory from "contexts/process/directory";
 import ini from "ini";
 import {
+  EMPTY_BUFFER,
   IMAGE_FILE_EXTENSIONS,
   MP3_MIME_TYPE,
   SHORTCUT_EXTENSION,
@@ -63,7 +64,7 @@ export const getInfoWithExtension = (
     });
 
   if (extension === SHORTCUT_EXTENSION) {
-    fs.readFile(path, (error, contents = Buffer.from("")) => {
+    fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
       if (error) {
         getInfoByFileExtension();
       } else {
@@ -71,11 +72,11 @@ export const getInfoWithExtension = (
       }
     });
   } else if (IMAGE_FILE_EXTENSIONS.has(extension)) {
-    fs.readFile(path, (error, contents = Buffer.from("")) =>
+    fs.readFile(path, (error, contents = EMPTY_BUFFER) =>
       getInfoByFileExtension(error ? "/icons/photo.png" : bufferToUrl(contents))
     );
   } else if (extension === ".mp3") {
-    fs.readFile(path, (error, contents = Buffer.from("")) =>
+    fs.readFile(path, (error, contents = EMPTY_BUFFER) =>
       import("music-metadata-browser").then(({ parseBuffer, selectCover }) =>
         parseBuffer(
           contents,

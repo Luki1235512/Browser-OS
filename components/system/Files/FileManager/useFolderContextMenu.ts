@@ -1,7 +1,7 @@
 import type { FolderActions } from "components/system/Files/FileManager/useFolder";
 import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
-import { MENU_SEPARATOR } from "utils/constants";
+import { EMPTY_BUFFER, MENU_SEPARATOR } from "utils/constants";
 
 const useFolderContextMenu = (
   { newPath }: FolderActions,
@@ -21,7 +21,7 @@ const useFolderContextMenu = (
         MENU_SEPARATOR,
         {
           label: "Text Document",
-          action: () => newPath("New Text Document.txt", Buffer.from("")),
+          action: () => newPath("New Text Document.txt", EMPTY_BUFFER),
         },
       ],
     },
