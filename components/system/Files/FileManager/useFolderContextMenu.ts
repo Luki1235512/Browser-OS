@@ -3,9 +3,13 @@ import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { EMPTY_BUFFER, MENU_SEPARATOR } from "utils/constants";
 
+const NEW_FOLDER = "New Folder";
+const NEW_TEXT_DOCUMENT = "New Text Document.txt";
+
 const useFolderContextMenu = (
   { newPath }: FolderActions,
-  updateFiles: (appendFile?: string | undefined) => void
+  updateFiles: (appendFile?: string | undefined) => void,
+  setRenaming: React.Dispatch<React.SetStateAction<string>>
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { contextMenu } = useMenu();
   const menuItems: MenuItem[] = [
@@ -16,12 +20,18 @@ const useFolderContextMenu = (
       menu: [
         {
           label: "Folder",
-          action: () => newPath("New Folder"),
+          action: () => {
+            newPath(NEW_FOLDER);
+            setRenaming(NEW_FOLDER);
+          },
         },
         MENU_SEPARATOR,
         {
           label: "Text Document",
-          action: () => newPath("New Text Document.txt", EMPTY_BUFFER),
+          action: () => {
+            newPath(NEW_TEXT_DOCUMENT, EMPTY_BUFFER);
+            setRenaming(NEW_TEXT_DOCUMENT);
+          },
         },
       ],
     },
