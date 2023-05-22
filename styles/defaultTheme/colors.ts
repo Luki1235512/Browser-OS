@@ -28,6 +28,7 @@ const colors = {
     foreground: "hsla(0, 0%, 80%, 40%)",
     foregroundHover: "hsla(300, 100%, 100%, 40%)",
     hover: "hsla(300, 100%, 70%, 40%)",
+    peekBorder: "hsla(300, 100%, 95%, 20%)",
   },
   text: "rgba(255, 255, 255, 90%)",
   titleBar: {
