@@ -18,8 +18,8 @@ const colors = {
     0 2px 3px rgba(0, 0, 0, 75%),
     0 2px 3px rgba(0, 0, 0, 50%)`,
   },
-  //
-  highlight: "#F5C9EC",
+  highlight: "hsl(312deg 69% 87%)",
+  highlightBackground: "hsl(312deg 69% 57% / 25%)",
   startButton: "#FFFFFF",
   taskbar: {
     active: "hsla(300, 100%, 80%, 40%)",
