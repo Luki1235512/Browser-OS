@@ -1,8 +1,8 @@
-/.husky/_
-/.next
-/node_modules
-/out
-package-lock.json
+.husky/_
+.next
+node_modules
+out
+public
 *.md
-/public
+package-lock.json
 yarn.lock

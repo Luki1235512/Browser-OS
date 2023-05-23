@@ -1,6 +1,6 @@
-/.husky/_
-/.next
-/node_modules
-/out
+.husky/_
+.next
+node_modules
+out
 package-lock.json
 yarn.lock
