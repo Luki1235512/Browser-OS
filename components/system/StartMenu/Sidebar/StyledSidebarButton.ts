@@ -41,8 +41,8 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
     }
 
     figcaption {
-      left: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
       border: 1px solid transparent;
+      left: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
       position: absolute;
       white-space: nowrap;
 
@@ -53,7 +53,7 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
   }
 
   ${StyledSidebar}:hover & {
-    transition: width 400ms 4000ms;
+    transition: width 400ms 400ms;
     transition-timing-function: cubic-bezier(0.15, 1, 0.5, 1);
     width: ${({ theme }) => theme.sizes.startMenu.sideBar.expandedWidth};
   }
