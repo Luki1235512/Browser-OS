@@ -29,7 +29,7 @@ const StartMenu = (): JSX.Element => {
     }
   };
 
-  useEffect(() => menuRef.current?.focus(), []);
+  useEffect(() => menuRef.current?.focus(PREVENT_SCROLL), []);
 
   return (
     <StyledStartMenu
