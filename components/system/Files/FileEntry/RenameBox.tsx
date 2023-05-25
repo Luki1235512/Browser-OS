@@ -11,11 +11,11 @@ type RenameBoxProps = {
 };
 
 const RenameBox = ({ name, path, renameFile }: RenameBoxProps): JSX.Element => {
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const saveRename = (): void => renameFile(path, inputRef?.current?.value);
 
   useEffect(() => {
-    inputRef.current?.focus(PREVENT_SCROLL);
+    inputRef?.current?.focus(PREVENT_SCROLL);
     inputRef?.current?.setSelectionRange(0, name.length - extname(name).length);
   }, [name]);
 
