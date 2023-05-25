@@ -9,20 +9,22 @@ import type { BFSCallback } from "browserfs/dist/node/core/file_system";
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import { handleFileInputEvent } from "components/system/Files/FileManager/functions";
 import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
+import { useSession } from "contexts/session";
 import { extname } from "path";
 import * as BrowserFS from "public/libs/browserfs/browserfs.min.js";
+import type React from "react";
 import { useEffect, useState } from "react";
 import { EMPTY_BUFFER } from "utils/constants";
 
 export type FileSystemContextState = {
   fs?: FSModule;
-  mountFs: (url: string, callback: () => void) => void;
+  mountFs: (url: string) => void;
   setFileInput: React.Dispatch<
     React.SetStateAction<HTMLInputElement | undefined>
   >;
   unMountFs: (url: string) => void;
   addFile: (callback: (name: string, buffer?: Buffer) => void) => void;
-  resetFS: () => Promise<void>;
+  resetFs: () => Promise<void>;
 };
 
 const { BFSRequire, configure, FileSystem } = BrowserFS as typeof IBrowserFS;
@@ -30,14 +32,15 @@ const { BFSRequire, configure, FileSystem } = BrowserFS as typeof IBrowserFS;
 const useFileSystemContextState = (): FileSystemContextState => {
   const [fs, setFs] = useState<FSModule>();
   const [fileInput, setFileInput] = useState<HTMLInputElement>();
+  const { updateFolder } = useSession();
   const rootFs = fs?.getRootFS() as MountableFileSystem;
-  const mountFs = (url: string, callback: () => void): void =>
+  const mountFs = (url: string): void =>
     fs?.readFile(url, (_readError, fileData = EMPTY_BUFFER) => {
       const isISO = extname(url) === ".iso";
       const createFs: BFSCallback<IsoFS | ZipFS> = (_createError, newFs) => {
         if (newFs) {
           rootFs?.mount(url, newFs);
-          callback();
+          updateFolder(url);
         }
       };
 
@@ -47,7 +50,6 @@ const useFileSystemContextState = (): FileSystemContextState => {
         FileSystem.ZipFS.Create({ zipData: fileData }, createFs);
       }
     });
-
   const unMountFs = (url: string): void => rootFs?.umount(url);
   const addFile = (callback: (name: string, buffer?: Buffer) => void): void => {
     if (fileInput) {
@@ -59,8 +61,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
       fileInput.click();
     }
   };
-
-  const resetFS = (): Promise<void> =>
+  const resetFs = (): Promise<void> =>
     new Promise((resolve, reject) => {
       // eslint-disable-next-line no-underscore-dangle
       const overlayFs = rootFs._getFs("/").fs as OverlayFS;
@@ -71,14 +72,13 @@ const useFileSystemContextState = (): FileSystemContextState => {
       readable.empty();
       writable.empty((apiError) => (apiError ? reject(apiError) : resolve()));
     });
-
   useEffect(() => {
     if (!fs) {
       configure(FileSystemConfig, () => setFs(BFSRequire("fs")));
     }
   }, [fs]);
 
-  return { fs, mountFs, setFileInput, unMountFs, addFile, resetFS };
+  return { fs, mountFs, setFileInput, unMountFs, addFile, resetFs };
 };
 
 export default useFileSystemContextState;

@@ -1,18 +1,20 @@
 import type { FolderActions } from "components/system/Files/FileManager/useFolder";
 import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
+import { useSession } from "contexts/session";
 import { EMPTY_BUFFER, MENU_SEPARATOR } from "utils/constants";
 
 const NEW_FOLDER = "New Folder";
 const NEW_TEXT_DOCUMENT = "New Text Document.txt";
 
 const useFolderContextMenu = (
-  { newPath, addToFolder }: FolderActions,
-  updateFiles: (appendFile?: string | undefined) => void
+  url: string,
+  { newPath, addToFolder }: FolderActions
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { contextMenu } = useMenu();
+  const { updateFolder } = useSession();
   const menuItems: MenuItem[] = [
-    { label: "Refresh", action: () => updateFiles() },
+    { label: "Refresh", action: () => updateFolder(url) },
     MENU_SEPARATOR,
     { label: "Add File", action: () => addToFolder() },
     MENU_SEPARATOR,
