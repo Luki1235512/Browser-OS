@@ -17,7 +17,7 @@ const colorCycle = (
   let animationFrameId: number;
   let direction = true;
 
-  const updateColor = () => {
+  const updateColor = (): void => {
     const currentFrameTime = Date.now();
     const timeSinceLastFrame = currentFrameTime - lastFrameTime;
 
@@ -41,7 +41,7 @@ const colorCycle = (
 
   animationFrameId = requestAnimationFrame(updateColor);
 
-  const stop = () => cancelAnimationFrame(animationFrameId);
+  const stop = (): void => cancelAnimationFrame(animationFrameId);
 
   return { stop };
 };

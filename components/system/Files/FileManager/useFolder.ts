@@ -50,8 +50,8 @@ const useFolder = (
     [directory, fs]
   );
 
-  const deleteFile = (path: string) => {
-    const removeFile = () =>
+  const deleteFile = (path: string): void => {
+    const removeFile = (): void =>
       setFiles((currentFiles) =>
         currentFiles.filter((file) => file !== basename(path))
       );
@@ -65,7 +65,7 @@ const useFolder = (
     });
   };
 
-  const downloadFile = (path: string) =>
+  const downloadFile = (path: string): void =>
     fs?.readFile(path, (_error, contents = EMPTY_BUFFER) => {
       const link = document.createElement("a");
 
@@ -77,7 +77,7 @@ const useFolder = (
       setDownloadLink(link.href);
     });
 
-  const renameFile = (path: string, name?: string) => {
+  const renameFile = (path: string, name?: string): void => {
     const newName = name?.trim();
 
     if (newName) {
