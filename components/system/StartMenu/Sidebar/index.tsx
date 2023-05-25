@@ -43,7 +43,7 @@ const Sidebar = (): JSX.Element => {
     {
       name: "Power",
       icon: <Power />,
-      action: () => fs?.resetFS().finally(() => window.location.reload()),
+      action: () => fs?.resetFs().finally(() => window.location.reload()),
     },
   ];
 
