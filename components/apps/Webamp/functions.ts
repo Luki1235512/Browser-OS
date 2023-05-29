@@ -8,9 +8,9 @@ import type { Track } from "webamp";
 
 export const BASE_WEBAMP_OPTIONS = {
   availableSkins: [
-    { url: "/skns/cuteamp.wsz", name: "Cuteamp" },
-    { url: "/skins/Morbamp.wsz", name: "Morbamp" },
-    { url: "/skins/Bathory.wsz", name: "Bathory" },
+    { url: "/documents/skns/cuteamp.wsz", name: "Cuteamp" },
+    { url: "/documents/skins/Morbamp.wsz", name: "Morbamp" },
+    { url: "/documents/skins/Bathory.wsz", name: "Bathory" },
   ],
 };
 
