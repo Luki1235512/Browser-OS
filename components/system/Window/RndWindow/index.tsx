@@ -72,7 +72,7 @@ const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
     <Rnd
       ref={rndRef}
       style={{
-        pointerEvents: minimized ? "none" : "all",
+        pointerEvents: minimized ? "none" : undefined,
         zIndex,
       }}
       {...rndProps}
