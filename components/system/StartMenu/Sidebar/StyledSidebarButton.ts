@@ -61,6 +61,10 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
     background-color: hsla(300, 100%, 40%, 40%);
     border: 1px solid hsla(300, 100%, 40%, 70%);
   }
+
+  &:active {
+    background-color: hsla(300, 100%, 40%, 70%);
+  }
 `;
 
 export default StyledSidebarButton;
