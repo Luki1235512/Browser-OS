@@ -9,14 +9,19 @@ const NEW_TEXT_DOCUMENT = "New Text Document.txt";
 
 const useFolderContextMenu = (
   url: string,
-  { newPath, addToFolder }: FolderActions
+  { addToFolder, newPath, pasteToFolder }: FolderActions
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { contextMenu } = useMenu();
-  const { updateFolder } = useFileSystem();
+  const { pasteList, updateFolder } = useFileSystem();
   const menuItems: MenuItem[] = [
     { label: "Refresh", action: () => updateFolder(url) },
     MENU_SEPARATOR,
     { label: "Add File", action: () => addToFolder() },
+    {
+      disabled: Object.keys(pasteList).length === 0,
+      label: "Paste",
+      action: () => pasteToFolder(),
+    },
     MENU_SEPARATOR,
     {
       label: "New",
