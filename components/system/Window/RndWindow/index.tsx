@@ -33,13 +33,12 @@ const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
   const { setWindowStates } = useSession();
 
   useEffect(() => {
-    const { current: currentWindow } = rndRef || {};
+    const { current: currentWindow } = rndRef;
     const rndWindowElements =
       currentWindow?.resizableElement?.current?.children || [];
     const [windowContainer, resizeHandleContainer] =
       rndWindowElements as HTMLElement[];
-    // eslint-disable-next-line no-unsafe-optional-chaining
-    const resizeHandles = [...resizeHandleContainer?.children];
+    const resizeHandles = [...(resizeHandleContainer?.children || [])];
 
     resizeHandles.forEach(reRouteFocus(windowContainer));
 
