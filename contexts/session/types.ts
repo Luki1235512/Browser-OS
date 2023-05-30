@@ -12,6 +12,13 @@ export type WindowStates = Record<string, WindowState>;
 
 export type WallpaperFit = "fill" | "fit" | "stretch" | "tile" | "center";
 
+export type SessionData = {
+  themeName: string;
+  wallpaperFit: WallpaperFit;
+  wallpaperImage: string;
+  windowStates: WindowStates;
+};
+
 export type SessionContextState = {
   foregroundId: string;
   prependToStack: (id: string) => void;
