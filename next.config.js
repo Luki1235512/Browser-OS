@@ -1,6 +1,4 @@
 const NextConfig = {
-  experimental: {},
-  future: {},
   reactStrictMode: true,
 };
 
