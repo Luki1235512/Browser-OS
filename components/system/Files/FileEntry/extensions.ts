@@ -1,4 +1,4 @@
-type Extensions = {
+type Extension = {
   icon?: string;
   process: string[];
 };
@@ -38,4 +38,4 @@ const extensions = {
 
 export type ExtensionType = keyof typeof extensions;
 
-export default extensions as Record<ExtensionType, Extensions>;
+export default extensions as Record<ExtensionType, Extension>;
