@@ -34,7 +34,8 @@ const Icon = (
 ): JSX.Element => {
   useEffect(
     () => () => {
-      if (props?.src?.startsWith("blob:")) cleanUpBufferUrl(props?.src);
+      // eslint-disable-next-line react/destructuring-assignment
+      if (props.src?.startsWith("blob:")) cleanUpBufferUrl(props.src);
     },
     [props]
   );

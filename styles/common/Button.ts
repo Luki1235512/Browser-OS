@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const Button = styled.button.attrs({
   onKeyDown: (event: { target: unknown; preventDefault: () => void }) => {
-    if (!(event.target instanceof HTMLTextAreaElement)) event?.preventDefault();
+    if (!(event.target instanceof HTMLTextAreaElement)) event.preventDefault();
   },
   type: "button",
 })`
