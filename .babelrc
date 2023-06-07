@@ -1,4 +1,15 @@
 {
-  "presets": ["next/babel"],
+  "presets": [
+    [
+      "next/babel",
+      {
+        "present-env": {
+          "targets": {
+            "browsers": "defaults and supports es6"
+          }
+        }
+      }
+    ]
+  ],
   "plugins": [["styled-components", { "pure": true, "ssr": true }]]
 }

@@ -1,4 +1,6 @@
 import { Editor, loader } from "@monaco-editor/react";
+import { overrideSubMenuStyling } from "components/apps/MonacoEditor/functions";
+import StyledMonacoEditor from "components/apps/MonacoEditor/StyledMonacoEditor";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
@@ -8,9 +10,6 @@ import { basename } from "path";
 import { useEffect, useState } from "react";
 import { EMPTY_BUFFER } from "utils/constants";
 import { cleanUpGlobals } from "utils/functions";
-
-import { overrideSubMenuStyling } from "./functions";
-import StyledMonacoEditor from "./StyledMonacoEditor";
 
 type IStandaloneCodeEditor = Monaco.editor.IStandaloneCodeEditor;
 
