@@ -6,6 +6,7 @@ import { EMPTY_BUFFER, MENU_SEPARATOR } from "utils/constants";
 
 const NEW_FOLDER = "New Folder";
 const NEW_TEXT_DOCUMENT = "New Text Document.txt";
+const NEW_RTF_DOCUMENT = "New Rich Text Document.whtml";
 
 const useFolderContextMenu = (
   url: string,
@@ -31,6 +32,10 @@ const useFolderContextMenu = (
           action: () => newPath(NEW_FOLDER, undefined, true),
         },
         MENU_SEPARATOR,
+        {
+          label: "Rich Text Document",
+          action: () => newPath(NEW_RTF_DOCUMENT, EMPTY_BUFFER, true),
+        },
         {
           label: "Text Document",
           action: () => newPath(NEW_TEXT_DOCUMENT, EMPTY_BUFFER, true),
