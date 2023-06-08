@@ -13,26 +13,32 @@ import { basename, extname, join } from "path";
 import { useEffect, useRef, useState } from "react";
 import { MOUNTABLE_EXTENSIONS, SHORTCUT_EXTENSION } from "utils/constants";
 
+import StyledLoading from "./StyledLoading";
+
 type FileManagerProps = {
+  hideLoading?: boolean;
   url: string;
   view: FileManagerViewNames;
 };
 
-const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
+const FileManager = ({
+  hideLoading,
+  url,
+  view,
+}: FileManagerProps): JSX.Element => {
   const [renaming, setRenaming] = useState("");
   const fileManagerRef = useRef<HTMLOListElement | null>(null);
   const { focusedEntries, focusableEntry, ...focusFunctions } =
     useFocusableEntries(fileManagerRef);
   const draggableEntry = useDraggableEntries(focusedEntries, focusFunctions);
-  const { fileActions, files, folderActions, updateFiles } = useFolder(
-    url,
-    setRenaming,
-    focusFunctions
-  );
+  const { fileActions, files, folderActions, isLoading, updateFiles } =
+    useFolder(url, setRenaming, focusFunctions);
   const { mountFs, unMountFs } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
     useSelection(fileManagerRef);
+  const fileDrop = useFileDrop(folderActions.newPath);
+  const folderContextMenu = useFolderContextMenu(url, folderActions);
 
   useEffect(() => {
     const isMountable = MOUNTABLE_EXTENSIONS.has(extname(url));
@@ -46,13 +52,15 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
     };
   }, [files, mountFs, unMountFs, updateFiles, url]);
 
-  return (
+  return !hideLoading && isLoading ? (
+    <StyledLoading />
+  ) : (
     <StyledFileManager
       ref={fileManagerRef}
       selecting={isSelecting}
       {...selectionEvents}
-      {...useFileDrop(folderActions.newPath)}
-      {...useFolderContextMenu(url, folderActions)}
+      {...fileDrop}
+      {...folderContextMenu}
     >
       {isSelecting && <StyledSelection style={selectionStyling} />}
       {files.map((file) => (
