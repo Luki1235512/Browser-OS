@@ -1,6 +1,7 @@
 import FileEntry from "components/system/Files/FileEntry";
 import StyledSelection from "components/system/Files/FileManager/Selection/StyledSelection";
 import useSelection from "components/system/Files/FileManager/Selection/useSelection";
+import StyledLoading from "components/system/Files/FileManager/StyledLoading";
 import useDraggableEntries from "components/system/Files/FileManager/useDraggableEntries";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useFocusableEntries from "components/system/Files/FileManager/useFocusableEntries";
@@ -13,15 +14,15 @@ import { basename, extname, join } from "path";
 import { useEffect, useRef, useState } from "react";
 import { MOUNTABLE_EXTENSIONS, SHORTCUT_EXTENSION } from "utils/constants";
 
-import StyledLoading from "./StyledLoading";
-
 type FileManagerProps = {
+  closing?: boolean;
   hideLoading?: boolean;
   url: string;
   view: FileManagerViewNames;
 };
 
 const FileManager = ({
+  closing,
   hideLoading,
   url,
   view,
@@ -48,9 +49,11 @@ const FileManager = ({
     }
 
     return () => {
-      if (isMountable && files.length > 0) unMountFs(url);
+      if (isMountable && files.length > 0 && closing) {
+        unMountFs(url);
+      }
     };
-  }, [files, mountFs, unMountFs, updateFiles, url]);
+  }, [closing, files, mountFs, unMountFs, updateFiles, url]);
 
   return !hideLoading && isLoading ? (
     <StyledLoading />
