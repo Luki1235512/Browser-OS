@@ -1,9 +1,8 @@
-import { libs } from "components/apps/TinyMCE/config";
+import { config, libs } from "components/apps/TinyMCE/config";
 import { setReadOnlyMode } from "components/apps/TinyMCE/functions";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { basename, extname } from "path";
-import { config } from "process";
 import { useEffect, useState } from "react";
 import type { Editor } from "tinymce";
 import { EMPTY_BUFFER } from "utils/constants";
@@ -22,6 +21,17 @@ const useTinyMCE = (
     loadFiles(libs).then(() => {
       if (containerRef.current) {
         window.tinymce.init({
+          save_onsavecallback: (activeEditor: Editor) =>
+            fs?.writeFile(url, activeEditor?.getContent(), (error) => {
+              activeEditor.notificationManager.open({
+                closeButton: true,
+                text: error
+                  ? "Error occurred while saving"
+                  : "Successfully saved",
+                timeout: 5000,
+                type: error ? "error" : "success",
+              });
+            }),
           selector: `.${[...containerRef.current.classList].join(".")} div`,
           setup: (activeEditor: Editor) =>
             activeEditor.on("load", () => setEditor(activeEditor)),
@@ -29,7 +39,7 @@ const useTinyMCE = (
         });
       }
     });
-  }, [containerRef]);
+  }, [containerRef, fs, url]);
 
   useEffect(() => {
     if (url && editor) {
