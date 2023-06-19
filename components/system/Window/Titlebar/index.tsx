@@ -9,7 +9,6 @@ import {
 } from "components/system/Window/Titlebar/WindowActionIcons";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import type { TouchEvent } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { PREVENT_SCROLL } from "utils/constants";
@@ -39,7 +38,7 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
   const onClickMaximize = useDoubleClick(onMaximize);
   const dragHandle = {
     className: "handle",
-    onTouchStartCapture: ({ target }: TouchEvent) => {
+    onTouchStartCapture: ({ target }: React.TouchEvent) => {
       if (target instanceof HTMLElement) target.click();
       componentWindow?.focus(PREVENT_SCROLL);
     },
