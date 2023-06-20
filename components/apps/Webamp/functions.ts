@@ -6,11 +6,13 @@ import { MP3_MIME_TYPE } from "utils/constants";
 import { bufferToBlob, cleanUpBufferUrl } from "utils/functions";
 import type { Track } from "webamp";
 
+const WEBAMP_SKINS_PATH = "/Users/Public/Documents/Winamp Skins";
+
 export const BASE_WEBAMP_OPTIONS = {
   availableSkins: [
-    { url: "/documents/skns/cuteamp.wsz", name: "Cuteamp" },
-    { url: "/documents/skins/Morbamp.wsz", name: "Morbamp" },
-    { url: "/documents/skins/Bathory.wsz", name: "Bathory" },
+    { url: `${WEBAMP_SKINS_PATH}/cuteamp.wsz`, name: "Cuteamp" },
+    { url: `${WEBAMP_SKINS_PATH}/Morbamp.wsz`, name: "Morbamp" },
+    { url: `${WEBAMP_SKINS_PATH}/Bathory.wsz`, name: "Bathory" },
   ],
 };
 
