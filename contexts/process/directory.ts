@@ -5,7 +5,7 @@ const processDirectory: Processes = {
   FileExplorer: {
     backgroundColor: "#F43FFF",
     Component: dynamic(() => import("components/apps/FileExplorer")),
-    icon: "/System/Icons/explorer.png",
+    icon: "/System/Icons/folder.png",
     title: "File Explorer",
   },
   JSDOS: {
