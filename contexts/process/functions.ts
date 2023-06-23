@@ -34,7 +34,7 @@ export const createPid = (processId: string, url: string): string =>
   url ? `${processId}${PROCESS_DELIMITER}${url}` : processId;
 
 export const openProcess =
-  (processId: string, url: string) =>
+  (processId: string, url: string, icon?: string) =>
   (currentProcesses: Processes): Processes => {
     const { singleton } = processDirectory[processId] || {};
 
@@ -58,6 +58,7 @@ export const openProcess =
           ...currentProcesses,
           [id]: {
             ...processDirectory[processId],
+            ...(icon && { icon }),
             url,
           },
         };
