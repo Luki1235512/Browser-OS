@@ -58,7 +58,7 @@ export const openProcess =
           ...currentProcesses,
           [id]: {
             ...processDirectory[processId],
-            ...(icon && { icon }),
+            ...(typeof icon === "string" && { icon }),
             url,
           },
         };
@@ -77,6 +77,11 @@ export const minimizeProcess =
     setProcessSettings(processId, {
       minimized: !currentProcesses[processId].minimized,
     })(currentProcesses);
+
+export const setIcon =
+  (processId: string, icon: string) =>
+  (currentProcesses: Processes): Processes =>
+    setProcessSettings(processId, { icon })(currentProcesses);
 
 export const setProcessElement =
   (processId: string, name: keyof ProcessElements, element: HTMLElement) =>

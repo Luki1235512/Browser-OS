@@ -16,6 +16,8 @@ import {
 } from "utils/constants";
 import { bufferToUrl } from "utils/functions";
 
+import { FOLDER_ICON, UNKNOWN_ICON } from "../FileManager/useFolder";
+
 type InternetShortcut = {
   InternetShortcut: {
     BaseURL: string;
@@ -29,6 +31,25 @@ type ShellClassInfo = {
     IconFile: string;
   };
 };
+
+export const getIconFromIni = (
+  fs: FSModule,
+  directory: string
+): Promise<string> =>
+  new Promise((resolve) =>
+    fs.readFile(
+      join(directory, "desktop.ini"),
+      (error, contents = EMPTY_BUFFER) => {
+        if (!error) {
+          const {
+            ShellClassInfo: { IconFile = "" },
+          } = ini.parse(contents.toString()) as ShellClassInfo;
+
+          if (IconFile) resolve(IconFile);
+        }
+      }
+    )
+  );
 
 const getDefaultFileViewer = (extension: string): string => {
   if (monacoExtensions.has(extension)) return "MonacoEditor";
@@ -44,7 +65,7 @@ export const getIconByFileExtension = (extension: string): string => {
 
   return (
     processDirectory[defaultProcess || getDefaultFileViewer(extension)]?.icon ||
-    "/System/Icons/unknown.png"
+    UNKNOWN_ICON
   );
 };
 
@@ -79,19 +100,10 @@ export const getInfoWithoutExtension = (
     const setFolderInfo = (icon: string): void =>
       callback({ icon, pid: "FileExplorer", url: path });
 
-    setFolderInfo("/System/Icons/folder.png");
-
-    fs.readFile(join(path, "desktop.ini"), (error, contents = EMPTY_BUFFER) => {
-      if (!error) {
-        const {
-          ShellClassInfo: { IconFile = "" },
-        } = ini.parse(contents.toString()) as ShellClassInfo;
-
-        if (IconFile) setFolderInfo(IconFile);
-      }
-    });
+    setFolderInfo(FOLDER_ICON);
+    getIconFromIni(fs, path).then(setFolderInfo);
   } else {
-    callback({ icon: "/System/Icons/unknown.png", pid: "", url: "" });
+    callback({ icon: UNKNOWN_ICON, pid: "", url: "" });
   }
 };
 
@@ -133,7 +145,7 @@ export const getInfoWithExtension = (
       if (!error) getInfoByFileExtension(bufferToUrl(contents));
     });
   } else if (extension === ".mp3") {
-    getInfoByFileExtension("System/Icons/audio.png");
+    getInfoByFileExtension(`System/Icons/${extensions[".mp3"].icon}.png`);
     fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
       if (!error) {
         import("music-metadata-browser").then(({ parseBuffer, selectCover }) =>
