@@ -10,9 +10,12 @@ import {
   EMPTY_BUFFER,
   IMAGE_FILE_EXTENSIONS,
   MP3_MIME_TYPE,
+  ONE_TIME_PASSIVE_EVENT,
+  PREVIEW_FRAME_SECOND,
   SHORTCUT_EXTENSION,
   SYSTEM_FILES,
   SYSTEM_PATHS,
+  VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
 import { bufferToUrl } from "utils/functions";
 
@@ -143,6 +146,35 @@ export const getInfoWithExtension = (
     getInfoByFileExtension("/System/Icons/photo.png");
     fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
       if (!error) getInfoByFileExtension(bufferToUrl(contents));
+    });
+  } else if (VIDEO_FILE_EXTENSIONS.has(extension)) {
+    // eslint-disable-next-line dot-notation
+    getInfoByFileExtension(processDirectory["VideoPlayer"].icon);
+    fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
+      if (!error) {
+        const video = document.createElement("video");
+
+        video.currentTime = PREVIEW_FRAME_SECOND;
+        video.addEventListener(
+          "loadeddata",
+          () => {
+            const canvas = document.createElement("canvas");
+
+            canvas
+              .getContext("2d")
+              ?.drawImage(video, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob((blob) => {
+              if (blob instanceof Blob) {
+                getInfoByFileExtension(URL.createObjectURL(blob));
+              }
+            });
+          },
+          ONE_TIME_PASSIVE_EVENT
+        );
+
+        video.src = bufferToUrl(contents);
+        video.load();
+      }
     });
   } else if (extension === ".mp3") {
     getInfoByFileExtension(`System/Icons/${extensions[".mp3"].icon}.png`);
