@@ -7,6 +7,7 @@ import processDirectory from "contexts/process/directory";
 import ini from "ini";
 import { extname, join } from "path";
 import {
+  BASE_2D_CONTEXT_OPTIONS,
   EMPTY_BUFFER,
   IMAGE_FILE_EXTENSIONS,
   MP3_MIME_TYPE,
@@ -164,10 +165,12 @@ export const getInfoWithExtension = (
           "loadeddata",
           () => {
             const canvas = document.createElement("canvas");
+            canvas.height = video.videoHeight;
+            canvas.width = video.videoWidth;
 
             canvas
-              .getContext("2d")
-              ?.drawImage(video, 0, 0, canvas.width, canvas.height);
+              .getContext("2d", BASE_2D_CONTEXT_OPTIONS)
+              ?.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
             canvas.toBlob((blob) => {
               if (blob instanceof Blob) {
                 getInfoByFileExtension(URL.createObjectURL(blob));
@@ -176,7 +179,6 @@ export const getInfoWithExtension = (
           },
           ONE_TIME_PASSIVE_EVENT
         );
-
         video.src = bufferToUrl(contents);
         video.load();
       }
@@ -218,10 +220,10 @@ export const getLineCount = (
   maxWidth: number
 ): number => {
   const canvas = document.createElement("canvas");
-  const context = canvas.getContext("2d", {
-    alpha: false,
-    desynchronized: true,
-  }) as CanvasRenderingContext2D;
+  const context = canvas.getContext(
+    "2d",
+    BASE_2D_CONTEXT_OPTIONS
+  ) as CanvasRenderingContext2D;
   const lines = [""];
 
   context.font = `${fontSize} ${fontFamily}`;
