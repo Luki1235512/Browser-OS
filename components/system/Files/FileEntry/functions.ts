@@ -222,12 +222,11 @@ export const getLineCount = (
     alpha: false,
     desynchronized: true,
   }) as CanvasRenderingContext2D;
+  const lines = [""];
 
   context.font = `${fontSize} ${fontFamily}`;
 
   if (context.measureText(text).width > maxWidth) {
-    const lines = [""];
-
     [...text].forEach((character) => {
       const lineCount = lines.length - 1;
       const lineText = `${lines[lineCount]}${character}`;
@@ -238,9 +237,7 @@ export const getLineCount = (
         lines[lineCount] = lineText;
       }
     });
-
-    return lines.length;
   }
 
-  return 1;
+  return lines.length;
 };
