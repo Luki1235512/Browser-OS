@@ -14,6 +14,7 @@ import {
   ONE_TIME_PASSIVE_EVENT,
   PREVIEW_FRAME_SECOND,
   SHORTCUT_EXTENSION,
+  SHORTCUT_ICON,
   SYSTEM_FILES,
   SYSTEM_PATHS,
   VIDEO_FILE_EXTENSIONS,
@@ -129,7 +130,7 @@ export const getInfoWithExtension = (
 
   if (extension === SHORTCUT_EXTENSION) {
     fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
-      subIcons.push("/System/Icons/shortcut.png");
+      subIcons.push(SHORTCUT_ICON);
 
       if (error) {
         getInfoByFileExtension();
