@@ -21,7 +21,7 @@ const BASE_WINDOW_SIZE = {
   width: 275,
 };
 
-export const CONTAINER_WINDOW = "#webamp";
+const CONTAINER_WINDOW = "#webamp";
 
 export const MAIN_WINDOW = "#main-window";
 
