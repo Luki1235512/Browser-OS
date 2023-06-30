@@ -3,6 +3,10 @@ import { monacoExtensions } from "components/apps/MonacoEditor/config";
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
+import {
+  FOLDER_ICON,
+  UNKNOWN_ICON,
+} from "components/system/Files/FileManager/useFolder";
 import processDirectory from "contexts/process/directory";
 import ini from "ini";
 import { extname, join } from "path";
@@ -20,8 +24,6 @@ import {
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
 import { bufferToUrl } from "utils/functions";
-
-import { FOLDER_ICON, UNKNOWN_ICON } from "../FileManager/useFolder";
 
 type InternetShortcut = {
   InternetShortcut: {
@@ -189,7 +191,7 @@ export const getInfoWithExtension = (
       }
     });
   } else if (extension === ".mp3") {
-    getInfoByFileExtension(`System/Icons/${extensions[".mp3"].icon}.png`);
+    getInfoByFileExtension(`/System/Icons/${extensions[".mp3"].icon}.png`);
     fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
       if (!error) {
         import("music-metadata-browser").then(({ parseBuffer, selectCover }) =>
