@@ -11,7 +11,7 @@ import { useProcesses } from "contexts/process";
 import type { CommandInterface } from "emulators";
 import type { DosInstance } from "emulators-ui/dist/types/js-dos";
 import { basename, join } from "path";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { EMPTY_BUFFER, SAVE_PATH } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl, cleanUpGlobals } from "utils/functions";
 
@@ -38,8 +38,8 @@ const useDosCI = (
   } = useProcesses();
   const [dosCI, setDosCI] = useState<Record<string, CommandInterface>>({});
 
-  useEffect(() => {
-    const closeBundle = (bundleUrl: string, closeInstance = false): void => {
+  const closeBundle = useCallback(
+    (bundleUrl: string, closeInstance = false): void => {
       dosCI[bundleUrl]?.persist().then((saveZip) =>
         mkdirRecursive(SAVE_PATH, () => {
           const saveName = `${basename(bundleUrl)}${saveExtension}`;
@@ -50,8 +50,11 @@ const useDosCI = (
           });
         })
       );
-    };
+    },
+    [dosCI, dosInstance, fs, mkdirRecursive, updateFolder]
+  );
 
+  useEffect(() => {
     if (dosInstance && fs && url && !dosCI[url]) {
       fs.readFile(url, async (_urlError, urlContents = EMPTY_BUFFER) => {
         const bundleURL = bufferToUrl(await addJsDosConfig(urlContents, fs));
@@ -89,6 +92,7 @@ const useDosCI = (
     };
   }, [
     appendFileToTitle,
+    closeBundle,
     closing,
     containerRef,
     dosCI,
@@ -96,8 +100,6 @@ const useDosCI = (
     fs,
     id,
     linkElement,
-    mkdirRecursive,
-    updateFolder,
     url,
   ]);
 
