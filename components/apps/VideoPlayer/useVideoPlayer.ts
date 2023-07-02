@@ -1,9 +1,4 @@
-import {
-  config,
-  getVideoType,
-  libs,
-  ytLib,
-} from "components/apps/VideoPlayer/config";
+import { getVideoType, libs, ytLib } from "components/apps/VideoPlayer/config";
 import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystem } from "contexts/fileSystem";
@@ -32,14 +27,15 @@ const useVideoPlayer = (
     processes: { [id]: { closing = false } = {} },
   } = useProcesses();
   const { updateWindowSize } = useWindowSize(id);
-  const [player, setPlayer] = useState<ReturnType<typeof videojs>>();
+  // const [player, setPlayer] = useState<ReturnType<typeof videojs>>();
+  const [player] = useState<ReturnType<typeof videojs>>();
   const { appendFileToTitle } = useTitle(id);
 
   useEffect(() => {
     if (url) {
       const isYT = isYouTubeUrl(url);
-      const [videoElement] = containerRef.current
-        ?.childNodes as NodeListOf<HTMLVideoElement>;
+      // const [videoElement] = containerRef.current
+      // ?.childNodes as NodeListOf<HTMLVideoElement>;
       const type = isYT ? "video/youtube" : getVideoType(url) || "video/mp4";
       const loadPlayer = (src: string): void => {
         if (player) {
@@ -55,14 +51,14 @@ const useVideoPlayer = (
             }
           });
         } else {
-          setPlayer(
-            window.videojs(videoElement, {
-              ...config,
-              ...(isYT
-                ? { techOrder: ["youtube"], youtube: { ytControls: 2 } }
-                : { controls: true, inactivityTimeout: 0 }),
-            })
-          );
+          // setPlayer(
+          // window.videojs(videoElement, {
+          //   ...config,
+          //   ...(isYT
+          //     ? { techOrder: ["youtube"], youtube: { ytControls: 2 } }
+          //     : { controls: true, inactivityTimeout: 0 }),
+          // })
+          // );
         }
 
         if (!isYT) {
