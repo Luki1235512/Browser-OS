@@ -224,59 +224,62 @@ export const filterSystemFiles =
   (file: string): boolean =>
     !SYSTEM_PATHS.has(join(directory, file)) && !SYSTEM_FILES.has(file);
 
-// type WrapData = {
-//   lines: string[];
-//   width: number;
-// };
+type WrapData = {
+  lines: string[];
+  width: number;
+};
 
-// const canvasContexts: Record<string, CanvasRenderingContext2D> = {};
+const canvasContexts: Record<string, CanvasRenderingContext2D> = {};
 
-// const measureText = (
-//   text: string,
-//   fontSize: string,
-//   fontFamily: string
-// ): TextMetrics => {
-//   const font = `${fontSize} ${fontFamily}`;
+const measureText = (
+  text: string,
+  fontSize: string,
+  fontFamily: string
+): TextMetrics => {
+  const font = `${fontSize} ${fontFamily}`;
 
-//   if (!canvasContexts[font]) {
-//     const canvas = document.createElement("canvas");
-//     const context = canvas.getContext(
-//       "2d",
-//       BASE_2D_CONTEXT_OPTIONS
-//     ) as CanvasRenderingContext2D;
+  if (!canvasContexts[font]) {
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext(
+      "2d",
+      BASE_2D_CONTEXT_OPTIONS
+    ) as CanvasRenderingContext2D;
 
-//     context.font = font;
-//     canvasContexts[font] = context;
-//   }
+    context.font = font;
+    canvasContexts[font] = context;
+  }
 
-//   return canvasContexts[font].measureText(text);
-// };
+  return canvasContexts[font].measureText(text);
+};
 
-// export const getTextWrapData = (
-//   text: string,
-//   fontSize: string,
-//   fontFamily: string,
-//   maxWidth: number
-// ): WrapData => {
-//   const lines = [""];
+export const getTextWrapData = (
+  text: string,
+  fontSize: string,
+  fontFamily: string,
+  maxWidth?: number
+): WrapData => {
+  const lines = [""];
 
-//   const { width: totalWidth } = measureText(text, fontSize, fontFamily);
+  const { width: totalWidth } = measureText(text, fontSize, fontFamily);
 
-//   if (totalWidth > maxWidth) {
-//     [...text].forEach((character) => {
-//       const lineCount = lines.length - 1;
-//       const lineText = `${lines[lineCount]}${character}`;
-//       const { width: lineWidth } = measureText(lineText, fontSize, fontFamily);
+  if (!maxWidth) return { lines: [text], width: totalWidth };
 
-//       if (lineWidth > maxWidth) {
-//         lines.push(character);
-//       } else {
-//         lines[lineCount] = lineText;
-//       }
-//     });
-//   }
-//   return {
-//     lines,
-//     width: Math.min(maxWidth, totalWidth),
-//   };
-// };
+  if (totalWidth > maxWidth) {
+    [...text].forEach((character) => {
+      const lineCount = lines.length - 1;
+      const lineText = `${lines[lineCount]}${character}`;
+      const { width: lineWidth } = measureText(lineText, fontSize, fontFamily);
+
+      if (lineWidth > maxWidth) {
+        lines.push(character);
+      } else {
+        lines[lineCount] = lineText;
+      }
+    });
+  }
+
+  return {
+    lines,
+    width: Math.min(maxWidth, totalWidth),
+  };
+};
