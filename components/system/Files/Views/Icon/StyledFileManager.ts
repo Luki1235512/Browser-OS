@@ -21,6 +21,8 @@ const StyledFileManager = styled.ol<StyledFileManagerProps>`
 
   main > & {
     height: ${({ theme }) => `calc(100% - ${theme.sizes.taskbar.height})`};
+    overflow: visible;
+    padding-bottom: 21px;
   }
 
   ${StyledWindow} & {
