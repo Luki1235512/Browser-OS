@@ -10,8 +10,8 @@ const useTaskbarEntryContextMenu = (
 
   const menuItems: MenuItem[] = [
     {
-      label: "Close",
       action: () => onClose(),
+      label: "Close",
     },
   ];
 

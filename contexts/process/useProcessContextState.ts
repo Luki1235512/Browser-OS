@@ -47,8 +47,8 @@ const useProcessContextState = (): ProcessContextState => {
     []
   );
   const open = useCallback(
-    (id: string, url: string, initialIcon?: string) =>
-      setProcesses(openProcess(id, url, initialIcon)),
+    (id: string, openUrl: string, initialIcon?: string) =>
+      setProcesses(openProcess(id, openUrl, initialIcon)),
     []
   );
   const linkElement = useCallback(

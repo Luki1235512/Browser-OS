@@ -16,27 +16,27 @@ const useTitlebarContextMenu = (
 
   const menuItems: MenuItem[] = [
     {
-      label: "Restore",
+      action: () => onMaximize(),
       disabled: !maximized,
       icon: `/System/Icons/restore${!maximized ? "_disabled" : ""}.png`,
-      action: () => onMaximize(),
+      label: "Restore",
     },
     {
-      label: "Minimize",
-      icon: "/System/Icons/minimize.png",
       action: () => onMinimize(),
+      icon: "/System/Icons/minimize.png",
+      label: "Minimize",
     },
     {
-      label: "Maximize",
+      action: () => onMaximize(),
       disabled: maximized,
       icon: `/System/Icons/maximize${maximized ? "_disabled" : ""}.png`,
-      action: () => onMaximize(),
+      label: "Maximize",
     },
     MENU_SEPARATOR,
     {
-      label: "Close",
-      icon: "/System/Icons/close.png",
       action: () => onClose(),
+      icon: "/System/Icons/close.png",
+      label: "Close",
     },
   ];
 

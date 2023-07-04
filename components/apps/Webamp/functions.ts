@@ -10,9 +10,9 @@ const WEBAMP_SKINS_PATH = "/Users/Public/Documents/Winamp Skins";
 
 export const BASE_WEBAMP_OPTIONS = {
   availableSkins: [
-    { url: `${WEBAMP_SKINS_PATH}/cuteamp.wsz`, name: "Cuteamp" },
-    { url: `${WEBAMP_SKINS_PATH}/Morbamp.wsz`, name: "Morbamp" },
-    { url: `${WEBAMP_SKINS_PATH}/Bathory.wsz`, name: "Bathory" },
+    { name: "Cuteamp", url: `${WEBAMP_SKINS_PATH}/cuteamp.wsz` },
+    { name: "Morbamp", url: `${WEBAMP_SKINS_PATH}/Morbamp.wsz` },
+    { name: "Bathory", url: `${WEBAMP_SKINS_PATH}/Bathory.wsz` },
   ],
 };
 
@@ -52,11 +52,11 @@ export const updateWebampPosition = (
     position || centerPosition({ height: height * 2, width }, taskbarHeight);
 
   webamp.store.dispatch({
-    type: "UPDATE_WINDOW_POSITIONS",
     positions: {
       main: { x, y },
       playlist: { x, y: height + y },
     },
+    type: "UPDATE_WINDOW_POSITIONS",
   });
 };
 

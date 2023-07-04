@@ -26,50 +26,50 @@ const useFolderContextMenu = (
       label: "Sort by",
       menu: [
         {
-          label: "Name",
           action: () => setSortBy("name"),
+          label: "Name",
         },
         {
-          label: "Size",
           action: () => setSortBy("size"),
+          label: "Size",
         },
         {
-          label: "Item type",
           action: () => setSortBy("type"),
+          label: "Item type",
         },
         {
-          label: "Date modified",
           action: () => setSortBy("date"),
+          label: "Date modified",
         },
       ],
     },
-    { label: "Refresh", action: () => updateFolder(url) },
+    { action: () => updateFolder(url), label: "Refresh" },
     MENU_SEPARATOR,
-    { label: "Add File", action: () => addToFolder() },
+    { action: () => addToFolder(), label: "Add File" },
     {
+      action: () => pasteToFolder(),
       disabled: Object.keys(pasteList).length === 0,
       label: "Paste",
-      action: () => pasteToFolder(),
     },
     MENU_SEPARATOR,
     {
       label: "New",
       menu: [
         {
-          label: "Folder",
-          icon: FOLDER_ICON,
           action: () => newPath(NEW_FOLDER, undefined, true),
+          icon: FOLDER_ICON,
+          label: "Folder",
         },
         MENU_SEPARATOR,
         {
-          label: "Rich Text Document",
-          icon: richTextDocumentIcon,
           action: () => newPath(NEW_RTF_DOCUMENT, EMPTY_BUFFER, true),
+          icon: richTextDocumentIcon,
+          label: "Rich Text Document",
         },
         {
-          label: "Text Document",
-          icon: textDocumentIcon,
           action: () => newPath(NEW_TEXT_DOCUMENT, EMPTY_BUFFER, true),
+          icon: textDocumentIcon,
+          label: "Text Document",
         },
       ],
     },

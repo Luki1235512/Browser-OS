@@ -1,6 +1,6 @@
 type BaseLoadOptions = {
   backgroundColor?: string | null;
-  letterbox?: "on" | "off" | "fullscreen";
+  letterbox?: "fullscreen" | "off" | "on";
 };
 
 type Config = {
@@ -12,16 +12,16 @@ type DataLoadOptions = {
 };
 
 export type RufflePlayer = HTMLElement & {
-  load: (options: DataLoadOptions & BaseLoadOptions) => Promise<void>;
+  load: (options: BaseLoadOptions & DataLoadOptions) => Promise<void>;
 };
 
 type SourceAPI = {
-  createPlayer(): RufflePlayer;
+  createPlayer: () => RufflePlayer;
 };
 
 type PublicAPI = {
-  config: Config & BaseLoadOptions;
-  newest(): SourceAPI;
+  config: BaseLoadOptions & Config;
+  newest: () => SourceAPI;
 };
 
 declare global {
