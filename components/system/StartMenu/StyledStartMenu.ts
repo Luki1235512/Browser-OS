@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 
 const StyledStartMenu = styled(motion.nav)`
-  backdrop-filter: blur(12px);
   background-color: hsla(300, 100%, 60%, 40%);
   bottom: ${({ theme }) => theme.sizes.taskbar.height};
   box-shadow: 3px 0 10px 3px hsla(0, 0%, 10%, 50%);
