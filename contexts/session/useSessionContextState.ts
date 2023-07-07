@@ -13,7 +13,7 @@ import { DEFAULT_THEME } from "utils/constants";
 const SESSION_FILE = "/session.json";
 
 const useSessionContextState = (): SessionContextState => {
-  const { fs } = useFileSystem();
+  const { exists, readFile, writeFile } = useFileSystem();
   const [sessionLoaded, setSessionLoaded] = useState(false);
   const [foregroundId, setForegroundId] = useState("");
   const [stackOrder, setStackOrder] = useState<string[]>([]);
@@ -22,7 +22,6 @@ const useSessionContextState = (): SessionContextState => {
   const [sortOrders, setSortOrders] = useState<SortOrders>({});
   const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>("fill");
   const [wallpaperImage, setWallpaperImage] = useState("");
-
   const prependToStack = useCallback(
     (id: string) =>
       setStackOrder((currentStackOrder) => [
@@ -42,10 +41,23 @@ const useSessionContextState = (): SessionContextState => {
     setWallpaperFit(fit);
     setWallpaperImage(image);
   };
+  const initSession = useCallback(async () => {
+    if (await exists(SESSION_FILE)) {
+      const sessionData = await readFile(SESSION_FILE);
+      const session = JSON.parse(sessionData.toString() || "{}") as SessionData;
+
+      setSortOrders(session.sortOrders);
+      setThemeName(session.themeName);
+      setWallpaper(session.wallpaperImage, session.wallpaperFit);
+      setWindowStates(session.windowStates);
+    }
+
+    setSessionLoaded(true);
+  }, [exists, readFile]);
 
   useEffect(() => {
     if (sessionLoaded) {
-      fs?.writeFile(
+      writeFile(
         SESSION_FILE,
         JSON.stringify({
           sortOrders,
@@ -53,11 +65,12 @@ const useSessionContextState = (): SessionContextState => {
           wallpaperFit,
           wallpaperImage,
           windowStates,
-        })
+        }),
+        true
       );
     }
   }, [
-    fs,
+    writeFile,
     sessionLoaded,
     sortOrders,
     themeName,
@@ -66,24 +79,9 @@ const useSessionContextState = (): SessionContextState => {
     windowStates,
   ]);
 
-  useEffect(
-    () =>
-      fs?.readFile(SESSION_FILE, (_error, contents) => {
-        if (contents) {
-          const session = JSON.parse(
-            contents.toString() || "{}"
-          ) as SessionData;
-
-          setSortOrders(session.sortOrders);
-          setThemeName(session.themeName);
-          setWallpaper(session.wallpaperImage, session.wallpaperFit);
-          setWindowStates(session.windowStates);
-        }
-
-        setSessionLoaded(true);
-      }),
-    [fs]
-  );
+  useEffect(() => {
+    initSession();
+  }, [initSession]);
 
   return {
     foregroundId,
