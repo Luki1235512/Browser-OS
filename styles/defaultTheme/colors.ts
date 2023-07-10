@@ -42,8 +42,8 @@ const colors = {
   },
   window: {
     background: "#FDEEF4",
-    outline: "hsl(300deg 70% 50%)",
-    outlineInactive: "hsl(300deg 50% 50%)",
+    outline: "hsla(300, 100%, 70%, 50%)",
+    outlineInactive: "hsla(300, 100%, 50%, 50%)",
     shadow: "0 0 12px 0 rgba(255, 0, 255, 100%)",
     shadowInactive: " 0 0 8px 0 rgba(255, 0, 255, 50%)",
   },
