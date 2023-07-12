@@ -1,17 +1,18 @@
-import { getVideoType, libs, ytLib } from "components/apps/VideoPlayer/config";
+import {
+  getVideoType,
+  libs,
+  YT_TYPE,
+} from "components/apps/VideoPlayer/config";
+import type {
+  SourceObjectWithUrl,
+  VideoPlayer,
+} from "components/apps/VideoPlayer/types";
 import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useCallback, useEffect, useState } from "react";
-import {
-  bufferToUrl,
-  cleanUpBufferUrl,
-  loadFiles,
-  viewHeight,
-  viewWidth,
-} from "utils/functions";
-import type videojs from "video.js";
+import { bufferToUrl, cleanUpBufferUrl, loadFiles } from "utils/functions";
 
 const isYouTubeUrl = (url: string): boolean =>
   url.includes("youtube.com/") || url.includes("youtu.be/");
@@ -28,83 +29,89 @@ const useVideoPlayer = (
     processes: { [id]: { closing = false } = {} },
   } = useProcesses();
   const { updateWindowSize } = useWindowSize(id);
-  // const [player, setPlayer] = useState<ReturnType<typeof videojs>>();
-  const [player] = useState<ReturnType<typeof videojs>>();
+  // const [player, setPlayer] = useState<VideoPlayer>();
+  const [player] = useState<VideoPlayer>();
   const { appendFileToTitle } = useTitle(id);
-  const isYT = isYouTubeUrl(url);
-  const loadPlayer = useCallback(
-    (src?: string): void => {
+  const cleanUpSource = useCallback((): void => {
+    const { src: sources = [] } = player?.getMedia() || {};
+
+    if (Array.isArray(sources) && sources.length > 0) {
+      const [{ src, url: sourceUrl }] = sources as SourceObjectWithUrl[];
+
+      if (src.startsWith("blob:") && (sourceUrl !== url || closing)) {
+        cleanUpBufferUrl(src);
+      }
+    }
+  }, [closing, player, url]);
+  const getSource = useCallback(async () => {
+    cleanUpSource();
+
+    const isYT = isYouTubeUrl(url);
+    const src = isYT ? url : bufferToUrl(await readFile(url));
+    const type = isYT ? YT_TYPE : getVideoType(url) || "video/mp4";
+
+    return { src, type, url };
+  }, [cleanUpSource, readFile, url]);
+  const loadVideo = useCallback(async () => {
+    if (!player) {
       // const [videoElement] = containerRef.current
       //   ?.childNodes as NodeListOf<HTMLVideoElement>;
-
-      if (player) {
-        if (src && url) {
-          player.src([
-            {
-              src,
-              type: isYT ? "video/youtube" : getVideoType(url) || "video/mp4",
-            },
-          ]);
-        }
-
-        player.on("firstplay", () => {
-          const [height, width] = [player.videoHeight(), player.videoWidth()];
-          const [vh, vw] = [viewHeight(), viewWidth()];
-
-          if (height && width) {
-            if (height > vh || width > vw) {
-              updateWindowSize(vw * (height / width), vw);
-            } else {
-              updateWindowSize(height, width);
-            }
-          }
-        });
-      } else {
-        // setPlayer(
-        //   window.videojs(videoElement, {
-        //     ...config,
-        //     ...(isYT
-        //       ? { techOrder: ["youtube"], youtube: { ytControls: 2 } }
-        //       : { controls: true, inactivityTimeout: 1000 }),
-        //   })
-        // );
-      }
-
-      if (url && !isYT) {
-        appendFileToTitle(url);
-        cleanUpBufferUrl(url);
-      }
-    },
-    [appendFileToTitle, containerRef, isYT, player, updateWindowSize, url]
-  );
-  const loadVideo = useCallback(async () => {
-    if (isYT) {
-      loadFiles([ytLib]).then(() => loadPlayer(url));
-    } else {
-      loadPlayer(bufferToUrl(await readFile(url)));
+      // const videoPlayer = window.videojs(
+      //   videoElement,
+      //   {
+      //     ...config,
+      //     ...(url && { sources: [await getSource()] }),
+      //   },
+      //   () => {
+      //     videoPlayer.on("firstplay", () => {
+      //       const [height, width] = [
+      //         videoPlayer.videoHeight(),
+      //         videoPlayer.videoWidth(),
+      //       ];
+      //       const [vh, vw] = [viewHeight(), viewWidth()];
+      //       if (height && width) {
+      //         if (height > vh || width > vw) {
+      //           updateWindowSize(vw * (height / width), vw);
+      //         } else {
+      //           updateWindowSize(height, width);
+      //         }
+      //       }
+      //     });
+      //     setPlayer(videoPlayer);
+      //   }
+      // );
+    } else if (url) {
+      player.src(await getSource());
     }
-  }, [isYT, loadPlayer, readFile, url]);
+
+    if (url) appendFileToTitle(url);
+  }, [
+    appendFileToTitle,
+    containerRef,
+    getSource,
+    player,
+    updateWindowSize,
+    url,
+  ]);
 
   useEffect(() => {
     if (loading) loadFiles(libs).then(() => setLoading(false));
   }, [loading, setLoading]);
 
   useEffect(() => {
-    if (!loading) {
-      if (url) {
-        loadVideo();
-      } else {
-        loadPlayer();
-      }
-    }
-  }, [loadPlayer, loadVideo, loading, url]);
+    if (!loading && !player) loadVideo();
 
-  useEffect(
-    () => () => {
-      if (closing) player?.dispose();
-    },
-    [closing, player]
-  );
+    return () => {
+      if (closing && player) {
+        cleanUpSource();
+        player.dispose();
+      }
+    };
+  }, [cleanUpSource, closing, loadVideo, loading, player]);
+
+  useEffect(() => {
+    if (!loading && player && url) loadVideo();
+  }, [loadVideo, loading, player, url]);
 };
 
 export default useVideoPlayer;
