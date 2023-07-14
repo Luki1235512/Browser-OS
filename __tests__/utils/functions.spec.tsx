@@ -3,7 +3,7 @@ import { libs as videoJsLibs } from "components/apps/VideoPlayer/config";
 import { getFormattedSize, loadFiles } from "utils/functions";
 import { mockOnLoadEventListener } from "utils/testFunctions";
 
-const foramttedSizeCases: [number, string][] = [
+const formattedSizeCases: [number, string][] = [
   [0, "0 bytes"],
   [1, "1 byte"],
   [2, "2 bytes"],
@@ -19,7 +19,7 @@ const foramttedSizeCases: [number, string][] = [
 ];
 
 describe("gets formatted size", () => {
-  test.each(foramttedSizeCases)("given %p render %p", (size, result) =>
+  test.each(formattedSizeCases)("given %p render %p", (size, result) =>
     expect(getFormattedSize(size)).toBe(result)
   );
 });

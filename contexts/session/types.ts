@@ -33,5 +33,6 @@ export type SessionContextState = SessionData & {
   setThemeName: React.Dispatch<React.SetStateAction<ThemeName>>;
   setWallpaper: (image: string, fit: WallpaperFit) => void;
   setWindowStates: React.Dispatch<React.SetStateAction<WindowStates>>;
+  sortOrders: SortOrders;
   stackOrder: string[];
 };

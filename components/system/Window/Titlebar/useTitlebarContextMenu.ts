@@ -6,7 +6,9 @@ import { MENU_SEPARATOR } from "utils/constants";
 
 const useTitlebarContextMenu = (
   id: string
-): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
+): {
+  onContextMenuCapture: React.MouseEventHandler<HTMLElement>;
+} => {
   const { contextMenu } = useMenu();
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
   const {

@@ -1,8 +1,8 @@
 import type { LocaleTimeDate } from "components/system/Taskbar/Clock/clockWorker";
 import clockWorker from "components/system/Taskbar/Clock/clockWorker";
 import StyledClock from "components/system/Taskbar/Clock/StyledClock";
-import useWorker from "components/system/Taskbar/Clock/useWorker";
 import { useCallback, useState } from "react";
+import useWorker from "utils/useWorker";
 
 const Clock = (): JSX.Element => {
   const [{ date = "", time = "", dateTime = "" }, setNow] =

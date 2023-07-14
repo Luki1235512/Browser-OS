@@ -19,7 +19,7 @@ const processDirectory: Processes = {
   },
   MonacoEditor: {
     Component: dynamic(() => import("components/apps/MonacoEditor")),
-    backgroundColor: "1E1E1E",
+    backgroundColor: "#1E1E1E",
     defaultSize: {
       height: 400,
       width: 400,

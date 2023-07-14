@@ -3,7 +3,7 @@
     [
       "next/babel",
       {
-        "present-env": {
+        "preset-env": {
           "targets": {
             "browsers": "defaults and supports es6"
           }

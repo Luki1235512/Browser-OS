@@ -3,11 +3,11 @@ import { useCallback } from "react";
 import { useTheme } from "styled-components";
 import { pxToNum } from "utils/functions";
 
-type WidnowSize = {
+type WindowSize = {
   updateWindowSize: (height: number, width: number) => void;
 };
 
-const useWindowSize = (id: string): WidnowSize => {
+const useWindowSize = (id: string): WindowSize => {
   const { setWindowStates } = useSession();
   const {
     sizes: { titleBar },

@@ -26,7 +26,7 @@ const useFileInfo = (path: string, isDirectory: boolean): FileInfo => {
 
   useEffect(() => {
     if (fs) {
-      const extension = extname(path.toLowerCase());
+      const extension = extname(path).toLowerCase();
 
       if (!extension || (isDirectory && !MOUNTABLE_EXTENSIONS.has(extension))) {
         getInfoWithoutExtension(fs, path, isDirectory, setInfo);

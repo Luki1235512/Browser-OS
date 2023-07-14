@@ -13,7 +13,7 @@ const extensions = {
   ".iso": {
     icon: "image",
     process: ["FileExplorer", "V86"],
-    type: "Disc Image File",
+    type: "Disk Image File",
   },
   ".jsdos": {
     icon: "jsdos",

@@ -6,7 +6,7 @@ import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 const useIFrameFocuser = (): void => {
   const { processes } = useProcesses();
   const { setForegroundId } = useSession();
-  const focusIFrameWindow = useCallback((): void => {
+  const focusIframeWindow = useCallback((): void => {
     if (document.activeElement instanceof HTMLIFrameElement) {
       const [id] =
         Object.entries(processes).find(([, { componentWindow }]) =>
@@ -34,10 +34,10 @@ const useIFrameFocuser = (): void => {
   }, [processes, setForegroundId]);
 
   useEffect(() => {
-    window.addEventListener("blur", focusIFrameWindow, { passive: true });
+    window.addEventListener("blur", focusIframeWindow, { passive: true });
 
-    return () => window.removeEventListener("blur", focusIFrameWindow);
-  }, [focusIFrameWindow]);
+    return () => window.removeEventListener("blur", focusIframeWindow);
+  }, [focusIframeWindow]);
 };
 
 export default useIFrameFocuser;

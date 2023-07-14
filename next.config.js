@@ -1,5 +1,5 @@
-const NextConfig = {
+const nextConfig = {
   reactStrictMode: true,
 };
 
-module.exports = NextConfig;
+module.exports = nextConfig;

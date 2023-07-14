@@ -41,7 +41,7 @@ const useTinyMCE = (
     },
     [url, writeFile]
   );
-  const linkToProcesses = useCallback(() => {
+  const linksToProcesses = useCallback(() => {
     const iframe = containerRef.current?.querySelector("iframe");
 
     if (iframe?.contentWindow) {
@@ -75,11 +75,11 @@ const useTinyMCE = (
       // eslint-disable-next-line dot-notation
       editor.settings["save_onsavecallback"] = onSave;
 
-      linkToProcesses();
+      linksToProcesses();
 
       appendFileToTitle(basename(url, extname(url)));
     }
-  }, [appendFileToTitle, editor, linkToProcesses, onSave, readFile, url]);
+  }, [appendFileToTitle, editor, linksToProcesses, onSave, readFile, url]);
 
   useEffect(() => {
     if (!editor) {

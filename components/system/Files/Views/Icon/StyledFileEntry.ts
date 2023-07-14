@@ -58,7 +58,7 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
 
     &::before {
       border: ${({ dragging, theme }) =>
-        !dragging && `1px solid${theme.colors.fileEntry.border}`};
+        !dragging && `1px solid ${theme.colors.fileEntry.border}`};
     }
   }
 

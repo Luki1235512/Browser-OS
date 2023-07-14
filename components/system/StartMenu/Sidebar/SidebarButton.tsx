@@ -29,7 +29,7 @@ const SidebarButtonComponent = ({
   >
     <figure>
       {icon}
-      <figcaption>{heading ? <strong>{name}</strong> : name} </figcaption>
+      <figcaption>{heading ? <strong>{name}</strong> : name}</figcaption>
     </figure>
   </StyledSidebarButton>
 );

@@ -100,7 +100,7 @@ const Navigation = ({ id }: NavigationProps): JSX.Element => {
       <Button
         disabled={history.length === 1}
         onClick={contextMenu(menuItems)}
-        title="recent locations"
+        title="Recent locations"
       >
         <Down />
       </Button>

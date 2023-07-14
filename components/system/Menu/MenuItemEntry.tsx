@@ -30,7 +30,7 @@ const MenuItemEntry = ({
   const onMouseLeave: React.MouseEventHandler = ({ relatedTarget }) => {
     if (
       !(relatedTarget instanceof HTMLElement) ||
-      !entryRef?.current?.contains(relatedTarget)
+      !entryRef.current?.contains(relatedTarget)
     ) {
       setShowSubMenu(false);
     }
