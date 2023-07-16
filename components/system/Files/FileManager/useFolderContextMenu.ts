@@ -1,8 +1,6 @@
 import { getIconByFileExtension } from "components/system/Files/FileEntry/functions";
-import {
-  FOLDER_ICON,
-  type FolderActions,
-} from "components/system/Files/FileManager/useFolder";
+import type { FolderActions } from "components/system/Files/FileManager/useFolder";
+import { FOLDER_ICON } from "components/system/Files/FileManager/useFolder";
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
