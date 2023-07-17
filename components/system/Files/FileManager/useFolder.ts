@@ -337,9 +337,10 @@ const useFolder = (
       const shortcutData = ini.encode(
         {
           BaseURL: process,
-          IconFile: pathExtension
-            ? getIconByFileExtension(pathExtension)
-            : FOLDER_ICON,
+          IconFile:
+            process !== "FileExplorer" && pathExtension
+              ? getIconByFileExtension(pathExtension)
+              : FOLDER_ICON,
           URL: path,
         },
         {
