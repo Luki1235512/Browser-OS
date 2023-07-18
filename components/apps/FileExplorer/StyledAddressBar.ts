@@ -5,6 +5,7 @@ type StyledAddressBarProps = {
 };
 
 const StyledAddressBar = styled.input.attrs({
+  spellCheck: false,
   type: "text",
 })<StyledAddressBarProps>`
   background-color: rgb(250, 180, 255);

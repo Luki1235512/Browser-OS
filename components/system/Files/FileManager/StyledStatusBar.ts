@@ -9,6 +9,7 @@ const StyledStatusBar = styled.footer`
   font-size: 12px;
   font-weight: 100;
   padding: 0 5px;
+  white-space: nowrap;
   width: 100%;
 
   div {
@@ -24,6 +25,11 @@ const StyledStatusBar = styled.footer`
       height: 11px;
       margin-left: 10px;
       position: absolute;
+
+      &:last-child {
+        margin-right: 10px;
+        overflow: hidden;
+      }
     }
   }
 `;
