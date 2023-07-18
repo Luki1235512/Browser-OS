@@ -44,7 +44,11 @@ export type FileActions = {
 
 export type FolderActions = {
   addToFolder: () => void;
-  newPath: (path: string, buffer?: Buffer, rename?: boolean) => Promise<string>;
+  newPath: (
+    path: string,
+    buffer?: Buffer,
+    thenRename?: boolean
+  ) => Promise<void>;
   pasteToFolder: () => void;
   resetFiles: () => void;
   setSortBy: SetSortBy;
@@ -360,19 +364,21 @@ const useFolder = (
     const copyFiles =
       (entry: string, basePath = ""): BFSCallback<Buffer> =>
       (readError, fileContents) =>
-        newPath(join(basePath, basename(entry)), fileContents).then(
-          (uniquePath) => {
-            if (readError?.code === "EISDIR") {
-              fs?.readdir(entry, (_dirError, dirContents) =>
-                dirContents?.forEach((dirEntry) => {
-                  const dirPath = join(entry, dirEntry);
+        createPath(
+          join(basePath, basename(entry)),
+          directory,
+          fileContents
+        ).then((uniquePath) => {
+          if (readError?.code === "EISDIR") {
+            fs?.readdir(entry, (_dirError, dirContents) =>
+              dirContents?.forEach((dirEntry) => {
+                const dirPath = join(entry, dirEntry);
 
-                  fs.readFile(dirPath, copyFiles(dirPath, uniquePath));
-                })
-              );
-            }
+                fs.readFile(dirPath, copyFiles(dirPath, uniquePath));
+              })
+            );
           }
-        );
+        });
 
     pasteEntries.forEach(([pasteEntry]) =>
       moving
