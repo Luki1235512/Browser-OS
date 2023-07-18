@@ -117,7 +117,7 @@ const Navigation = ({ id }: NavigationProps): JSX.Element => {
       </Button>
       <StyledAddressBar
         ref={addressBarRef}
-        icon={icon}
+        $icon={icon}
         onBlur={() => setAddressBar(displayName)}
         onChange={({ target }) => setAddressBar(target.value)}
         onFocus={() => setAddressBar(url)}
