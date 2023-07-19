@@ -207,7 +207,11 @@ const FileEntry = ({
       ref={buttonRef}
       title={createTooltip()}
       {...useDoubleClick(() => {
-        if (pid === "FileExplorer" && fileManagerId) {
+        if (
+          pid === "FileExplorer" &&
+          fileManagerId &&
+          !MOUNTABLE_EXTENSIONS.has(urlExt)
+        ) {
           changeUrl(fileManagerId, url);
           blurEntry();
         } else {
