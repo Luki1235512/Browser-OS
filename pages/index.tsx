@@ -8,6 +8,9 @@ const Index = (): React.ReactElement => {
   useIFrameFocuser();
   useUrlLoader();
 
+  // TODO: Lock document title on load
+  // useEffect(lockTitle, []);
+
   return (
     <Desktop>
       <Taskbar />

@@ -86,3 +86,8 @@ export const getFormattedSize = (size = 0): string => {
 
   return `${size} bytes`;
 };
+
+// TODO: Lock document title on load
+// export const lockTitle = (): void => {
+//   Object.defineProperty(document, "title", { set: undefined });
+// };
