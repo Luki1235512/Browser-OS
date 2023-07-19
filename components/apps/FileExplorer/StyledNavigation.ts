@@ -65,7 +65,7 @@ const StyledNavigation = styled.nav`
       stroke: rgb(255, 255, 255);
       stroke-width: 3;
       top: ${({ theme }) => `calc(${theme.sizes.titleBar.height} + 6px)`};
-      width: 28px;
+      width: 32px;
 
       &:hover {
         background-color: rgb(300, 80, 255);
