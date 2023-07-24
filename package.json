@@ -1,5 +1,6 @@
 {
   "name": "browser-os",
+  "alias": "cuteOS",
   "version": "1.0.0",
   "description": "OS in the browser.",
   "author": "Luki1235512",
@@ -96,6 +97,7 @@
     "stylelint-config-styled-components": "^0.1.1",
     "tinymce": "^5.10.1",
     "typescript": "^5.0.4",
-    "webamp": "^1.5.0"
+    "webamp": "^1.5.0",
+    "xterm": "^4.15.0"
   }
 }
