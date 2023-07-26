@@ -25,6 +25,8 @@ const CONTAINER_WINDOW = "#webamp";
 
 export const MAIN_WINDOW = "#main-window";
 
+export const PLAYLIST_WINDOW = "#playlist-window";
+
 export const cleanBufferOnSkinLoad = (
   webamp: WebampCI,
   url = ""
