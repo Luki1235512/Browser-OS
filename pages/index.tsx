@@ -2,6 +2,7 @@ import AppsLoader from "components/system/Apps/AppsLoader";
 import Desktop from "components/system/Desktop";
 import Taskbar from "components/system/Taskbar";
 import { useEffect } from "react";
+import { lockTitle } from "utils/functions";
 import useIFrameFocuser from "utils/useIFrameFocuser";
 import useUrlLoader from "utils/useUrlLoader";
 
@@ -17,9 +18,8 @@ const Index = ({ commit }: IndexProps): React.ReactElement => {
   useIFrameFocuser();
   useUrlLoader();
 
-  // TODO: Lock document title on load
   useEffect(() => {
-    // lockTitle();
+    lockTitle();
     window.commit = commit;
   }, [commit]);
 

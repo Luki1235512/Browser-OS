@@ -87,10 +87,13 @@ export const getFormattedSize = (size = 0): string => {
   return `${size} bytes`;
 };
 
-// TODO: Lock document title on load
-// export const lockTitle = (): void => {
-//   Object.defineProperty(document, "title", { set: undefined });
-// };
+export const lockTitle = (): void => {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    Object.defineProperty(document, "title", { set: () => {} });
+    // eslint-disable-next-line no-empty
+  } catch {}
+};
 
 export const getTimezoneOffsetISOString = (): string => {
   const date = new Date();
