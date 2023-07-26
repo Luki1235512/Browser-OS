@@ -95,7 +95,7 @@
     "stylelint-config-sass-guidelines": "^10.0.0",
     "stylelint-config-standard": "^33.0.0",
     "stylelint-config-styled-components": "^0.1.1",
-    "tinymce": "^5.10.1",
+    "tinymce": "^5.10.2",
     "typescript": "^5.0.4",
     "webamp": "^1.5.0",
     "xterm": "^4.15.0"

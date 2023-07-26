@@ -241,11 +241,11 @@ const useFolder = (
     setDownloadLink(link.href);
   };
   const getFile = (path: string): Promise<ZipFile> =>
-    new Promise((resolve) =>
+    new Promise((resolve) => {
       fs?.readFile(path, (_readError, contents = EMPTY_BUFFER) =>
         resolve([relative(directory, path), contents])
-      )
-    );
+      );
+    });
   const downloadFiles = (paths: string[]): Promise<void> =>
     findPathsRecursive(paths, readdir, stat).then((allPaths) =>
       Promise.all(allPaths.map((path) => getFile(path))).then((filePaths) => {
@@ -399,9 +399,7 @@ const useFolder = (
 
   useEffect(() => {
     if (sessionLoaded) {
-      if (!files) {
-        updateFiles(undefined, undefined, sortOrder);
-      } else {
+      if (files) {
         const fileNames = Object.keys(files);
 
         if (sortOrder && fileNames.length === sortOrder.length) {
@@ -429,6 +427,8 @@ const useFolder = (
             );
           }
         }
+      } else {
+        updateFiles(undefined, undefined, sortOrder);
       }
     }
   }, [directory, files, sessionLoaded, setSortOrders, sortOrder, updateFiles]);

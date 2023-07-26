@@ -42,7 +42,7 @@ const sortFunctionMap: Record<string, SortFunction> = {
 
 export const sortContents = (
   contents: Files,
-  sortOrder: string[] = [],
+  sortOrder: string[],
   sortFunction?: SortFunction,
   ascending = true
 ): Files => {
@@ -63,10 +63,10 @@ export const sortContents = (
   Object.entries(contents).forEach((entry) => {
     const [, stat] = entry;
 
-    if (!stat.isDirectory()) {
-      files.push(entry);
-    } else {
+    if (stat.isDirectory()) {
       folders.push(entry);
+    } else {
+      files.push(entry);
     }
   });
 

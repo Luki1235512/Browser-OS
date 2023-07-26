@@ -84,7 +84,12 @@
     ],
     "no-shadow": ["error", { "hoist": "all" }],
     "no-unsafe-optional-chaining": "error",
+    "react/function-component-definition": [
+      "error",
+      { "namedComponents": "arrow-function" }
+    ],
     "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
+    "react/jsx-no-useless-fragment": "off",
     "react/jsx-props-no-spreading": "off",
     "react/jsx-sort-props": [
       "error",
@@ -111,11 +116,7 @@
     "unicorn/prevent-abbreviations": "off",
 
     //TODO
-    "react/jsx-no-useless-fragment": "off",
-    "no-promise-executor-return": "off",
-    "react/function-component-definition": "off",
     "no-bitwise": "off",
-    "default-param-last": "off",
     "unicorn/no-negated-condition": "off",
     "unicorn/prefer-blob-reading-methods": "off",
     "unicorn/no-await-expression-member": "off"
