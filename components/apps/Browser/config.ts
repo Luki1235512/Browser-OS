@@ -1,5 +1,5 @@
 export const config = {
-  referrerPolicy: "no-referer" as React.HTMLAttributeReferrerPolicy,
+  referrerPolicy: "no-referrer" as React.HTMLAttributeReferrerPolicy,
   sandbox:
     "allow-downloads allow-forms allow-modals allow-popups allow-same-origin allow-scripts",
 };

@@ -21,8 +21,8 @@ export const config: ITerminalOptions = {
 };
 
 export const libs = [
-  "/Program Files/xterm.js/xterm.css",
-  "/Program Files/xterm.js/xterm.js",
+  "/Program Files/Xterm.js/xterm.css",
+  "/Program Files/Xterm.js/xterm.js",
 ];
 
 export const PROMPT_CHARACTER = ">";

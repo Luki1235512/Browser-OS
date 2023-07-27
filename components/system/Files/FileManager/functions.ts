@@ -63,10 +63,10 @@ export const sortContents = (
   Object.entries(contents).forEach((entry) => {
     const [, stat] = entry;
 
-    if (stat.isDirectory()) {
-      folders.push(entry);
-    } else {
+    if (!stat.isDirectory()) {
       files.push(entry);
+    } else {
+      folders.push(entry);
     }
   });
 
