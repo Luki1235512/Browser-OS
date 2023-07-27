@@ -13,6 +13,7 @@ const StyledStatusBar = styled.footer`
   width: 100%;
 
   div {
+    display: flex;
     padding: 0 10px;
     margin-top: -1px;
 
@@ -20,11 +21,11 @@ const StyledStatusBar = styled.footer`
       border-right-width: 1px;
       border-right-color: #fff;
       border-right-style: solid;
-      bottom: 6px;
       content: "";
       height: 11px;
       margin-left: 10px;
-      position: absolute;
+      position: relative;
+      top: 3px;
 
       &:last-child {
         margin-right: 10px;
