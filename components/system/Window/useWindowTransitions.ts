@@ -33,7 +33,10 @@ const baseMinimize = {
   scale: 0.7,
 };
 
-const useWindowTransitions = (id: string): MotionProps => {
+const useWindowTransitions = (
+  id: string,
+  noInitialScaling = false
+): MotionProps => {
   const { processes } = useProcesses();
   const { closing, componentWindow, maximized, minimized, taskbarEntry } =
     processes[id] || {};
@@ -86,7 +89,7 @@ const useWindowTransitions = (id: string): MotionProps => {
     },
     variants: {
       active,
-      initial,
+      initial: { ...initial, ...(noInitialScaling && { scale: 1 }) },
       maximize,
       minimize,
     },
