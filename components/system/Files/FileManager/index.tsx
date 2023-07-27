@@ -69,18 +69,6 @@ const FileManager = ({
     }
   }, [currentUrl, folderActions, url]);
 
-  // TODO: Change this?
-  //   <StyledFileManager
-  //   ref={fileManagerRef}
-  //   scrollable={!hideScrolling}
-  //   {...(!readOnly && {
-  //     selecting: isSelecting,
-  //     ...fileDrop,
-  //     ...folderContextMenu,
-  //     ...selectionEvents,
-  //   })}
-  // >
-
   return (
     <>
       {loading ? (
@@ -89,10 +77,12 @@ const FileManager = ({
         <StyledFileManager
           ref={fileManagerRef}
           scrollable={!hideScrolling}
-          selecting={isSelecting}
-          {...selectionEvents}
-          {...fileDrop}
-          {...folderContextMenu}
+          {...(!readOnly && {
+            selecting: isSelecting,
+            ...fileDrop,
+            ...folderContextMenu,
+            ...selectionEvents,
+          })}
         >
           {isSelecting && <StyledSelection style={selectionStyling} />}
           {Object.keys(files).map((file) => (
