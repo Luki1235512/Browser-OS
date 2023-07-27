@@ -47,6 +47,7 @@ type FileEntryProps = {
   isLoadingFileManager: boolean;
   name: string;
   path: string;
+  readOnly?: boolean;
   renaming: boolean;
   selectionRect?: SelectionRect;
   setRenaming: React.Dispatch<React.SetStateAction<string>>;
@@ -77,8 +78,6 @@ const truncateName = (
   return nonBreakingName;
 };
 
-const focusing: string[] = [];
-
 const FileEntry = ({
   fileActions,
   fileManagerId,
@@ -89,6 +88,7 @@ const FileEntry = ({
   isLoadingFileManager,
   name,
   path,
+  readOnly,
   renaming,
   selectionRect,
   setRenaming,
@@ -129,13 +129,7 @@ const FileEntry = ({
 
   useEffect(() => {
     if (buttonRef.current) {
-      const inFocusedEntries = focusedEntries.includes(fileName);
-      const inFocusing = focusing.includes(fileName);
-      const isFocused = inFocusedEntries || inFocusing;
-
-      if (inFocusedEntries && inFocusing) {
-        focusing.splice(focusing.indexOf(fileName), 1);
-      }
+      const isFocused = focusedEntries.includes(fileName);
 
       if (selectionRect && fileManagerRef.current) {
         const selected = isSelectionIntersecting(
@@ -145,7 +139,6 @@ const FileEntry = ({
         );
 
         if (selected && !isFocused) {
-          focusing.push(fileName);
           focusEntry(fileName);
           buttonRef.current.focus(PREVENT_SCROLL);
         } else if (!selected && isFocused) {
@@ -232,7 +225,8 @@ const FileEntry = ({
         fileActions,
         focusFunctions,
         focusedEntries,
-        fileManagerId
+        fileManagerId,
+        readOnly
       )}
     >
       <figure>

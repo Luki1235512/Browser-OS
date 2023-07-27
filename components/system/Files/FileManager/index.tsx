@@ -19,6 +19,7 @@ type FileManagerProps = {
   hideLoading?: boolean;
   hideScrolling?: boolean;
   hideShortcutIcons?: boolean;
+  readOnly?: boolean;
   showStatusBar?: boolean;
   id?: string;
   url: string;
@@ -30,6 +31,7 @@ const FileManager = ({
   hideScrolling,
   hideShortcutIcons,
   id,
+  readOnly,
   showStatusBar,
   url,
   view,
@@ -67,6 +69,18 @@ const FileManager = ({
     }
   }, [currentUrl, folderActions, url]);
 
+  // TODO: Change this?
+  //   <StyledFileManager
+  //   ref={fileManagerRef}
+  //   scrollable={!hideScrolling}
+  //   {...(!readOnly && {
+  //     selecting: isSelecting,
+  //     ...fileDrop,
+  //     ...folderContextMenu,
+  //     ...selectionEvents,
+  //   })}
+  // >
+
   return (
     <>
       {loading ? (
@@ -85,7 +99,7 @@ const FileManager = ({
             <StyledFileEntry
               key={file}
               visible={!isLoading}
-              {...(renaming !== file && draggableEntry(url, file))}
+              {...(renaming !== file && !readOnly && draggableEntry(url, file))}
               {...focusableEntry(file)}
             >
               <FileEntry
@@ -98,6 +112,7 @@ const FileManager = ({
                 isLoadingFileManager={isLoading}
                 name={basename(file, SHORTCUT_EXTENSION)}
                 path={join(url, file)}
+                readOnly={readOnly}
                 renaming={renaming === file}
                 selectionRect={selectionRect}
                 setRenaming={setRenaming}
