@@ -8,9 +8,8 @@ const StyledFileEntry = styled.li`
     padding-bottom: 1px;
     place-items: center;
 
-    &:hover {
-      background-color: hsla(300, 100%, 40%, 40%);
-      border: 1px solid hsla(300, 100%, 40%, 70%);
+    figcaption {
+      color: #fff;
     }
 
     img {
@@ -18,8 +17,20 @@ const StyledFileEntry = styled.li`
       margin-right: 8px;
     }
 
-    figcaption {
-      color: #fff;
+    &:active {
+      figcaption {
+        letter-spacing: -0.15px;
+        opacity: 0.9;
+      }
+
+      img {
+        margin-left: 7px;
+      }
+    }
+
+    &:hover {
+      background-color: hsla(300, 100%, 40%, 40%);
+      border: 1px solid hsla(300, 100%, 40%, 70%);
     }
   }
 `;
