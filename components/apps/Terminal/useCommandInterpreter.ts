@@ -10,11 +10,13 @@ import { getTimezoneOffsetISOString } from "utils/functions";
 import type { Terminal } from "xterm";
 
 const { alias, author, license, name, version } = packageJson;
-// const { commit } = window;
 
 const displayLicense = `${license} License`;
-// const displayVersion = `${version}${commit ? `-${commit}` : ""}`;
-const displayVersion = `${version}`;
+const displayVersion = (): string => {
+  const { commit } = window;
+
+  return `${version}${commit ? `-${commit}` : ""}`;
+};
 
 const useCommandInterpreter = (
   id: string,
@@ -35,7 +37,7 @@ const useCommandInterpreter = (
   } = useProcesses();
   const newLine = (): void => terminal?.writeln("");
   const welcome = (): void => {
-    terminal?.writeln(`${alias || name} [Version ${displayVersion}]`);
+    terminal?.writeln(`${alias || name} [Version ${displayVersion()}]`);
     terminal?.writeln(`By ${author}. ${displayLicense}.`);
   };
   const unknownCommand = (baseCommand: string): void =>
@@ -206,7 +208,7 @@ const useCommandInterpreter = (
       }
       case "ver":
       case "version": {
-        terminal?.writeln(`\r\n\r\n${displayVersion}`);
+        terminal?.writeln(`\r\n\r\n${displayVersion()}`);
         break;
       }
       case "whoami": {
