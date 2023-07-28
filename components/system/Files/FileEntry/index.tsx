@@ -112,7 +112,7 @@ const FileEntry = ({
   const { createPath, pasteList, updateFolder } = useFileSystem();
   const [showInFileManager, setShowInFileManager] = useState(false);
   const { formats, sizes } = useTheme();
-  const singleClick = view === "list";
+  const listView = view === "list";
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const figureRef = useRef<HTMLElement | null>(null);
   const fileName = basename(path);
@@ -237,12 +237,12 @@ const FileEntry = ({
           ) {
             changeUrl(fileManagerId, url);
             blurEntry();
-          } else if (openInFileExplorer && view === "list") {
+          } else if (openInFileExplorer && listView) {
             setShowInFileManager((currentState) => !currentState);
           } else {
             openFile(pid, !isDynamicIcon ? icon : undefined);
           }
-        }, singleClick)}
+        }, listView)}
         {...(openInFileExplorer && fileDrop)}
         {...useFileContextMenu(
           url,
@@ -258,7 +258,7 @@ const FileEntry = ({
       >
         <figure
           ref={figureRef}
-          {...(view === "list" && spotlightEffect(figureRef.current))}
+          {...(listView && spotlightEffect(figureRef.current))}
         >
           {[icon, ...(filteredSubIcons || [])].map((entryIcon) => (
             <Icon
@@ -289,7 +289,7 @@ const FileEntry = ({
                     sizes.fileEntry.fontSize,
                     formats.systemFont,
                     sizes.fileEntry[
-                      view === "list"
+                      listView
                         ? "maxListTextDisplayWidth"
                         : "maxIconTextDisplayWidth"
                     ]
