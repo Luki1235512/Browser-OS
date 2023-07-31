@@ -1,4 +1,5 @@
 import { BACKSPACE } from "components/apps/Terminal/config";
+import help from "components/apps/Terminal/help";
 import loadWapm from "components/apps/Terminal/loadWapm";
 import processGit from "components/apps/Terminal/processGit";
 import type { CommandInterpreter } from "components/apps/Terminal/types";
@@ -144,6 +145,10 @@ const useCommandInterpreter = (
         if (fs && terminal) {
           await processGit(commandArgs, cd, terminal, fs, exists, updateFolder);
         }
+        break;
+      }
+      case "help": {
+        if (terminal) help(commandArgs, terminal);
         break;
       }
       case "history": {

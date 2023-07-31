@@ -68,9 +68,7 @@ const processGit = async (
     }
     // eslint-disable-next-line unicorn/no-useless-switch-case
     case "help":
-    default: {
-      console.log("git help");
-    }
+    default:
   }
 
   updateFolder(cd);
