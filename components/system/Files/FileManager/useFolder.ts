@@ -33,7 +33,7 @@ import {
   SHORTCUT_EXTENSION,
 } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
-import { unzip } from "utils/zipFunctions";
+import { unrar, unzip } from "utils/zipFunctions";
 
 export type FileActions = {
   archiveFiles: (paths: string[]) => void;
@@ -372,7 +372,9 @@ const useFolder = (
   );
   const extractFiles = useCallback(
     async (path: string): Promise<void> => {
-      const unzippedFiles = await unzip(await readFile(path));
+      const data = await readFile(path);
+      const unzippedFiles =
+        extname(path) === ".rar" ? await unrar(data) : await unzip(data);
       const zipFolderName = basename(path, extname(path));
 
       if (await mkdir(join(directory, zipFolderName))) {
