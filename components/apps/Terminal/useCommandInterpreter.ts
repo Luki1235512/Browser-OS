@@ -1,4 +1,5 @@
 import { BACKSPACE } from "components/apps/Terminal/config";
+import loadWapm from "components/apps/Terminal/loadWapm";
 import type { CommandInterpreter } from "components/apps/Terminal/types";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
@@ -228,6 +229,11 @@ const useCommandInterpreter = (
       case "ver":
       case "version": {
         terminal?.writeln(`\r\n\r\n${displayVersion()}`);
+        break;
+      }
+      case "wapm":
+      case "wax": {
+        await loadWapm(commandArgs, terminal);
         break;
       }
       case "whoami": {
