@@ -1,5 +1,6 @@
 import { BACKSPACE } from "components/apps/Terminal/config";
 import loadWapm from "components/apps/Terminal/loadWapm";
+import processGit from "components/apps/Terminal/processGit";
 import type { CommandInterpreter } from "components/apps/Terminal/types";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
@@ -28,7 +29,8 @@ const useCommandInterpreter = (
   const [history, setHistory] = useState([""]);
   const [position, setPosition] = useState(0);
   const [command, setCommand] = useState<string>("");
-  const { exists, readdir, readFile, resetFs, stat } = useFileSystem();
+  const { exists, fs, readdir, readFile, resetFs, stat, updateFolder } =
+    useFileSystem();
   const setHistoryPosition = (step: number): void => {
     const newPosition = position + step;
 
@@ -136,6 +138,12 @@ const useCommandInterpreter = (
       case "exit":
       case "quit": {
         closeWithTransition(id);
+        break;
+      }
+      case "git": {
+        if (fs && terminal) {
+          await processGit(commandArgs, cd, terminal, fs, exists, updateFolder);
+        }
         break;
       }
       case "history": {
