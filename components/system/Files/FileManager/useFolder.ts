@@ -234,10 +234,7 @@ const useFolder = (
         }
       }
 
-      if (updatePath) {
-        updateFolder(path);
-        updateFolder(directory, undefined, basename(path));
-      }
+      if (updatePath) updateFolder(directory, undefined, basename(path));
     },
     [directory, readdir, rmdir, unlink, updateFolder]
   );
