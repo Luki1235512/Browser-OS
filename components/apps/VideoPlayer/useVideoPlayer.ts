@@ -14,7 +14,7 @@ import { useProcesses } from "contexts/process";
 import { useCallback, useEffect, useState } from "react";
 import { bufferToUrl, cleanUpBufferUrl, loadFiles } from "utils/functions";
 
-const isYouTubeUrl = (url: string): boolean =>
+export const isYouTubeUrl = (url: string): boolean =>
   url.includes("youtube.com/") || url.includes("youtu.be/");
 
 const useVideoPlayer = (
@@ -55,30 +55,30 @@ const useVideoPlayer = (
   const loadVideo = useCallback(async () => {
     if (!player) {
       // const [videoElement] = containerRef.current
-      //   ?.childNodes as NodeListOf<HTMLVideoElement>;
+      // ?.childNodes as NodeListOf<HTMLVideoElement>;
       // const videoPlayer = window.videojs(
       //   videoElement,
-      //   {
-      //     ...config,
-      //     ...(url && { sources: [await getSource()] }),
-      //   },
-      //   () => {
-      //     videoPlayer.on("firstplay", () => {
-      //       const [height, width] = [
-      //         videoPlayer.videoHeight(),
-      //         videoPlayer.videoWidth(),
-      //       ];
-      //       const [vh, vw] = [viewHeight(), viewWidth()];
-      //       if (height && width) {
-      //         if (height > vh || width > vw) {
-      //           updateWindowSize(vw * (height / width), vw);
-      //         } else {
-      //           updateWindowSize(height, width);
-      //         }
+      // {
+      //   ...config,
+      //   ...(url && { sources: [await getSource()] }),
+      // },
+      // () => {
+      //   videoPlayer.on("firstplay", () => {
+      //     const [height, width] = [
+      //       videoPlayer.videoHeight(),
+      //       videoPlayer.videoWidth(),
+      //     ];
+      //     const [vh, vw] = [viewHeight(), viewWidth()];
+      //     if (height && width) {
+      //       if (height > vh || width > vw) {
+      //         updateWindowSize(vw * (height / width), vw);
+      //       } else {
+      //         updateWindowSize(height, width);
       //       }
-      //     });
-      //     setPlayer(videoPlayer);
-      //   }
+      //     }
+      //   });
+      //   setPlayer(videoPlayer);
+      // }
       // );
     } else if (url) {
       player.src(await getSource());
