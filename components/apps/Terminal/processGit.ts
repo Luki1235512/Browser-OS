@@ -16,7 +16,7 @@ const processGit = async (
   const { checkout, clone, version } = await import("isomorphic-git");
   const events: string[] = [];
   const onMessage: MessageCallback = (message) =>
-    terminal.writeln(`remote: ${message.trim}`);
+    terminal.writeln(`remote: ${message.trim()}`);
   const onProgress: ProgressCallback = ({ phase }): void => {
     if (events.at(-1) !== phase) {
       terminal.writeln(phase);

@@ -16,7 +16,7 @@ const StyledStartMenu = styled(motion.nav)`
   contain: strict;
 
   ${StyledFileManager} {
-    ${ScrollBars(13, -2, -1)}
+    ${ScrollBars(13, -2, -1)};
 
     padding-top: 7px;
     padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width};

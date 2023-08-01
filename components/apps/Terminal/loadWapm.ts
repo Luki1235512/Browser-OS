@@ -17,8 +17,8 @@ const loadWapm = async (
   terminal?.writeln("");
 
   try {
-    const wamsBinary = await fetchCommandFromWAPM({ args: commandArgs });
-    const moduleResponse = await lowerI64Imports(wamsBinary);
+    const wasmBinary = await fetchCommandFromWAPM({ args: commandArgs });
+    const moduleResponse = await lowerI64Imports(wasmBinary);
 
     if (moduleResponse !== undefined && moduleResponse instanceof Uint8Array) {
       const wasmModule = await WebAssembly.compile(moduleResponse);

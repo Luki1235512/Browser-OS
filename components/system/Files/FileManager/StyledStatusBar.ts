@@ -26,11 +26,11 @@ const StyledStatusBar = styled.footer`
       border-right-color: #fff;
       margin-left: 11px;
       content: "";
+    }
 
-      .selected {
-        overflow: hidden;
-        margin-right: 10px;
-      }
+    .selected {
+      overflow: hidden;
+      margin-right: 10px;
     }
   }
 `;

@@ -57,7 +57,7 @@ const useDraggableEntries = (
         "text/plain",
         JSON.stringify(
           focusedEntries.length <= 1
-            ? join(entryUrl, file)
+            ? [join(entryUrl, file)]
             : focusedEntries.map((entryFile) => join(entryUrl, entryFile))
         )
       );
