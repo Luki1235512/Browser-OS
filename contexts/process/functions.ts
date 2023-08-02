@@ -1,6 +1,7 @@
 import processDirectory from "contexts/process/directory";
 import type {
   Process,
+  ProcessArguments,
   ProcessElements,
   Processes,
 } from "contexts/process/types";
@@ -46,8 +47,9 @@ export const createPid = (
 };
 
 export const openProcess =
-  (processId: string, url: string, icon?: string) =>
+  (processId: string, processArguments: ProcessArguments, icon?: string) =>
   (currentProcesses: Processes): Processes => {
+    const { url = "" } = processArguments;
     const { singleton } = processDirectory[processId] || {};
 
     if (singleton && currentProcesses[processId]) {
@@ -73,7 +75,7 @@ export const openProcess =
           [id]: {
             ...processDirectory[processId],
             ...(typeof icon === "string" && { icon }),
-            url,
+            ...processArguments,
           },
         };
   };
