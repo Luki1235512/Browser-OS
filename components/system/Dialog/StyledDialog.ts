@@ -5,7 +5,7 @@ const StyledDialog = styled.div`
   h1,
   div {
     display: flex;
-    height: calc(100% - 48px, - 41px - 2px);
+    height: calc(100% - 40px, - 41px - 2px);
     flex-direction: column;
     align-items: baseline;
     justify-content: space-around;
@@ -15,7 +15,6 @@ const StyledDialog = styled.div`
       width: 100%;
       height: 15px;
       border: 1px solid rgb(188, 188, 188);
-      appearance: none;
 
       &::-webkit-progress-bar {
         background-color: rgb(230, 230, 230);
