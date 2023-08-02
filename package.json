@@ -72,6 +72,7 @@
     "browserfs": "https://github.com/jvilk/BrowserFS.git#a96aa2d",
     "emulators": "^0.73.8",
     "emulators-ui": "^0.73.9",
+    "eruda": "https://github.com/liriliri/eruda",
     "eslint": "^8.43.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-next": "^13.4.6",
