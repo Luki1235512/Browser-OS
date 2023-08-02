@@ -99,8 +99,8 @@ const useFolder = (
   } = useFileSystem();
   const {
     sessionLoaded,
-    setSortOrders,
-    sortOrders: { [directory]: sortOrder } = {},
+    setSortOrder,
+    sortOrders: { [directory]: [sortOrder] = [] } = {},
   } = useSession();
   const [currentDirectory, setCurrentDirectory] = useState(directory);
   const { closeProcessesByUrl } = useProcesses();
@@ -189,11 +189,9 @@ const useFolder = (
             },
             {}
           );
+
           if (dirContents.length > 0) {
-            setSortOrders((currentSortOrder) => ({
-              ...currentSortOrder,
-              [directory]: Object.keys(sortedFiles),
-            }));
+            setSortOrder(directory, Object.keys(sortedFiles));
           } else {
             setFiles({});
           }
@@ -214,7 +212,7 @@ const useFolder = (
       files,
       hideFolders,
       readdir,
-      setSortOrders,
+      setSortOrder,
       stat,
       statsWithShortcutInfo,
     ]
@@ -277,7 +275,6 @@ const useFolder = (
       ),
     [getFile, readdir, stat]
   );
-
   const renameFile = async (path: string, name?: string): Promise<void> => {
     const newName = name?.replace(INVALID_FILE_CHARACTERS, "").trim();
 
@@ -367,6 +364,7 @@ const useFolder = (
       ),
     [directory, getFile, newPath, readdir, stat]
   );
+
   const extractFiles = useCallback(
     async (path: string): Promise<void> => {
       const data = await readFile(path);
@@ -379,6 +377,7 @@ const useFolder = (
           unzippedFiles
         )) {
           const localPath = join(directory, zipFolderName, extractPath);
+
           /* eslint-disable no-await-in-loop */
           if (fileContents.length === 0 && extractPath.endsWith("/")) {
             await mkdir(localPath);
@@ -386,10 +385,12 @@ const useFolder = (
             if (!(await exists(dirname(localPath)))) {
               await mkdirRecursive(dirname(localPath));
             }
+
             await writeFile(localPath, Buffer.from(fileContents));
           }
           /* eslint-enable no-await-in-loop */
         }
+
         updateFolder(directory, zipFolderName);
       }
     },
@@ -406,7 +407,6 @@ const useFolder = (
   const pasteToFolder = async (): Promise<void> => {
     const pasteEntries = Object.entries(pasteList);
     const moving = pasteEntries.some(([, operation]) => operation === "move");
-
     const copyFiles = async (entry: string, basePath = ""): Promise<void> => {
       const newBasePath = join(basePath, basename(entry));
 
@@ -464,12 +464,10 @@ const useFolder = (
             );
 
             if (oldName && newName) {
-              setSortOrders((currentSortOrder) => ({
-                ...currentSortOrder,
-                [directory]: sortOrder.map((entry) =>
-                  entry === oldName ? newName : entry
-                ),
-              }));
+              setSortOrder(
+                directory,
+                sortOrder.map((entry) => (entry === oldName ? newName : entry))
+              );
             }
           } else if (
             fileNames.some((file, index) => file !== sortOrder[index])
@@ -486,7 +484,7 @@ const useFolder = (
     directory,
     files,
     sessionLoaded,
-    setSortOrders,
+    setSortOrder,
     sortOrder,
     updateFiles,
   ]);
