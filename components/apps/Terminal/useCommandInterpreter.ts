@@ -14,6 +14,8 @@ import { HOME, ONE_DAY_IN_MILLISECONDS } from "utils/constants";
 import { getTimezoneOffsetISOString } from "utils/functions";
 import type { Terminal } from "xterm";
 
+import { convertNewLines } from "./useTerminal";
+
 const { alias, author, license, name, version } = packageJson;
 
 const displayLicense = `${license} License`;
@@ -45,6 +47,7 @@ const commands: Record<string, string> = {
   uptime: "Display the current uptime of the local system.",
   ver: "Displays the system version.",
   wapm: "Run universal Wasm binaries.",
+  weather: "Weather forecast service.",
   whoami: "Displays user information.",
 };
 
@@ -60,6 +63,7 @@ const aliases: Record<string, string[]> = {
   type: ["cat"],
   ver: ["version"],
   wapm: ["wax"],
+  weather: ["wttr"],
 };
 
 const useCommandInterpreter = (
@@ -320,6 +324,13 @@ const useCommandInterpreter = (
       case "wapm":
       case "wax": {
         await loadWapm(commandArgs, terminal);
+        break;
+      }
+      case "weather":
+      case "wttr": {
+        const response = await fetch("https://wttr.in/?1nAF");
+
+        terminal?.write(`\r\n${convertNewLines(await response.text())}`);
         break;
       }
       case "whoami": {
