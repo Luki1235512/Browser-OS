@@ -30,6 +30,7 @@ const useTerminal = (
     command,
     processCommand,
     setCommand,
+    setCursorPosition,
     setHistoryPosition,
     welcome,
   } = useCommandInterpreter(id, terminal);
@@ -60,6 +61,14 @@ const useTerminal = (
             setCommand((currentCommand) => currentCommand.slice(0, -1));
             break;
           }
+          case "ArrowRight": {
+            setCursorPosition(+1);
+            break;
+          }
+          case "ArrowLeft": {
+            setCursorPosition(-1);
+            break;
+          }
           case "ArrowDown": {
             setHistoryPosition(+1);
             break;
@@ -82,6 +91,7 @@ const useTerminal = (
       pasteToTerminal,
       processCommand,
       setCommand,
+      setCursorPosition,
       setHistoryPosition,
       terminal,
     ]
