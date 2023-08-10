@@ -10,6 +10,7 @@ import type {
 } from "components/apps/Terminal/types";
 import useCommandInterpreter from "components/apps/Terminal/useCommandInterpreter";
 import { haltEvent } from "components/system/Files/FileManager/functions";
+import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import packageJson from "package.json";
 import { useCallback, useEffect, useState } from "react";
@@ -17,6 +18,8 @@ import { HOME } from "utils/constants";
 import { loadFiles } from "utils/functions";
 import useResizeObserver from "utils/useResizeObserver";
 import type { IDisposable, Terminal } from "xterm";
+
+import { autoComplete } from "./functions";
 
 const { alias, author, license, name, version } = packageJson;
 
@@ -50,6 +53,7 @@ const useTerminal = (
   const {
     processes: { [id]: { closing = false } = {} },
   } = useProcesses();
+  const { readdir } = useFileSystem();
   const [terminal, setTerminal] = useState<Terminal>();
   const [fitAddon, setFitAddon] = useState<FitAddon>();
   const [localEcho, setLocalEcho] = useState<LocalEcho>();
@@ -147,8 +151,10 @@ const useTerminal = (
       prompt(HOME);
       setPrompted(true);
       terminal.focus();
+
+      readdir(HOME).then((files) => autoComplete(files, localEcho));
     }
-  }, [localEcho, processCommand, prompted, terminal]);
+  }, [localEcho, processCommand, prompted, readdir, terminal]);
 
   useResizeObserver(containerRef.current, autoFit);
 };
