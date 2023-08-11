@@ -3,6 +3,7 @@ import {
   libs,
   PROMPT_CHARACTER,
 } from "components/apps/Terminal/config";
+import { autoComplete } from "components/apps/Terminal/functions";
 import type {
   FitAddon,
   LocalEcho,
@@ -19,8 +20,6 @@ import { loadFiles } from "utils/functions";
 import useResizeObserver from "utils/useResizeObserver";
 import type { IDisposable, Terminal } from "xterm";
 
-import { autoComplete } from "./functions";
-
 const { alias, author, license, name, version } = packageJson;
 
 export const displayLicense = `${license} License`;
@@ -29,18 +28,6 @@ export const displayVersion = (): string => {
   const { commit } = window;
 
   return `${version}${commit ? `-${commit}` : ""}`;
-};
-
-const pasteToLocalEcho = (text: string, localEcho: LocalEcho): void => {
-  const { _cursor: cursor, _input: input } = localEcho;
-  const newInput = `${input.slice(0, cursor)}${text}${input.slice(cursor)}`;
-
-  localEcho.print(text);
-
-  /* eslint-disable no-param-reassign */
-  localEcho._input = newInput;
-  localEcho._cursor = cursor + text.length;
-  /* eslint-enable no-param-reassign */
 };
 
 const useTerminal = (
@@ -62,7 +49,7 @@ const useTerminal = (
   const autoFit = useCallback(() => fitAddon?.fit(), [fitAddon]);
 
   useEffect(() => {
-    if (localEcho && url) pasteToLocalEcho(url, localEcho);
+    if (localEcho && url) localEcho.handleCursorInsert(url);
   }, [localEcho, url]);
 
   useEffect(() => {
@@ -105,7 +92,7 @@ const useTerminal = (
           navigator.clipboard
             .readText()
             .then((clipboardText) =>
-              pasteToLocalEcho(clipboardText, newLocalEcho)
+              newLocalEcho.handleCursorInsert(clipboardText)
             );
         }
       });
@@ -128,7 +115,7 @@ const useTerminal = (
             navigator.clipboard
               .readText()
               .then((clipboardText) =>
-                pasteToLocalEcho(clipboardText, localEcho)
+                localEcho.handleCursorInsert(clipboardText)
               );
           }
         }
