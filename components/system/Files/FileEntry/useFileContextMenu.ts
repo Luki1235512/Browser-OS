@@ -96,7 +96,7 @@ const useFileContextMenu = (
       { action: () => setRenaming(baseName), label: "Rename" }
     );
 
-    if (url) {
+    if (path) {
       menuItems.unshift(MENU_SEPARATOR);
 
       if (MOUNTABLE_EXTENSIONS.has(pathExtension) && pathExtension !== ".iso") {
