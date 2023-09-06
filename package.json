@@ -23,6 +23,7 @@
   },
   "lint-staged": {
     "*": "prettier --ignore-unknown --write",
+    "*.{ts,tsx}": "stylelint --fix",
     "*.{js,ts,tsx}": "eslint --fix"
   },
   "engines": {
@@ -45,9 +46,9 @@
     "ini": "^4.1.1",
     "isomorphic-git": "^1.10.1",
     "music-metadata-browser": "^2.5.10",
-    "node-unrar-js": "^1.0.3",
     "next": "^13.4.4",
     "node-fetch": "^2.6.1",
+    "node-unrar-js": "^1.0.3",
     "polished": "^4.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -98,7 +99,6 @@
     "postcss-syntax": "^0.36.2",
     "prettier": "^2.8.8",
     "stylelint": "^15.8.0",
-    "stylelint-config-idiomatic-order": "^8.1.0",
     "stylelint-config-prettier": "^9.0.3",
     "stylelint-config-sass-guidelines": "^10.0.0",
     "stylelint-config-standard": "^33.0.0",
