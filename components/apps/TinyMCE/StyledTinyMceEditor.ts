@@ -26,6 +26,10 @@ const StyledEditor = styled.div`
           place-items: center;
           text-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
         }
+
+        .tox-toolbar-overlord {
+          display: none;
+        }
       }
     }
   }
