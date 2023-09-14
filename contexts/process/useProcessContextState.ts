@@ -4,6 +4,7 @@ import {
   minimizeProcess,
   openProcess,
   setIcon,
+  setProcessArgument,
   setProcessElement,
   setTitle,
   setUrl,
@@ -17,6 +18,11 @@ import { useCallback, useState } from "react";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 
 export type ProcessContextState = {
+  argument: (
+    id: string,
+    name: keyof ProcessArguments,
+    value: ProcessArguments[keyof ProcessArguments]
+  ) => void;
   close: (id: string, closing?: boolean) => void;
   closeProcessesByUrl: (closeUrl: string) => void;
   closeWithTransition: (id: string) => void;
@@ -36,7 +42,14 @@ export type ProcessContextState = {
 
 const useProcessContextState = (): ProcessContextState => {
   const [processes, setProcesses] = useState<Processes>({});
-
+  const argument = useCallback(
+    (
+      id: string,
+      name: keyof ProcessArguments,
+      value: ProcessArguments[keyof ProcessArguments]
+    ) => setProcesses(setProcessArgument(id, name, value)),
+    []
+  );
   const close = useCallback(
     (id: string, closing?: boolean) => setProcesses(closeProcess(id, closing)),
     []
@@ -87,6 +100,7 @@ const useProcessContextState = (): ProcessContextState => {
   );
 
   return {
+    argument,
     close,
     closeProcessesByUrl,
     closeWithTransition,
