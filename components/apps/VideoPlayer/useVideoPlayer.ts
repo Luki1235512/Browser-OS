@@ -52,47 +52,36 @@ const useVideoPlayer = (
 
     return { src, type, url };
   }, [cleanUpSource, readFile, url]);
+  const loadPlayer = useCallback(() => {
+    // const [videoElement] = containerRef.current
+    //   ?.childNodes as NodeListOf<HTMLVideoElement>;
+    // const videoPlayer = window.videojs(videoElement, config, () => {
+    //   videoPlayer.on("firstplay", () => {
+    //     const [height, width] = [
+    //       videoPlayer.videoHeight(),
+    //       videoPlayer.videoWidth(),
+    //     ];
+    //     const [vh, vw] = [viewHeight(), viewWidth()];
+    //     if (height && width) {
+    //       if (height > vh || width > vw) {
+    //         updateWindowSize(vw * (height / width), vw);
+    //       } else {
+    //         updateWindowSize(height, width);
+    //       }
+    //     }
+    //   });
+    //   setPlayer(videoPlayer);
+    // });
+  }, [containerRef, updateWindowSize]);
   const loadVideo = useCallback(async () => {
-    if (!player) {
-      // const [videoElement] = containerRef.current
-      // ?.childNodes as NodeListOf<HTMLVideoElement>;
-      // const videoPlayer = window.videojs(
-      //   videoElement,
-      // {
-      //   ...config,
-      //   ...(url && { sources: [await getSource()] }),
-      // },
-      // () => {
-      //   videoPlayer.on("firstplay", () => {
-      //     const [height, width] = [
-      //       videoPlayer.videoHeight(),
-      //       videoPlayer.videoWidth(),
-      //     ];
-      //     const [vh, vw] = [viewHeight(), viewWidth()];
-      //     if (height && width) {
-      //       if (height > vh || width > vw) {
-      //         updateWindowSize(vw * (height / width), vw);
-      //       } else {
-      //         updateWindowSize(height, width);
-      //       }
-      //     }
-      //   });
-      //   setPlayer(videoPlayer);
-      // }
-      // );
-    } else if (url) {
-      player.src(await getSource());
+    if (player && url) {
+      try {
+        player.src(await getSource());
+        appendFileToTitle(url);
+        // eslint-disable-next-line no-empty
+      } catch {}
     }
-
-    if (url) appendFileToTitle(url);
-  }, [
-    appendFileToTitle,
-    containerRef,
-    getSource,
-    player,
-    updateWindowSize,
-    url,
-  ]);
+  }, [appendFileToTitle, getSource, player, url]);
 
   useEffect(() => {
     if (loading) {
@@ -103,19 +92,19 @@ const useVideoPlayer = (
   }, [loading, setLoading]);
 
   useEffect(() => {
-    if (!loading && !player) loadVideo();
+    if (!loading && !player) loadPlayer();
 
     return () => {
-      if (closing && player) {
+      if (closing) {
         cleanUpSource();
-        player.dispose();
+        player?.dispose();
       }
     };
-  }, [cleanUpSource, closing, loadVideo, loading, player]);
+  }, [cleanUpSource, closing, loadPlayer, loading, player]);
 
   useEffect(() => {
-    if (!loading && player && url) loadVideo();
-  }, [loadVideo, loading, player, url]);
+    if (!loading && !closing && player && url) loadVideo();
+  }, [closing, loadVideo, loading, player, url]);
 };
 
 export default useVideoPlayer;
