@@ -78,7 +78,7 @@ const usePDF = (
         [...ol.children].forEach((li) => li.remove());
 
         pages.forEach((page) => {
-          const li = document.createElement("li") as HTMLElement;
+          const li = document.createElement("li") as HTMLLIElement;
 
           li.appendChild(page);
           ol.appendChild(li);

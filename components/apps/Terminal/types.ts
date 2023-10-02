@@ -6,7 +6,6 @@ export type FitAddon = ITerminalAddon & { fit: () => void };
 
 export type LocalEcho = ITerminalAddon & {
   _autocompleteHandlers: { fn: unknown }[];
-
   addAutocompleteHandler: (
     callback: (index: number, tokens: string[]) => string[]
   ) => void;

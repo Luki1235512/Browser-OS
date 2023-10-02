@@ -7,7 +7,7 @@ type WASIError = Error & {
 
 const loadWapm = async (
   commandArgs: string[],
-  localEcho?: LocalEcho
+  localEcho: LocalEcho
 ): Promise<void> => {
   const { fetchCommandFromWAPM } = await import("@wasmer/wasm-terminal");
   const { lowerI64Imports } = await import("@wasmer/wasm-transformer");

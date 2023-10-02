@@ -38,14 +38,14 @@ const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
   const { setWindowStates, windowStates: { [id]: windowState } = {} } =
     useSession();
   const { maximized: wasMaximized } = windowState || {};
-  const [oppenedMaximized, setOpenedMaximized] = useState(false);
+  const [openedMaximized, setOpenedMaximized] = useState(false);
 
   useEffect(() => {
-    if (wasMaximized && !oppenedMaximized && process) {
-      setTimeout(() => maximize(id), TRANSITIONS_IN_MILLISECONDS.WINDOW * 2);
+    if (wasMaximized && !openedMaximized && process) {
+      setTimeout(() => maximize(id), TRANSITIONS_IN_MILLISECONDS.WINDOW * 1.25);
       setOpenedMaximized(true);
     }
-  }, [id, maximize, oppenedMaximized, process, wasMaximized]);
+  }, [id, maximize, openedMaximized, process, wasMaximized]);
 
   useEffect(() => {
     const { current: currentWindow } = rndRef;

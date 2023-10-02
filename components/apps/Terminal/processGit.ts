@@ -45,7 +45,7 @@ const processGit = async (
       const dir = dirName ? join(cd, dirName) : cd;
 
       try {
-        localEcho?.println(`Cloning into '${dirName}'...`);
+        localEcho.println(`Cloning into '${dirName}'...`);
 
         await clone({ ...options, corsProxy, dir, http, onMessage, url });
       } catch (error) {
@@ -60,12 +60,12 @@ const processGit = async (
         try {
           await checkout({ ...options, dir: cd, force: true, ref });
 
-          localEcho?.println(`Switched to branch '${ref}'`);
+          localEcho.println(`Switched to branch '${ref}'`);
         } catch (error) {
-          localEcho?.println((error as Error).message);
+          localEcho.println((error as Error).message);
         }
       } else {
-        localEcho?.println("fatal: not a git repository: .git");
+        localEcho.println("fatal: not a git repository: .git");
       }
       break;
     }

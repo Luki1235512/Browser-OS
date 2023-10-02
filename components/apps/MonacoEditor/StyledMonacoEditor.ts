@@ -3,8 +3,9 @@ import StyledWindow from "components/system/Window/StyledWindow";
 import styled from "styled-components";
 
 const StyledMonacoEditor = styled.div.attrs({ onBlur: overrideSubMenuStyling })`
-  width: 100%;
+  color: ${({ theme }) => theme.colors.text};
   height: 100%;
+  width: 100%;
 
   ${StyledWindow} & {
     height: ${({ theme }) =>

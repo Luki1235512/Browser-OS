@@ -70,10 +70,10 @@ const useTinyMCE = (
   const loadFile = useCallback(async () => {
     if (editor) {
       const fileContents = await readFile(url);
-      const modifiedData = new Date(getModifiedTime(url, await stat(url)));
+      const modifiedDate = new Date(getModifiedTime(url, await stat(url)));
       const date = new Intl.DateTimeFormat("en-US", {
         dateStyle: "medium",
-      }).format(modifiedData);
+      }).format(modifiedDate);
 
       if (fileContents.length > 0) setReadOnlyMode(editor);
 

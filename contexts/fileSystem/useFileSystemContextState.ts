@@ -246,7 +246,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
         !watchedPaths.some((watchedPath) =>
           watchedPath.startsWith(mountedPath)
         ) &&
-        rootFs?.mntMap[mountedPath]?.getName() !== "FileSystemAcess"
+        rootFs?.mntMap[mountedPath]?.getName() !== "FileSystemAccess"
       ) {
         rootFs?.umount?.(mountedPath);
       }

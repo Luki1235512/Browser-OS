@@ -103,7 +103,7 @@ const processDirectory: Processes = {
     background: "rgba(12, 12, 12, 0.6)",
     defaultSize: {
       height: 340,
-      width: 533,
+      width: 553,
     },
     icon: "/System/Icons/xterm.png",
     lockAspectRatio: true,
