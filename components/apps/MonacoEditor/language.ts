@@ -1,4 +1,4 @@
-import type { Plugin } from "prettier";
+// import type { Plugin } from "prettier";
 
 type Parser = { parser: string; plugins: Plugin[] };
 
@@ -18,28 +18,28 @@ export const getLanguageParser = async (
   language: string
 ): Promise<Parser | undefined> => {
   if (language === "javascript" || language === "typescript") {
-    return {
-      parser: "babel",
-      plugins: [await import("prettier/parser-babel")],
-    };
+    // return {
+    //   parser: "babel",
+    //   plugins: [await import("prettier/parser-babel")],
+    // };
   }
   if (language === "css" || language === "scss" || language === "less") {
-    return {
-      parser: "postcss",
-      plugins: [await import("prettier/parser-postcss")],
-    };
+    // return {
+    //   parser: "postcss",
+    //   plugins: [await import("prettier/parser-postcss")],
+    // };
   }
   if (language === "html") {
-    return {
-      parser: "html",
-      plugins: [await import("prettier/parser-html")],
-    };
+    // return {
+    //   parser: "html",
+    //   plugins: [await import("prettier/parser-html")],
+    // };
   }
   if (language === "md" || language === "mdx") {
-    return {
-      parser: "markdown",
-      plugins: [await import("prettier/parser-markdown")],
-    };
+    // return {
+    //   parser: "markdown",
+    //   plugins: [await import("prettier/parser-markdown")],
+    // };
   }
 
   return undefined;
@@ -58,7 +58,9 @@ export const prettyPrint = async (
     return JSON.stringify(JSON.parse(code), undefined, 2);
   }
 
-  const prettier = await import("prettier/standalone");
+  // const prettier = await import("prettier/standalone");
 
-  return prettier.format(code, await getLanguageParser(lcLanguage));
+  // return prettier.format(code, await getLanguageParser(lcLanguage));
+
+  return "";
 };
