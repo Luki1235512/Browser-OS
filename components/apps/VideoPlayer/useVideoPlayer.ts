@@ -71,8 +71,9 @@ const useVideoPlayer = (
     //     }
     //   });
     //   setPlayer(videoPlayer);
+    //   setLoading(false);
     // });
-  }, [containerRef, updateWindowSize]);
+  }, [containerRef, setLoading, updateWindowSize]);
   const loadVideo = useCallback(async () => {
     if (player && url) {
       try {
@@ -84,15 +85,13 @@ const useVideoPlayer = (
   }, [appendFileToTitle, getSource, player, url]);
 
   useEffect(() => {
-    if (loading) {
+    if (loading && !player) {
       loadFiles(libs).then(() => {
-        if (window.videojs !== undefined) setLoading(false);
+        if (window.videojs !== undefined) {
+          loadPlayer();
+        }
       });
     }
-  }, [loading, setLoading]);
-
-  useEffect(() => {
-    if (!loading && !player) loadPlayer();
 
     return () => {
       if (closing) {
