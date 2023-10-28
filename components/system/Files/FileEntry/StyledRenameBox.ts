@@ -8,8 +8,6 @@ const StyledRenameBox = styled.textarea.attrs({
   spellCheck: false,
 })`
   position: relative;
-  z-index: 1;
-  top: 2px;
   overflow: hidden;
   min-width: 30px;
   max-width: ${({ theme }) => `${theme.sizes.fileEntry.renameWidth}px`};
@@ -20,7 +18,10 @@ const StyledRenameBox = styled.textarea.attrs({
   font-size: 11.5px;
   resize: none;
   text-align: center;
+  top: 2px;
+  user-select: text;
   white-space: break-spaces;
+  z-index: 1;
 `;
 
 export default StyledRenameBox;
