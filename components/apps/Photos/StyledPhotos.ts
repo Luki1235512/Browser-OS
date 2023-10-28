@@ -25,6 +25,13 @@ const StyledPhotos = styled.div.attrs({ onBlur: overrideSubMenuStyling })`
     place-content: center;
     place-items: center;
 
+    div {
+      color: rgb(167, 167, 167);
+      font-size: 13px;
+      padding: 0 38px;
+      text-align: center;
+    }
+
     img {
       max-width: 100%;
       max-height: 100%;
