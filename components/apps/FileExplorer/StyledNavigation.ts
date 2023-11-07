@@ -60,7 +60,7 @@ const StyledNavigation = styled.nav`
       position: absolute;
       top: ${({ theme }) => `calc(${theme.sizes.titleBar.height} + 6px)`};
       right: 13px;
-      width: 32px;
+      width: 28px;
       height: 28px;
       margin: 0;
       background-color: rgb(300, 100, 255);
