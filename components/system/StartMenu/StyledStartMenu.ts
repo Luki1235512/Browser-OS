@@ -51,11 +51,11 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
 
   ${StyledFileManager} {
     ${ScrollBars(SCROLLBAR_WIDTH, -2, -1)};
-    scrollbar-width: none;
 
     padding-top: 7px;
     padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
     margin-top: 0;
+    scrollbar-width: none;
 
     ${StyledFileManager} {
       overflow: hidden;
