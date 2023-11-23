@@ -38,7 +38,7 @@ const useFileContextMenu = (
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { open, url: changeUrl } = useProcesses();
   const { setWallpaper } = useSession();
-  const urlExtension = extname(url);
+  const urlExtension = extname(url).toLowerCase();
   const baseName = basename(path);
   const isFocusedEntry = focusedEntries.includes(baseName);
   const { process: [extensionProcess, ...openWith] = [] } =
