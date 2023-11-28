@@ -89,7 +89,7 @@ const useDosCI = (
       if (canvas instanceof HTMLCanvasElement) {
         linkElement(id, "peekElement", canvas);
         setDosCI({ [url]: ci });
-        appendFileToTitle(url);
+        appendFileToTitle(basename(url));
         cleanUpBufferUrl(bundleURL);
         if (stateUrl) cleanUpBufferUrl(stateUrl);
         cleanUpGlobals(globals);

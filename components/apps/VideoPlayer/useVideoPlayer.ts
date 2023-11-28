@@ -11,6 +11,7 @@ import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import { basename } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { bufferToUrl, cleanUpBufferUrl, loadFiles } from "utils/functions";
 
@@ -78,7 +79,7 @@ const useVideoPlayer = (
     if (player && url) {
       try {
         player.src(await getSource());
-        appendFileToTitle(url);
+        appendFileToTitle(basename(url));
         // eslint-disable-next-line no-empty
       } catch {}
     }
