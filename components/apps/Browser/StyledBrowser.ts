@@ -14,6 +14,18 @@ const StyledBrowser = styled.div`
     place-content: center;
     place-items: center;
 
+    button {
+      margin-right: 4px;
+      margin-bottom: 4px;
+
+      &:not(:first-child) {
+        border-bottom: 1px solid rgb(250, 180, 255);
+        height: 33px;
+        justify-content: left;
+        padding: 0 8px;
+      }
+    }
+
     div {
       display: flex;
       width: 102px;
@@ -55,17 +67,17 @@ const StyledBrowser = styled.div`
     }
 
     input {
-      width: 100%;
-      height: 28px;
-      padding: 0 13px;
-      margin: 0 6px;
       background-color: rgb(250, 180, 255);
       border-radius: 18px;
       color: rgb(255, 255, 255);
       font-family: ${({ theme }) => theme.formats.systemFont};
       font-size: 13px;
+      height: 28px;
       letter-spacing: 0.2px;
-      line-height: 30px;
+      line-height: 26px;
+      margin: 0 6px;
+      padding: 0 13px;
+      width: 100%;
     }
   }
 `;
