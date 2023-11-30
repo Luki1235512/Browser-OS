@@ -14,15 +14,15 @@ const StyledBrowser = styled.div`
     place-content: center;
     place-items: center;
 
-    button {
-      margin-right: 4px;
-      margin-bottom: 4px;
+    &:not(:first-child) {
+      border-bottom: 1px solid rgb(250, 180, 255);
+      height: 33px;
+      justify-content: left;
+      padding: 0 8px;
 
-      &:not(:first-child) {
-        border-bottom: 1px solid rgb(250, 180, 255);
-        height: 33px;
-        justify-content: left;
-        padding: 0 8px;
+      button {
+        margin-right: 4px;
+        margin-bottom: 4px;
       }
     }
 
