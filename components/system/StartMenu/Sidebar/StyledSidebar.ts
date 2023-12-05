@@ -14,12 +14,16 @@ const StyledSidebar = styled.nav`
   transition-duration: 150ms;
 
   &:hover:not(&.collapsed) {
-    width: ${({ theme }) => theme.sizes.startMenu.sideBar.expandedWidth};
     backdrop-filter: blur(12px);
-    background-color: hsla(300, 80%, 30%, 75%);
+    background-color: hsla(300, 100%, 50%, 95%);
     box-shadow: 8px 0 5px -5px hsla(0, 0%, 10%, 50%);
     transition: all 300ms;
     transition-timing-function: cubic-bezier(0.15, 1, 0.5, 1);
+    width: ${({ theme }) => theme.sizes.startMenu.sideBar.expandedWidth};
+
+    @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+      background-color: hsla(300, 100%, 50%, 75%);
+    }
   }
 `;
 

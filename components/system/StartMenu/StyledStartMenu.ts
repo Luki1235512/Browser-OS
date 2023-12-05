@@ -38,16 +38,20 @@ const ThinScrollBars = css<StyledStartMenuProps>`
 `;
 
 const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
-  position: absolute;
-  z-index: 1000;
+  background-color: hsla(300, 100%, 60%, 95%);
   bottom: ${({ theme }) => theme.sizes.taskbar.height};
+  box-shadow: 3px 0 10px 3px hsla(0, 0%, 10%, 50%);
+  contain: strict;
+  position: absolute;
   left: 0;
   display: flex;
   width: ${({ theme }) => theme.sizes.startMenu.size};
   height: ${({ theme }) => theme.sizes.startMenu.size};
-  background-color: hsla(300, 100%, 60%, 40%);
-  box-shadow: 3px 0 10px 3px hsla(0, 0%, 10%, 50%);
-  contain: strict;
+  z-index: 1000;
+
+  @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+    background-color: hsla(300, 100%, 60%, 70%);
+  }
 
   ${StyledFileManager} {
     ${ScrollBars(SCROLLBAR_WIDTH, -2, -1)};
