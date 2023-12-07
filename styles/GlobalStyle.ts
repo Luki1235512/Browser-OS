@@ -20,6 +20,12 @@ const GlobalStyle = createGlobalStyle`
     font-family: ${({ theme }) => theme.formats.systemFont};
   }
 
+  input::selection,
+  textarea::selection {
+    background-color: rgb(0, 120, 215);
+    color: #fff;
+  }
+
   ol,
   ul {
     list-style: none;
