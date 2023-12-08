@@ -27,6 +27,7 @@ const renderFrame = async (
   if (dataUrl.includes(EMPTY_PNG)) nextFrame();
   else {
     const previewImage = new Image();
+
     previewImage.addEventListener(
       "load",
       () => {

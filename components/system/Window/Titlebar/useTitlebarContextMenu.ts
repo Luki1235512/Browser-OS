@@ -15,7 +15,6 @@ const useTitlebarContextMenu = (
     processes: { [id]: process },
   } = useProcesses();
   const { maximized } = process || {};
-
   const menuItems: MenuItem[] = [
     {
       action: () => onMaximize(),

@@ -145,6 +145,7 @@ export const handleFileInputEvent = (
         },
         ONE_TIME_PASSIVE_EVENT
       );
+
       fileReaders.push([file, directory, reader]);
     });
 

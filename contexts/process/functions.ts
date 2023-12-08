@@ -26,8 +26,10 @@ export const closeProcess =
     if (closing) {
       return setProcessSettings(processId, { closing })(currentProcesses);
     }
+
     const { [processId]: _closedProcess, ...remainingProcesses } =
       currentProcesses;
+
     return remainingProcesses;
   };
 

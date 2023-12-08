@@ -15,14 +15,12 @@ const useTaskbarContextMenu = (): {
       !processArray.some(([, { minimized }]) => !minimized),
     [processArray]
   );
-
   const toggleDesktop = (): void =>
     processArray.forEach(
       ([pid, { minimized }]) =>
         (allWindowsMinimized || (!allWindowsMinimized && !minimized)) &&
         minimize(pid)
     );
-
   const menuItems: MenuItem[] = [
     {
       action: toggleDesktop,

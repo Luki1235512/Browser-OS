@@ -9,7 +9,6 @@ const useTaskbarEntryContextMenu = (
 } => {
   const { contextMenu } = useMenu();
   const { onClose } = useWindowActions(id);
-
   const menuItems: MenuItem[] = [
     {
       action: () => onClose(),

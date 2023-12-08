@@ -82,7 +82,6 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
     const bottomOffset = y + height > vh ? vh - y : 0;
     const subMenuOffscreenX = Boolean(subMenu) && menuX + width > vw;
     const subMenuOffscreenY = Boolean(subMenu) && menuY + height > vh;
-
     const newOffset = {
       x:
         Math.round(Math.max(0, x + width - vw)) +
