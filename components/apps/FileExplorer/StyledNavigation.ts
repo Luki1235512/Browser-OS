@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
 const StyledNavigation = styled.nav`
+  background-color: rgb(230, 20, 230);
   display: flex;
   height: 43px;
   margin-top: -1px;
-  background-color: rgb(230, 20, 230);
 
   button {
     width: 16px;
@@ -12,10 +12,10 @@ const StyledNavigation = styled.nav`
     margin: 13px 9px;
 
     svg {
-      width: 16px;
-      height: 16px;
       color: #fff;
       fill: currentColor;
+      height: 16px;
+      width: 16px;
 
       &:hover {
         color: rgb(255, 200, 255);
@@ -29,19 +29,19 @@ const StyledNavigation = styled.nav`
     }
 
     &[title^="Up"] {
+      margin-right: 8px;
       position: relative;
       right: -8px;
-      margin-right: 8px;
     }
 
     &[title="Recent locations"] {
-      position: absolute;
       left: 56px;
+      position: absolute;
 
       svg {
-        width: 6px;
         stroke: currentColor;
         stroke-width: 3px;
+        width: 6px;
       }
     }
 
@@ -57,24 +57,24 @@ const StyledNavigation = styled.nav`
     }
 
     &:last-child {
-      position: absolute;
-      top: ${({ theme }) => `calc(${theme.sizes.titleBar.height} + 6px)`};
-      right: 13px;
-      width: 28px;
+      background-color: rgb(300, 100, 255);
       height: 28px;
       margin: 0;
-      background-color: rgb(300, 100, 255);
+      position: absolute;
+      right: 13px;
       stroke: rgb(255, 255, 255);
       stroke-width: 3;
+      top: ${({ theme }) => `calc(${theme.sizes.titleBar.height} + 6px)`};
+      width: 28px;
 
       &:hover {
-        border: 1px solid rgb(300, 150, 200);
         background-color: rgb(300, 80, 255);
+        border: 1px solid rgb(300, 150, 200);
       }
 
       &:active {
-        border: 1px solid rgb(300, 150, 200);
         background-color: rgb(300, 80, 255);
+        border: 1px solid rgb(300, 150, 200);
       }
     }
   }

@@ -8,17 +8,17 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
 
   &.focus-within,
   &:hover {
-    position: relative;
-    padding: 0;
     border: 2px solid transparent;
+    padding: 0;
+    position: relative;
 
     &::before {
+      bottom: -1px;
+      content: "";
+      left: -1px;
       position: absolute;
       top: -1px;
       right: -1px;
-      left: -1px;
-      bottom: -1px;
-      content: "";
     }
   }
 
@@ -32,12 +32,12 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
       place-items: center;
 
       figcaption {
-        padding: 2px 1px;
-        margin: 1px 0;
         color: ${({ theme }) => theme.colors.fileEntry.text};
         font-size: ${({ theme }) => theme.sizes.fileEntry.fontSize};
         letter-spacing: -0.1px;
         line-height: 1.2;
+        margin: 1px 0;
+        padding: 2px 1px;
         text-shadow: ${({ theme }) => theme.colors.fileEntry.textShadow};
         word-break: break-word;
       }
@@ -61,9 +61,9 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
   }
 
   &.focus-within {
-    z-index: 1;
     background-color: ${({ theme }) =>
       theme.colors.fileEntry.backgroundFocused};
+    z-index: 1;
 
     &.only-focused {
       margin-bottom: -1000px;

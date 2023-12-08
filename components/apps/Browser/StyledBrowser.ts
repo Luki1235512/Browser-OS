@@ -2,15 +2,15 @@ import styled from "styled-components";
 
 const StyledBrowser = styled.div`
   iframe {
-    width: 100%;
-    height: calc(100% - 36px);
     border: 0;
+    height: calc(100% - 36px);
+    width: 100%;
   }
 
   nav {
+    background-color: rgb(230, 20, 230);
     display: flex;
     padding: 4px 0;
-    background-color: rgb(230, 20, 230);
     place-content: center;
     place-items: center;
 
@@ -28,25 +28,25 @@ const StyledBrowser = styled.div`
 
     div {
       display: flex;
-      width: 102px;
-      min-width: 102px;
       justify-content: space-around;
+      min-width: 102px;
       padding-left: 6px;
+      width: 102px;
     }
 
     button {
-      display: flex;
-      width: 28px;
-      height: 28px;
       border-radius: 50%;
+      display: flex;
+      height: 28px;
       place-content: center;
       place-items: center;
       transition: background 0.2s ease-in-out;
+      width: 28px;
 
       svg {
+        fill: rgb(240, 240, 240);
         height: 22px;
         width: 22px;
-        fill: rgb(240, 240, 240);
       }
 
       &:hover {

@@ -15,7 +15,7 @@ const StyledPDF = styled.div`
 
   canvas {
     box-shadow: 0 0 5px hsla(0, 0%, 10%, 50%);
-    margin: 4px 4px 0 4px;
+    margin: 4px 4px 0;
   }
 `;
 

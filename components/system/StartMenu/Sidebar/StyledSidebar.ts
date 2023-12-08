@@ -1,17 +1,17 @@
 import styled from "styled-components";
 
 const StyledSidebar = styled.nav`
+  flex-direction: column;
+  display: flex;
+  height: ${({ theme }) => theme.sizes.startMenu.size};
+  justify-content: space-between;
+  margin-right: 7px;
+  overflow: hidden;
+  padding-top: 4px;
   position: absolute;
   top: 0;
-  display: flex;
-  overflow: hidden;
-  width: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
-  height: ${({ theme }) => theme.sizes.startMenu.size};
-  flex-direction: column;
-  justify-content: space-between;
-  padding-top: 4px;
-  margin-right: 7px;
   transition-duration: 150ms;
+  width: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
 
   &:hover:not(&.collapsed) {
     backdrop-filter: blur(12px);

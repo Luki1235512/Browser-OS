@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
 const StyledRuffle = styled.div`
-  width: 100%;
   height: 100%;
+  width: 100%;
 
-  &::before {
+  &:before {
     color: #ffad33;
     content: "Drop an SWF/SPL file";
     position: absolute;
@@ -20,8 +20,8 @@ const StyledRuffle = styled.div`
   }
 
   ruffle-player {
-    width: 100%;
     height: 100%;
+    width: 100%;
   }
 `;
 
