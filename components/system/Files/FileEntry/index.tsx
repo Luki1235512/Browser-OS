@@ -67,7 +67,7 @@ const truncateName = (
   fontFamily: string,
   maxWidth: number
 ): string => {
-  const nonBreakingName = name.replaceAll("-", NON_BREAKING_HYPHEN);
+  const nonBreakingName = name.replace(/-/g, NON_BREAKING_HYPHEN);
   const { lines } = getTextWrapData(
     nonBreakingName,
     fontSize,
@@ -201,7 +201,8 @@ const FileEntry = ({
                 await writeFile(
                   cachedIconPath,
                   Buffer.from(
-                    generatedIcon.replace("data:image/png;base64,", "base64")
+                    generatedIcon.replace("data:image/png;base64,", ""),
+                    "base64"
                   ),
                   true
                 );

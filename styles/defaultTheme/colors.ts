@@ -1,13 +1,13 @@
 const colors = {
   background: "#FFC0CB",
   fileEntry: {
-    background: "hsl(295deg 100% 85% )",
-    backgroundFocused: "hsl(295deg 85% 60%)",
-    backgroundFocusedHover: "hsl(295deg 85% 50%)",
-    border: "hsl(205deg 75% 100% / 25%)",
+    background: `hsl(295deg 100% 85% )`,
+    backgroundFocused: `hsl(295deg 85% 60%)`,
+    backgroundFocusedHover: `hsl(295deg 85% 50%)`,
+    border: `hsl(205deg 75% 100% / 25%)`,
     borderFocused: "hsl(205deg 85% 100% / 25%)",
     borderFocusedHover: "hsl(205deg 95% 100% / 25%)",
-    text: "#FFFFFF",
+    text: "#FFF",
     textShadow: `
     0 0 1px rgba(0, 0, 0, 75%),
     0 0 2px rgba(0, 0, 0, 50%),
@@ -20,7 +20,7 @@ const colors = {
   },
   highlight: "hsl(312deg 69% 87%)",
   highlightBackground: "hsl(312deg 69% 57% / 25%)",
-  startButton: "#FFFFFF",
+  startButton: "#FFF",
   taskbar: {
     active: "hsla(300, 100%, 80%, 40%)",
     activeForeground: "hsla(300, 100%, 90%, 40%)",
@@ -45,7 +45,7 @@ const colors = {
     outline: "hsla(300, 100%, 70%, 50%)",
     outlineInactive: "hsla(300, 100%, 50%, 50%)",
     shadow: "0 0 12px 0 rgba(255, 0, 255, 100%)",
-    shadowInactive: " 0 0 8px 0 rgba(255, 0, 255, 50%)",
+    shadowInactive: "0 0 8px 0 rgba(255, 0, 255, 50%)",
   },
 };
 

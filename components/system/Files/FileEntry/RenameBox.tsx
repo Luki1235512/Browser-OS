@@ -19,16 +19,17 @@ const RenameBox = ({ name, path, renameFile }: RenameBoxProps): JSX.Element => {
   const updateDimensions = useCallback(
     (textArea: EventTarget | HTMLTextAreaElement | null): void => {
       if (textArea instanceof HTMLTextAreaElement) {
-        const textAreaElement = textArea;
         const { width } = getTextWrapData(
           textArea.value,
           sizes.fileEntry.fontSize,
           formats.systemFont
         );
 
-        textAreaElement.style.height = "1px";
-        textAreaElement.style.height = `${textArea.scrollHeight + 2}px`;
-        textAreaElement.style.width = `${width + 22}px`;
+        /* eslint-disable no-param-reassign */
+        textArea.style.height = "1px";
+        textArea.style.height = `${textArea.scrollHeight + 2}px`;
+        textArea.style.width = `${width + 22}px`;
+        /* eslint-enable no-param-reassign */
       }
     },
     [formats.systemFont, sizes.fileEntry.fontSize]

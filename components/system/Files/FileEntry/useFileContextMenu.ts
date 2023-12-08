@@ -41,9 +41,9 @@ const useFileContextMenu = (
   const urlExtension = extname(url).toLowerCase();
   const baseName = basename(path);
   const isFocusedEntry = focusedEntries.includes(baseName);
-  const { process: extensionProcess = [] } =
+  const { process: extensionProcesses = [] } =
     urlExtension in extensions ? extensions[urlExtension as ExtensionType] : {};
-  const openWith = extensionProcess.filter((process) => process !== pid);
+  const openWith = extensionProcesses.filter((process) => process !== pid);
   const openWithFiltered = openWith.filter((id) => id !== pid);
   const openFile = useFile(url);
   const { copyEntries, moveEntries, rootFs, stat } = useFileSystem();
@@ -60,7 +60,7 @@ const useFileContextMenu = (
     [focusedEntries, isFocusedEntry, path]
   );
   const menuItems: MenuItem[] = [];
-  const pathExtension = extname(path);
+  const pathExtension = extname(path).toLowerCase();
   const isShortcut = pathExtension === SHORTCUT_EXTENSION;
   const { contextMenu } = useMenu();
   const remoteMount = rootFs?.mountList.some(

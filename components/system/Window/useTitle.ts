@@ -16,11 +16,11 @@ const useTitle = (id: string): Title => {
   const { title: originalTitle } = processDirectory[pid] || {};
   const appendFileToTitle = useCallback(
     (url: string, unSaved?: boolean) => {
-      const appendFile = url
+      const appendedFile = url
         ? ` - ${url}${unSaved ? ` ${SAVE_CHAR}` : ""}`
         : "";
 
-      title(id, `${originalTitle}${appendFile}`);
+      title(id, `${originalTitle}${appendedFile}`);
     },
     [id, originalTitle, title]
   );

@@ -63,7 +63,7 @@ const Sidebar = (): JSX.Element => {
       action: () => resetStorage().finally(() => window.location.reload()),
       icon: <Power />,
       name: "Power",
-      tooltip: "Clears session data and reloads the page",
+      tooltip: "Clears session data and reloads the page.",
     },
   ];
 

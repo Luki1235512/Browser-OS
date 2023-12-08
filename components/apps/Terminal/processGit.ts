@@ -70,7 +70,7 @@ const processGit = async (
       break;
     }
     case "version": {
-      localEcho?.println(`git version ${version()}.isomorphic-git`);
+      localEcho.println(`git version ${version()}.isomorphic-git`);
       break;
     }
     default: {

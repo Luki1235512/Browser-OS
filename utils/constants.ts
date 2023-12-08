@@ -111,7 +111,7 @@ export const SHORTCUT_ICON = `${ICON_PATH}/shortcut.png`;
 
 export const FOLDER_ICON = `${ICON_PATH}/folder.png`;
 
-export const MOUNTED_FOLDER_ICON = `${ICON_CACHE}/mounted.png`;
+export const MOUNTED_FOLDER_ICON = `${ICON_PATH}/mounted.png`;
 
 export const NEW_FOLDER_ICON = `${ICON_PATH}/new_folder.png`;
 

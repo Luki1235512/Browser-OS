@@ -318,7 +318,7 @@ const useFolder = (
   );
   const newShortcut = useCallback(
     (path: string, process: string): void => {
-      const pathExtension = extname(path);
+      const pathExtension = extname(path).toLowerCase();
 
       if (pathExtension === SHORTCUT_EXTENSION) {
         fs?.readFile(path, (_readError, contents = EMPTY_BUFFER) =>
