@@ -123,7 +123,6 @@
     "unicorn/prevent-abbreviations": "off",
 
     //TODO
-    "no-bitwise": "off",
     "unicorn/no-negated-condition": "off",
     "unicorn/prefer-blob-reading-methods": "off",
     "import/order": "off",
