@@ -1,4 +1,3 @@
-import type { ApiError } from "browserfs/dist/node/core/api_error";
 import {
   aliases,
   autoComplete,
@@ -38,6 +37,7 @@ const useCommandInterpreter = (
 ): React.MutableRefObject<CommandInterpreter> => {
   const cd = useRef(HOME);
   const {
+    deletePath,
     exists,
     fs,
     mkdirRecursive,
@@ -45,9 +45,7 @@ const useCommandInterpreter = (
     readFile,
     rename,
     resetStorage,
-    rmdir,
     stat,
-    unlink,
     updateFolder,
     writeFile,
   } = useFileSystem();
@@ -177,18 +175,7 @@ const useCommandInterpreter = (
             const fullPath = getFullPath(commandPath);
 
             if (await exists(fullPath)) {
-              if ((await stat(fullPath)).isDirectory()) {
-                try {
-                  await rmdir(fullPath);
-                } catch (error) {
-                  if ((error as ApiError).code === "ENOTEMPTY") {
-                    localEcho?.println("The directory is not empty.");
-                  }
-                }
-              } else {
-                await unlink(fullPath);
-              }
-
+              await deletePath(fullPath);
               updateFile(fullPath, true);
             }
           }
@@ -493,6 +480,7 @@ const useCommandInterpreter = (
     [
       changeTitle,
       closeWithTransition,
+      deletePath,
       exists,
       fs,
       id,
@@ -504,10 +492,8 @@ const useCommandInterpreter = (
       readdir,
       rename,
       resetStorage,
-      rmdir,
       stat,
       terminal,
-      unlink,
       updateFile,
       updateFolder,
       writeFile,
