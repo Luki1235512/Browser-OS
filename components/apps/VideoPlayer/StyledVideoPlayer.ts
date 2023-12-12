@@ -29,9 +29,9 @@ const StyledVideoPlayer = styled.div`
 
     .vjs-button {
       color: rgb(116, 116, 116);
-      width: 28px;
-      position: relative;
       height: 28px;
+      position: relative;
+      width: 28px;
       z-index: 0;
 
       &::after {

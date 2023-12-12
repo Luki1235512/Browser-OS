@@ -53,7 +53,7 @@ const useTinyMCE = (
           const isRelative =
             relative(link.dataset["mceHref"] || "", link.pathname) === "";
 
-          if (isRelative && editor?.mode.isReadOnly) {
+          if (isRelative && editor?.mode.isReadOnly()) {
             event.stopPropagation();
             event.preventDefault();
 

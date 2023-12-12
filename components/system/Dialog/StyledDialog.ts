@@ -7,7 +7,7 @@ const StyledDialog = styled.div`
     align-items: baseline;
     display: flex;
     flex-direction: column;
-    height: calc(100% - 40px, - 41px - 2px);
+    height: calc(100% - 40px - 41px - 2px);
     justify-content: space-around;
     padding: 0 22px;
 

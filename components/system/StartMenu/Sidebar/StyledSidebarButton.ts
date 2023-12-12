@@ -17,12 +17,11 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
   &::before {
     border-left: ${({ $active, theme }) =>
       `4px solid ${$active ? theme.colors.highlight : "transparent"}`};
-    width: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
     content: "";
     height: ${({ theme }) => theme.sizes.startMenu.sideBar.height};
     left: 0;
     position: absolute;
-    position: absolute;
+    width: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
   }
 
   figure {
