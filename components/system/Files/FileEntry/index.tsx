@@ -1,18 +1,18 @@
 import { isYouTubeUrl } from "components/apps/VideoPlayer/useVideoPlayer";
+import RenameBox from "components/system/Files/FileEntry/RenameBox";
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
   getModifiedTime,
   getTextWrapData,
 } from "components/system/Files/FileEntry/functions";
-import RenameBox from "components/system/Files/FileEntry/RenameBox";
 import useFile from "components/system/Files/FileEntry/useFile";
 import useFileContextMenu from "components/system/Files/FileEntry/useFileContextMenu";
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
 import FileManager from "components/system/Files/FileManager";
-import type { FileStat } from "components/system/Files/FileManager/functions";
 import { isSelectionIntersecting } from "components/system/Files/FileManager/Selection/functions";
 import type { SelectionRect } from "components/system/Files/FileManager/Selection/useSelection";
+import type { FileStat } from "components/system/Files/FileManager/functions";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import type { FileActions } from "components/system/Files/FileManager/useFolder";
@@ -20,6 +20,7 @@ import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileEntryIconSize } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import useDoubleClick from "hooks/useDoubleClick";
 import { basename, dirname, extname, join } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "styled-components";
@@ -40,7 +41,6 @@ import {
 } from "utils/constants";
 import { bufferToUrl, getFormattedSize } from "utils/functions";
 import { spotlightEffect } from "utils/spotlightEffect";
-import useDoubleClick from "utils/useDoubleClick";
 
 type FileEntryProps = {
   fileActions: FileActions;

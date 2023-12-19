@@ -1,4 +1,3 @@
-import { ROOT_NAME } from "components/apps/FileExplorer/config";
 import {
   Back,
   Down,
@@ -8,14 +7,15 @@ import {
 } from "components/apps/FileExplorer/NavigationIcons";
 import StyledAddressBar from "components/apps/FileExplorer/StyledAddressBar";
 import StyledNavigation from "components/apps/FileExplorer/StyledNavigation";
+import { ROOT_NAME } from "components/apps/FileExplorer/config";
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
+import useHistory from "hooks/useHistory";
 import { basename, dirname } from "path";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
-import useHistory from "utils/useHistory";
 
 type NavigationProps = {
   id: string;
