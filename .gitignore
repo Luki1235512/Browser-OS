@@ -4,6 +4,7 @@ out
 package-lock.json
 yarn.lock
 
+public/robots.txt
 public/.index/fs.*
 public/Users/Public/**
 

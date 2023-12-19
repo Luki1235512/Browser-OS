@@ -1,18 +1,18 @@
 import { isYouTubeUrl } from "components/apps/VideoPlayer/useVideoPlayer";
-import RenameBox from "components/system/Files/FileEntry/RenameBox";
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
   getModifiedTime,
   getTextWrapData,
 } from "components/system/Files/FileEntry/functions";
+import RenameBox from "components/system/Files/FileEntry/RenameBox";
 import useFile from "components/system/Files/FileEntry/useFile";
 import useFileContextMenu from "components/system/Files/FileEntry/useFileContextMenu";
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
 import FileManager from "components/system/Files/FileManager";
+import type { FileStat } from "components/system/Files/FileManager/functions";
 import { isSelectionIntersecting } from "components/system/Files/FileManager/Selection/functions";
 import type { SelectionRect } from "components/system/Files/FileManager/Selection/useSelection";
-import type { FileStat } from "components/system/Files/FileManager/functions";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import type { FileActions } from "components/system/Files/FileManager/useFolder";

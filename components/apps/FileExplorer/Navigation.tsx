@@ -1,3 +1,4 @@
+import { ROOT_NAME } from "components/apps/FileExplorer/config";
 import {
   Back,
   Down,
@@ -7,7 +8,6 @@ import {
 } from "components/apps/FileExplorer/NavigationIcons";
 import StyledAddressBar from "components/apps/FileExplorer/StyledAddressBar";
 import StyledNavigation from "components/apps/FileExplorer/StyledNavigation";
-import { ROOT_NAME } from "components/apps/FileExplorer/config";
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
