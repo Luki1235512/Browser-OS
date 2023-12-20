@@ -7,6 +7,7 @@ const StyledAddressBar = styled.input.attrs({
   background-color: rgb(250, 180, 255);
   background-position: 2px 5px;
   background-repeat: no-repeat;
+  background-size: 16px;
   border: 1px solid rgb(300, 150, 200);
   color: #fff;
   font-family: ${({ theme }) => theme.formats.systemFont};
