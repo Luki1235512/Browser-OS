@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 const StyledSidebar = styled.nav`
-  flex-direction: column;
   display: flex;
+  flex-direction: column;
   height: ${({ theme }) => theme.sizes.startMenu.size};
   justify-content: space-between;
   margin-right: 7px;

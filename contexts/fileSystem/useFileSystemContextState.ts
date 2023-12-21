@@ -3,9 +3,9 @@ import type IndexedDBFileSystem from "browserfs/dist/node/backend/IndexedDB";
 import type IIsoFS from "browserfs/dist/node/backend/IsoFS";
 import type OverlayFS from "browserfs/dist/node/backend/OverlayFS";
 import type IZipFS from "browserfs/dist/node/backend/ZipFS";
-import type { FSModule } from "browserfs/dist/node/core/FS";
 import type { ApiError } from "browserfs/dist/node/core/api_error";
 import type { BFSCallback } from "browserfs/dist/node/core/file_system";
+import type { FSModule } from "browserfs/dist/node/core/FS";
 import {
   handleFileInputEvent,
   iterateFileName,

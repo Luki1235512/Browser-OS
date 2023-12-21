@@ -17,8 +17,8 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
       content: "";
       left: -1px;
       position: absolute;
-      top: -1px;
       right: -1px;
+      top: -1px;
     }
   }
 

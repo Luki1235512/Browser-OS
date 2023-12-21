@@ -125,7 +125,7 @@ export const getUrlOrSearch = (input: string): string => {
 };
 
 export const isFirefox = (): boolean =>
-  typeof window !== "undefined" && /firefox/i.test(navigator.userAgent);
+  typeof window !== "undefined" && /firefox/i.test(window.navigator.userAgent);
 
 export const isSafari = (): boolean =>
   typeof window !== "undefined" &&

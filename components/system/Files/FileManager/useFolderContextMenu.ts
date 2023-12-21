@@ -12,7 +12,7 @@ import type {
 } from "contexts/menu/useMenuContextState";
 import { EMPTY_BUFFER, FOLDER_ICON, MENU_SEPARATOR } from "utils/constants";
 
-const NEW_FOLDER = "New Folder";
+const NEW_FOLDER = "New folder";
 const NEW_TEXT_DOCUMENT = "New Text Document.txt";
 const NEW_RTF_DOCUMENT = "New Rich Text Document.whtml";
 
@@ -86,7 +86,6 @@ const useFolderContextMenu = (
     { action: () => updateFolder(url), label: "Refresh" },
     MENU_SEPARATOR,
     ...FS_COMMANDS,
-    { action: () => addToFolder(), label: "Add File" },
     {
       action: () => pasteToFolder(),
       disabled: Object.keys(pasteList).length === 0,
