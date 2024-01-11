@@ -45,7 +45,7 @@
     "framer-motion": "^10.12.16",
     "html-to-image": "^1.11.11",
     "ini": "^4.1.1",
-    "isomorphic-git": "^1.10.3",
+    "isomorphic-git": "^1.10.4",
     "music-metadata-browser": "^2.5.10",
     "next": "^13.4.4",
     "node-fetch": "^2.6.1",
