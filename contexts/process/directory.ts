@@ -20,7 +20,7 @@ const processDirectory: Processes = {
     background: "#FFF",
     defaultSize: {
       height: 480,
-      width: 600,
+      width: 640,
     },
     icon: "/System/Icons/chromium.png",
     title: "Browser",
@@ -69,7 +69,7 @@ const processDirectory: Processes = {
     background: "#1E1E1E",
     defaultSize: {
       height: 480,
-      width: 480,
+      width: 544,
     },
     icon: "/System/Icons/monaco.png",
     title: "Monaco Editor",
@@ -78,8 +78,8 @@ const processDirectory: Processes = {
     Component: dynamic(() => import("components/apps/PDF")),
     background: "rgb(82, 86, 89)",
     defaultSize: {
-      height: 493,
-      width: 637,
+      height: 480,
+      width: 640,
     },
     icon: "/System/Icons/pdf.png",
     title: "PDF",
