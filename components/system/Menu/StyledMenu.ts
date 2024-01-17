@@ -15,12 +15,12 @@ const StyledMenu = styled(motion.nav)<StyledMenuProps>`
   color: rgb(255, 255, 255);
   contain: layout;
   font-size: 12px;
-  max-height: fit-content;
   height: max-content;
+  max-height: fit-content;
+  max-width: fit-content;
   padding: 4px 2px;
   position: absolute;
   transform: ${({ $x, $y }) => `translate(${$x}px, ${$y}px);`};
-  max-width: fit-content;
   width: max-content;
   z-index: ${({ $isSubMenu }) => $isSubMenu && 1};
 
