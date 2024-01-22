@@ -138,6 +138,7 @@ npm/yarn test
     - `wapm cowsay moo` ([\#](https://wapm.io/package/cowsay))
     - `wax fortune` ([\#](https://wapm.io/package/fortune))
 - [Weather information](https://wttr.in/)
+- Activate from Start Menu or **_SHIFT+F10_**
 
 ### [TinyMCE](https://www.tiny.cloud/tinymce/) (**_.whtml_**)
 
