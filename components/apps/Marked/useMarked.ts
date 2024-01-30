@@ -58,15 +58,15 @@ const useMarked = (
       const markdownFile = await readFile(url);
 
       iframe.srcdoc = `
-      <style>
-      body {
-        font-family: ${formats.systemFont};
-        padding: 0 16px;
-      }
-      </style>
-      ${window.marked.parse(markdownFile.toString(), {
-        headerIds: false,
-      })}
+        <style>
+          body {
+            font-family: ${formats.systemFont};
+            padding: 0 16px;
+          }
+        </style>
+        ${window.marked.parse(markdownFile.toString(), {
+          headerIds: false,
+        })}
       `;
     }
   }, [containerRef, formats.systemFont, readFile, url]);

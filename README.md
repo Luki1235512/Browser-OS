@@ -152,6 +152,10 @@ npm/yarn test
   - /Users/Public/Snapshots
 - Automatic window resize
 
+### [Marked](https://marked.js.org/) (**_.md_**)
+
+- Markdown Viewer
+
 ### [Webamp](https://webamp.org/) (**_.mp3, .wsz_**)
 
 - Winamp audio player
