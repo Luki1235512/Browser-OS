@@ -35,10 +35,10 @@ const vantaWorker = (): void => {
           };
           const colorConfig = {
             color: 0xf886d4,
-            colorCycleSpeed: 5,
-            // hue: 0,
-            lightness: 15,
-            saturation: 35,
+            // colorCycleSpeed: 5,
+            hue: 310,
+            lightness: 50,
+            saturation: 30,
           };
           const disableControls = {
             gyroControls: false,

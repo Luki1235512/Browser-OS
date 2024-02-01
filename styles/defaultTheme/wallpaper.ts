@@ -2,14 +2,14 @@ import vantaWaves from "components/system/Desktop/Wallpapers/vantaWaves";
 
 const wallpaper = vantaWaves({
   color: 0xf886d4,
-  colorCycleSpeed: 5,
+  // colorCycleSpeed: 5,
   forceAnimate: true,
-  // hue: 200,
-  lightness: 15,
-  saturation: 35,
-  shininess: 30,
+  hue: 310,
+  lightness: 50,
+  saturation: 30,
+  shininess: 35,
   waveHeight: 15,
-  waveSpeed: 0.7,
+  waveSpeed: 0.25,
 });
 
 export default wallpaper;
