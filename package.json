@@ -13,6 +13,8 @@
     "build": "npm run build:fs && npm run build:robots && next build",
     "build:fs": "cd public && node ../scripts/fs2json.js --exclude .index --out .index/fs.9p.json . && node ../node_modules/browserfs/dist/scripts/make_http_index.js > .index/fs.bfs.json",
     "build:robots": "node scripts/robots.js",
+    "docker:build": "docker build -t browser-os .",
+    "docker:run": "docker run -dp 3000:3000 --rm --name browser-os browser-os",
     "export": "next export",
     "start": "next start",
     "eslint": "eslint --report-unused-disable-directives .",

@@ -5,10 +5,26 @@ My attempt on creating operating system mockup in browser
 ## Demo
 Check out the live demo of the application [here](https://cute-os.vercel.app/).
 
-## Installation
+## Development
 ```
-npm/yarn install
-npm/yarn run dev
+yarn build:fs
+yarn dev
+```
+
+##### Production
+
+```
+yarn build
+yarn start
+```
+
+### Docker
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+
+```
+yarn docker:build
+yarn docker:run
 ```
 
 ## Running Tests
