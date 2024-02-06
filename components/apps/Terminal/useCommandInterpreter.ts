@@ -31,6 +31,8 @@ import { transcode } from "utils/ffmpeg";
 import { getTZOffsetISOString } from "utils/functions";
 import type { Terminal } from "xterm";
 
+import { colorAttributes, rgbAnsi } from "./color";
+
 const FILE_NOT_FILE = "The system cannot find the file specified.";
 const PATH_NOT_FOUND = "The system cannot find the path specified.";
 const SYNTAX_ERROR = "The syntax of the command is incorrect.";
@@ -65,7 +67,7 @@ const useCommandInterpreter = (
 
     return isAbsolute(file) ? file : join(cd.current, file);
   };
-
+  const colorOutput = useRef<string[]>([]);
   const updateFile = useCallback(
     (filePath: string, isDeleted = false): void => {
       const dirPath = dirname(filePath);
@@ -134,6 +136,44 @@ const useCommandInterpreter = (
           }
           break;
         }
+        case "color": {
+          const [r, g, b] = commandArgs;
+
+          if (r !== undefined && g !== undefined && b !== undefined) {
+            localEcho?.print(rgbAnsi(Number(r), Number(g), Number(b)));
+          } else {
+            const [[bg, fg] = []] = commandArgs;
+            const { rgb: bgRgb, name: bgName } =
+              colorAttributes[bg?.toUpperCase()] || {};
+            const { rgb: fgRgb, name: fgName } =
+              colorAttributes[fg?.toUpperCase()] || {};
+
+            if (bgRgb) {
+              const useAsBg = Boolean(fgRgb);
+              const bgAnsi = rgbAnsi(...bgRgb, useAsBg);
+
+              localEcho?.print(bgAnsi);
+              localEcho?.println(
+                `${useAsBg ? "Background" : "Foreground"}: ${bgName}`
+              );
+              colorOutput.current[0] = bgAnsi;
+            }
+
+            if (fgRgb) {
+              const fgAnsi = rgbAnsi(...fgRgb);
+
+              localEcho?.print(fgAnsi);
+              localEcho?.println(`Foreground: ${fgName}`);
+              colorOutput.current[1] = fgAnsi;
+            }
+
+            if (!fgRgb && !bgRgb) {
+              localEcho?.print("\u001B[0m");
+              colorOutput.current = [];
+            }
+          }
+          break;
+        }
         case "copy":
         case "cp": {
           const [source, destination] = commandArgs;
@@ -161,7 +201,7 @@ const useCommandInterpreter = (
         case "clear":
         case "cls": {
           terminal?.reset();
-          terminal?.write("\u001Bc");
+          terminal?.write(`\u001Bc${colorOutput.current.join("")}`);
           break;
         }
         case "date": {
