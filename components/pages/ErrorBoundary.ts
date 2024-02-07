@@ -1,18 +1,14 @@
 import { Component } from "react";
 
-type ErrorBoundaryProps = {
-  children: React.ReactNode;
-};
-
 type ErrorBoundaryState = {
   hasError: boolean;
 };
 
 export class ErrorBoundary extends Component<
-  ErrorBoundaryProps,
+  React.PropsWithChildren<Record<never, unknown>>,
   ErrorBoundaryState
 > {
-  public constructor(props: ErrorBoundaryProps) {
+  public constructor(props: React.PropsWithChildren<Record<never, unknown>>) {
     super(props);
     this.state = { hasError: false };
   }
