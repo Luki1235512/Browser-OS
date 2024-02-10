@@ -1,3 +1,4 @@
+import { colorAttributes, rgbAnsi } from "components/apps/Terminal/color";
 import {
   aliases,
   autoComplete,
@@ -31,8 +32,6 @@ import { transcode } from "utils/ffmpeg";
 import { getTZOffsetISOString } from "utils/functions";
 import { convert } from "utils/imagemagick";
 import type { Terminal } from "xterm";
-
-import { colorAttributes, rgbAnsi } from "./color";
 
 const FILE_NOT_FILE = "The system cannot find the file specified.";
 const PATH_NOT_FOUND = "The system cannot find the path specified.";
