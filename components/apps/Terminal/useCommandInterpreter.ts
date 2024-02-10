@@ -29,6 +29,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { EMPTY_BUFFER, HOME, ONE_DAY_IN_MILLISECONDS } from "utils/constants";
 import { transcode } from "utils/ffmpeg";
 import { getTZOffsetISOString } from "utils/functions";
+import { convert } from "utils/imagemagick";
 import type { Terminal } from "xterm";
 
 import { colorAttributes, rgbAnsi } from "./color";
@@ -306,7 +307,8 @@ const useCommandInterpreter = (
           closeWithTransition(id);
           break;
         }
-        case "ffmpeg": {
+        case "ffmpeg":
+        case "imagemagick": {
           const [file, format] = commandArgs;
 
           if (file && format) {
@@ -316,19 +318,18 @@ const useCommandInterpreter = (
               (await exists(fullPath)) &&
               !(await stat(fullPath)).isDirectory()
             ) {
-              const [[transcodedName, transcodedData]] = await transcode(
+              const convertOrTranscode =
+                lcBaseCommand === "ffmpeg" ? transcode : convert;
+              const [[newName, newData]] = await convertOrTranscode(
                 [[basename(fullPath), await readFile(fullPath)]],
                 format,
                 localEcho
               );
 
-              if (transcodedName && transcodedData) {
-                const newPath = join(dirname(fullPath), transcodedName);
+              if (newName && newData) {
+                const newPath = join(dirname(fullPath), newName);
 
-                await writeFile(
-                  newPath,
-                  Buffer.from(transcodedData as Uint8Array)
-                );
+                await writeFile(newPath, Buffer.from(newData as Uint8Array));
                 updateFile(newPath);
               }
             } else {
