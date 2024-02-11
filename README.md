@@ -23,8 +23,8 @@ yarn start
 - [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
 ```
-yarn docker:build
-yarn docker:run
+docker build -t cute-os .
+docker run -dp 3000:3000 --rm --name cute-os cute-os
 ```
 
 ## Running Tests
