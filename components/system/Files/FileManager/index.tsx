@@ -12,8 +12,9 @@ import useFolderContextMenu from "components/system/Files/FileManager/useFolderC
 import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileManagerViews } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
+import { getFileSystemHandles } from "contexts/fileSystem/functions";
 import { basename, extname, join } from "path";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   FOCUSABLE_ELEMENT,
   MOUNTABLE_EXTENSIONS,
@@ -78,6 +79,29 @@ const FileManager = ({
     updateFiles,
     id
   );
+  const [permission, setPermission] = useState<PermissionState>("denied");
+  const requestPermission = useCallback(async () => {
+    const fsHandles = await getFileSystemHandles();
+    const handle = fsHandles[currentUrl];
+
+    if (handle) {
+      if ((await handle.queryPermission()) === "prompt") {
+        await handle.requestPermission();
+      }
+
+      const currentPermission = await handle.queryPermission();
+
+      if (currentPermission === "granted") updateFiles();
+
+      setPermission(currentPermission);
+    } else {
+      setPermission("granted");
+    }
+  }, [updateFiles, currentUrl]);
+
+  useEffect(() => {
+    if (permission !== "granted") requestPermission();
+  }, [requestPermission, permission]);
 
   useEffect(() => {
     if (MOUNTABLE_EXTENSIONS.has(extname(url).toLowerCase()) && !mounted) {
@@ -95,6 +119,7 @@ const FileManager = ({
     if (url !== currentUrl) {
       folderActions.resetFiles();
       setCurrentUrl(url);
+      setPermission("denied");
     }
   }, [currentUrl, folderActions, url]);
 

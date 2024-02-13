@@ -17,6 +17,8 @@ import useDialog from "hooks/useDialog";
 import { basename, dirname, extname, isAbsolute, join } from "path";
 import { useCallback, useEffect, useState } from "react";
 
+import { addFileSystemHandle, getFileSystemHandles } from "./functions";
+
 type FilePasteOperations = Record<string, "copy" | "move">;
 
 export type FileSystemContextState = AsyncFS & {
@@ -105,26 +107,34 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
     [fsWatchers]
   );
-  const mapFs = async (directory: string): Promise<string> => {
-    let handle: FileSystemDirectoryHandle;
 
-    try {
-      handle = await window.showDirectoryPicker();
-      // eslint-disable-next-line no-empty
-    } catch {}
+  const mapFs = useCallback(
+    async (
+      directory: string,
+      existingHandle?: FileSystemDirectoryHandle
+    ): Promise<string> => {
+      let handle: FileSystemDirectoryHandle;
 
-    return new Promise((resolve, reject) => {
-      if (!(handle instanceof FileSystemDirectoryHandle)) reject();
+      try {
+        handle = existingHandle ?? (await window.showDirectoryPicker());
+        // eslint-disable-next-line no-empty
+      } catch {}
 
-      FileSystemAccess?.Create({ handle }, (error, newFs) => {
-        if (error || !newFs) reject();
-        else {
-          rootFs?.mount?.(join(directory, handle.name), newFs);
-          resolve(handle.name);
-        }
+      return new Promise((resolve, reject) => {
+        if (!(handle instanceof FileSystemDirectoryHandle)) reject();
+
+        FileSystemAccess?.Create({ handle }, (error, newFs) => {
+          if (error || !newFs) reject();
+          else {
+            rootFs?.mount?.(join(directory, handle.name), newFs);
+            resolve(handle.name);
+            addFileSystemHandle(directory, handle);
+          }
+        });
       });
-    });
-  };
+    },
+    [FileSystemAccess, rootFs]
+  );
   const mountFs = async (url: string): Promise<void> => {
     const fileData = await readFile(url);
 
@@ -270,6 +280,24 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
     return "";
   };
+  const restoreFsHandles = useCallback(
+    async (): Promise<void> =>
+      Object.entries(await getFileSystemHandles()).forEach(
+        async ([handleDirectory, handle]) => {
+          if (!(await exists(handleDirectory))) {
+            mapFs(
+              dirname(handleDirectory),
+              handle as FileSystemDirectoryHandle
+            );
+          }
+        }
+      ),
+    [exists, mapFs]
+  );
+
+  useEffect(() => {
+    restoreFsHandles();
+  }, [restoreFsHandles]);
 
   useEffect(() => {
     const watchedPaths = Object.keys(fsWatchers).filter(
