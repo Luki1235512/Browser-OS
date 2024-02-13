@@ -61,6 +61,7 @@ const useFileContextMenu = (
     readFile,
     rootFs,
     stat,
+    unMapFs,
     updateFolder,
     writeFile,
   } = useFileSystem();
@@ -235,6 +236,13 @@ const useFileContextMenu = (
       menuItems.unshift(MENU_SEPARATOR);
     }
 
+    if (remoteMount) {
+      menuItems.push(MENU_SEPARATOR, {
+        action: () => unMapFs(path),
+        label: "Disconnect",
+      });
+    }
+
     if (!pid && openWithFiltered.length === 0) {
       openWithFiltered.push("MonacoEditor");
     }
@@ -323,6 +331,7 @@ const useFileContextMenu = (
     setRenaming,
     setWallpaper,
     stat,
+    unMapFs,
     updateFolder,
     url,
     writeFile,
