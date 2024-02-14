@@ -1,4 +1,4 @@
-import PawIcon from "components/system/Taskbar/StartButton/PawIcon";
+import StartButtonIcon from "components/system/Taskbar/StartButton/StartButtonIcon";
 import StyledStartButton from "components/system/Taskbar/StartButton/StyledStartButton";
 
 type StartButtonProps = {
@@ -15,7 +15,7 @@ const StartButton = ({
     onClick={() => toggleStartMenu()}
     title="Start"
   >
-    <PawIcon />
+    <StartButtonIcon />
   </StyledStartButton>
 );
 
