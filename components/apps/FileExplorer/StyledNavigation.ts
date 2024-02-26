@@ -6,6 +6,28 @@ const StyledNavigation = styled.nav`
   height: 43px;
   margin-top: -1px;
 
+  #refresh {
+    background-color: rgb(300, 100, 255);
+    height: 28px;
+    margin: 0;
+    position: absolute;
+    right: 13px;
+    stroke: rgb(255, 255, 255);
+    stroke-width: 3;
+    top: ${({ theme }) => `calc(${theme.sizes.titleBar.height} + 6px)`};
+    width: 28px;
+
+    &:hover {
+      background-color: rgb(300, 80, 255);
+      border: 1px solid rgb(300, 150, 200);
+    }
+
+    &:active {
+      background-color: rgb(300, 80, 255);
+      border: 1px solid rgb(300, 150, 200);
+    }
+  }
+
   button {
     height: 16px;
     margin: 13px 9px;
@@ -53,28 +75,6 @@ const StyledNavigation = styled.nav`
         &:active {
           color: rgb(65, 65, 65);
         }
-      }
-    }
-
-    &:last-child {
-      background-color: rgb(300, 100, 255);
-      height: 28px;
-      margin: 0;
-      position: absolute;
-      right: 13px;
-      stroke: rgb(255, 255, 255);
-      stroke-width: 3;
-      top: ${({ theme }) => `calc(${theme.sizes.titleBar.height} + 6px)`};
-      width: 28px;
-
-      &:hover {
-        background-color: rgb(300, 80, 255);
-        border: 1px solid rgb(300, 150, 200);
-      }
-
-      &:active {
-        background-color: rgb(300, 80, 255);
-        border: 1px solid rgb(300, 150, 200);
       }
     }
   }
