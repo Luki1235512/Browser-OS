@@ -21,7 +21,10 @@ import {
 } from "components/apps/Terminal/useTerminal";
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
-import { getModifiedTime } from "components/system/Files/FileEntry/functions";
+import {
+  getModifiedTime,
+  getProcessByFileExtension,
+} from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
@@ -31,7 +34,7 @@ import { EMPTY_BUFFER, HOME, ONE_DAY_IN_MILLISECONDS } from "utils/constants";
 import { transcode } from "utils/ffmpeg";
 import { getTZOffsetISOString } from "utils/functions";
 import { convert } from "utils/imagemagick";
-import { search } from "utils/search";
+import { fullSearch } from "utils/search";
 import type { Terminal } from "xterm";
 
 const FILE_NOT_FILE = "The system cannot find the file specified.";
@@ -53,6 +56,7 @@ const useCommandInterpreter = (
     readFile,
     rename,
     resetStorage,
+    rootFs,
     stat,
     updateFolder,
     writeFile,
@@ -308,7 +312,11 @@ const useCommandInterpreter = (
           break;
         }
         case "find": {
-          const results = await search(commandArgs.join(" "));
+          const results = await fullSearch(
+            commandArgs.join(" "),
+            readFile,
+            rootFs
+          );
           results?.forEach(({ ref }) => localEcho?.println(ref));
           break;
         }
@@ -565,12 +573,16 @@ const useCommandInterpreter = (
               ).toLowerCase() as ExtensionType;
 
               if (
-                extensions[fileExtension].process.includes("Terminal") &&
-                extensions[fileExtension].command
+                extensions[fileExtension]?.process.includes("Terminal") &&
+                extensions[fileExtension]?.command
               ) {
                 await commandInterpreter(
                   `${extensions[fileExtension].command} ${baseCommand}`
                 );
+              } else {
+                const basePid = getProcessByFileExtension(fileExtension);
+
+                if (basePid) open(basePid, { url: baseCommand });
               }
             } else {
               localEcho?.println(unknownCommand(baseCommand));
@@ -596,6 +608,7 @@ const useCommandInterpreter = (
       readdir,
       rename,
       resetStorage,
+      rootFs,
       stat,
       terminal,
       updateFile,
