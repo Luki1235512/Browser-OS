@@ -49,6 +49,9 @@ This project is greatly augmented by code from the open source community. Thank 
 - [Video.js](https://github.com/videojs/video.js)
 - [TinyMCE](https://github.com/tinymce/tinymce)
 - [Space Cadet Pinball](https://github.com/k4zmu2a/SpaceCadetPinball)
+- [FFmpeg](https://ffmpegwasm.netlify.app/)
+- [ImageMagick](https://github.com/KnicKnic/WASM-ImageMagick)
+- [Lunr](https://lunrjs.com/)
 
 ## General Idea
 

@@ -5,7 +5,7 @@ package-lock.json
 yarn.lock
 
 public/robots.txt
-public/.index/fs.*
+public/.index/*
 public/Users/Public/**
 
 !public/Users/**/desktop.ini
