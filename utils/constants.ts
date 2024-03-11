@@ -123,3 +123,11 @@ export const UNKNOWN_ICON = `${ICON_PATH}/unknown.png`;
 export const DEFAULT_SCROLLBAR_WIDTH = 17;
 
 export const TASKBAR_HEIGHT = 30;
+
+export const PACKAGE_DATA = {
+  alias: "cuteOS",
+  author: "Luki1235512",
+  description: "Desktop environment in the browser",
+  license: "MIT",
+  version: "1.0.0",
+};
