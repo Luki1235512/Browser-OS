@@ -308,10 +308,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
       Object.entries(await getFileSystemHandles()).forEach(
         async ([handleDirectory, handle]) => {
           if (!(await exists(handleDirectory))) {
-            mapFs(
-              dirname(handleDirectory),
-              handle as FileSystemDirectoryHandle
-            );
+            mapFs(dirname(handleDirectory), handle);
           }
         }
       ),
