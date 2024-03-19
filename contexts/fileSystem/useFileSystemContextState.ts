@@ -121,8 +121,9 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
       try {
         handle = existingHandle ?? (await window.showDirectoryPicker());
-        // eslint-disable-next-line no-empty
-      } catch {}
+      } catch {
+        // Ignore cancelling the dialog
+      }
 
       return new Promise((resolve, reject) => {
         if (handle instanceof FileSystemDirectoryHandle) {
