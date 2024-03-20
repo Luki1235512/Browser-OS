@@ -1,6 +1,8 @@
 import type { FlattenSimpleInterpolation } from "styled-components";
 import { css } from "styled-components";
 
+export type StyledCSS = ReturnType<typeof css>;
+
 const ScrollBars = (
   size: number,
   verticalX?: number,
@@ -8,6 +10,7 @@ const ScrollBars = (
 ): FlattenSimpleInterpolation => css`
   overflow: auto;
   scrollbar-color: rgb(255, 100, 255) rgb(255, 200, 255);
+  scrollbar-gutter: stable;
 
   ::-webkit-scrollbar {
     height: ${size}px;

@@ -14,7 +14,9 @@ import { requestPermission } from "contexts/fileSystem/functions";
 import dynamic from "next/dynamic";
 import { basename, extname, join } from "path";
 import { useEffect, useRef, useState } from "react";
+import type { StyledCSS } from "styles/common/ScrollBars";
 import {
+  DEFAULT_SCROLLBAR_WIDTH,
   FOCUSABLE_ELEMENT,
   MOUNTABLE_EXTENSIONS,
   SHORTCUT_EXTENSION,
@@ -87,6 +89,7 @@ const FileManager = ({
     id
   );
   const [permission, setPermission] = useState<PermissionState>("prompt");
+  const [scrollBars, setScrollBars] = useState<StyledCSS>();
 
   useEffect(() => {
     if (
@@ -125,6 +128,14 @@ const FileManager = ({
     }
   }, [currentUrl, folderActions, url]);
 
+  useEffect(() => {
+    if (!hideScrolling) {
+      import("styles/common/ScrollBars").then(({ default: ScrollBars }) =>
+        setScrollBars(ScrollBars(DEFAULT_SCROLLBAR_WIDTH))
+      );
+    }
+  }, [hideScrolling]);
+
   return (
     <>
       {loading ? (
@@ -132,7 +143,8 @@ const FileManager = ({
       ) : (
         <StyledFileManager
           ref={fileManagerRef}
-          scrollable={!hideScrolling}
+          $scrollBars={scrollBars}
+          $scrollable={!hideScrolling}
           {...(!readOnly && {
             selecting: isSelecting,
             ...fileDrop,
@@ -146,7 +158,7 @@ const FileManager = ({
           {Object.keys(files).map((file) => (
             <StyledFileEntry
               key={file}
-              visible={!isLoading}
+              $visible={!isLoading}
               {...(renaming !== file && !readOnly && draggableEntry(url, file))}
               {...(renaming === "" && { onKeyDown: keyShortcuts(file) })}
               {...focusableEntry(file)}
