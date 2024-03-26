@@ -146,7 +146,7 @@ const FileManager = ({
           $scrollBars={scrollBars}
           $scrollable={!hideScrolling}
           {...(!readOnly && {
-            selecting: isSelecting,
+            $selecting: isSelecting,
             ...fileDrop,
             ...folderContextMenu,
             ...selectionEvents,
