@@ -1,10 +1,10 @@
 const colors = {
   background: "#FFC0CB",
   fileEntry: {
-    background: `hsla(295, 100%, 85%)`,
-    backgroundFocused: `hsla(295, 85%, 60%)`,
-    backgroundFocusedHover: `hsla(295, 85%, 50%)`,
-    border: `hsla(205, 75%, 100%, 25%)`,
+    background: "hsla(295, 100%, 85%)",
+    backgroundFocused: "hsla(295, 85%, 60%)",
+    backgroundFocusedHover: "hsla(295, 85%, 50%)",
+    border: "hsla(205, 75%, 100%, 25%)",
     borderFocused: "hsla(205, 85%, 100%, 25%)",
     borderFocusedHover: "hsla(205, 95%, 100%, 25%)",
     text: "#FFF",
