@@ -1,9 +1,13 @@
+const isProduction = process.env.NODE_ENV === "production";
+
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: isProduction,
+});
+
 const nextConfig = {
   compiler: {
-    reactRemoveProperties: true,
-    removeConsole: {
-      exclude: ["log"],
-    },
+    reactRemoveProperties: isProduction,
+    removeConsole: isProduction,
     styledComponents: true,
   },
   devIndicators: {
@@ -11,7 +15,7 @@ const nextConfig = {
   },
   optimizeFonts: false,
   reactStrictMode: true,
-  swcMinify: true,
+  swcMinify: !isProduction,
 };
 
-module.exports = nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);
