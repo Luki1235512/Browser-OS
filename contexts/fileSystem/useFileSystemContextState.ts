@@ -207,7 +207,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
         }
       };
 
-      if (!indexedDB.databases) clearFs();
+      if (!window.indexedDB.databases) clearFs();
       else {
         indexedDB.databases().then((databases) => {
           databases
