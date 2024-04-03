@@ -13,10 +13,12 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename } from "path";
 import { useCallback, useEffect, useState } from "react";
-import { bufferToUrl, cleanUpBufferUrl, loadFiles } from "utils/functions";
-
-export const isYouTubeUrl = (url: string): boolean =>
-  url.includes("youtube.com/") || url.includes("youtu.be/");
+import {
+  bufferToUrl,
+  cleanUpBufferUrl,
+  isYouTubeUrl,
+  loadFiles,
+} from "utils/functions";
 
 const useVideoPlayer = (
   id: string,
