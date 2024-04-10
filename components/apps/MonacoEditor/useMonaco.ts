@@ -10,10 +10,12 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
-import { basename, extname } from "path";
+import { basename, dirname, extname } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
 import { lockGlobal, unlockGlobal } from "utils/globals";
+
+import { DEFAULT_SAVE_PATH } from "../TinyMCE/config";
 
 const useMonaco = (
   id: string,
@@ -21,7 +23,7 @@ const useMonaco = (
   containerRef: React.MutableRefObject<HTMLDivElement | null>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
-  const { readFile, writeFile } = useFileSystem();
+  const { readFile, updateFolder, writeFile } = useFileSystem();
   const { argument: setArgument } = useProcesses();
   const { prependFileToTitle } = useTitle(id);
   const [editor, setEditor] = useState<Monaco.editor.IStandaloneCodeEditor>();
@@ -47,31 +49,9 @@ const useMonaco = (
     );
 
     newModel?.onDidChangeContent(() => prependFileToTitle(basename(url), true));
-    editor?.onKeyDown(async (event) => {
-      const { ctrlKey, code } = event;
-
-      if (ctrlKey && code === "KeyS") {
-        const [baseUrl] =
-          editor.getModel()?.uri.path.split(URL_DELIMITER) || [];
-
-        if (url === baseUrl) {
-          event.preventDefault();
-          await writeFile(url, editor?.getValue(), true);
-          prependFileToTitle(basename(url));
-        }
-      }
-    });
 
     return newModel as Monaco.editor.ITextModel;
-  }, [
-    createModelUri,
-    editor,
-    monaco?.editor,
-    prependFileToTitle,
-    readFile,
-    url,
-    writeFile,
-  ]);
+  }, [createModelUri, monaco?.editor, prependFileToTitle, readFile, url]);
   const loadFile = useCallback(async () => {
     if (monaco && editor) {
       unlockGlobal("define");
@@ -103,6 +83,23 @@ const useMonaco = (
         theme,
       });
 
+      currentEditor?.onKeyDown(async (event) => {
+        const { ctrlKey, code } = event;
+
+        if (ctrlKey && code === "KeyS") {
+          const [baseUrl] =
+            currentEditor.getModel()?.uri.path.split(URL_DELIMITER) || [];
+          const saveUrl = url || DEFAULT_SAVE_PATH;
+
+          if (url === baseUrl || !url) {
+            event.preventDefault();
+            await writeFile(saveUrl, currentEditor?.getValue(), true);
+            updateFolder(dirname(saveUrl), basename(saveUrl));
+            prependFileToTitle(basename(saveUrl));
+          }
+        }
+      });
+
       setEditor(currentEditor);
       setArgument(id, "editor", currentEditor);
       setLoading(false);
@@ -114,7 +111,18 @@ const useMonaco = (
         editor.dispose();
       }
     };
-  }, [containerRef, editor, id, monaco, setArgument, setLoading]);
+  }, [
+    containerRef,
+    editor,
+    id,
+    monaco,
+    prependFileToTitle,
+    setArgument,
+    setLoading,
+    updateFolder,
+    url,
+    writeFile,
+  ]);
 
   useEffect(() => {
     if (monaco && editor && url) loadFile();
