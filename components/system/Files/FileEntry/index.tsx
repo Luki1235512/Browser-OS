@@ -174,7 +174,6 @@ const FileEntry = ({
       ),
     [formats, listView, name, sizes]
   );
-
   const iconRef = useRef<HTMLImageElement | null>(null);
   const isIconCached = useRef(false);
   const isDynamicIconLoaded = useRef(false);

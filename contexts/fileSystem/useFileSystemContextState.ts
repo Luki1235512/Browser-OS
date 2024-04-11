@@ -107,7 +107,6 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
     [fsWatchers]
   );
-
   const mapFs = useCallback(
     async (
       directory: string,
@@ -155,7 +154,6 @@ const useFileSystemContextState = (): FileSystemContextState => {
       }
     });
   };
-  // const unMountFs = (url: string): void => rootFs?.umount?.(url);
   const unMountFs = useCallback(
     (url: string): void => rootFs?.umount?.(url),
     [rootFs]

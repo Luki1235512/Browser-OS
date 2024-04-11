@@ -1,6 +1,7 @@
 import { loader } from "@monaco-editor/react";
 import {
   config,
+  DEFAULT_SAVE_PATH,
   theme,
   URL_DELIMITER,
 } from "components/apps/MonacoEditor/config";
@@ -14,8 +15,6 @@ import { basename, dirname, extname } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
 import { lockGlobal, unlockGlobal } from "utils/globals";
-
-import { DEFAULT_SAVE_PATH } from "../TinyMCE/config";
 
 const useMonaco = (
   id: string,

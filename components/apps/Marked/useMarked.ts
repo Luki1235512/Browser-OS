@@ -43,9 +43,9 @@ const useMarked = (
             containerRef.current?.closest("section")?.focus();
           });
 
-          [...iframe.contentWindow.document.links].forEach((link) => {
-            link.setAttribute("target", "_blank");
-          });
+          [...iframe.contentWindow.document.links].forEach((link) =>
+            link.setAttribute("target", "_blank")
+          );
         }
       });
     }

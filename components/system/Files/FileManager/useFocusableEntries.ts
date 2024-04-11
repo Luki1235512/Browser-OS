@@ -61,7 +61,6 @@ const useFocusableEntries = (
       "focus-within": isFocused,
       "only-focused": isOnlyFocusedEntry,
     });
-
     const onClick: React.MouseEventHandler = ({ ctrlKey }) => {
       if (ctrlKey) {
         if (isFocused) {

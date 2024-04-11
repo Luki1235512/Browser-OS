@@ -288,6 +288,7 @@ const useCommandInterpreter = (
             localEcho?.println(`\t\t${directoryCount} Dir(s)`);
             if (localEcho) autoComplete(entries, localEcho);
           };
+
           if (directory) {
             const fullPath = getFullPath(directory);
 

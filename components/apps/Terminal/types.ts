@@ -4,7 +4,7 @@ export type CommandInterpreter = (command?: string) => Promise<string>;
 
 export type FitAddon = ITerminalAddon & { fit: () => void };
 
-export type webGlAddon = ITerminalAddon & {
+export type WebglAddon = ITerminalAddon & {
   dispose: () => void;
   onContextLoss: (callback: () => void) => void;
 };
@@ -40,7 +40,7 @@ declare global {
       FitAddon: new () => FitAddon;
     };
     WebglAddon?: {
-      WebglAddon: new () => webGlAddon;
+      WebglAddon: new () => WebglAddon;
     };
     LocalEchoController?: new (
       terminal?: Terminal,

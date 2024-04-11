@@ -1,5 +1,5 @@
 const { readdirSync, readFileSync, statSync, writeFileSync } = require("fs");
-const { extname, join, basename } = require("path");
+const { basename, extname, join } = require("path");
 const lunr = require("lunr");
 
 const PUBLIC_PATH = "public";

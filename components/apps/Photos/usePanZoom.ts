@@ -48,6 +48,7 @@ const usePanZoom = (
         if (isMinScale && (x || y)) {
           window.setTimeout(() => panZoom?.reset(), 50);
         }
+
         if (!closing) {
           appendFileToTitle(
             isMinScale

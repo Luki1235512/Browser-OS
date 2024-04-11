@@ -324,7 +324,6 @@ const measureText = (
     context.font = font;
     canvasContexts[font] = context;
   }
-
   const { actualBoundingBoxLeft, actualBoundingBoxRight } =
     canvasContexts[font].measureText(text);
 

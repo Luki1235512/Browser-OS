@@ -5,15 +5,15 @@ import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { extname } from "path";
 import { useEffect, useState } from "react";
-import { getSearchParams } from "utils/functions";
+import { getSearchParam } from "utils/functions";
 
 const useUrlLoader = (): void => {
   const { open } = useProcesses();
   const [initialApp, setInitialApp] = useState<string>("");
 
   useEffect(() => {
-    const app = getSearchParams("app");
-    const url = getSearchParams("url");
+    const app = getSearchParam("app");
+    const url = getSearchParam("url");
 
     if (app) {
       const lcAppNames = Object.fromEntries(
@@ -32,7 +32,7 @@ const useUrlLoader = (): void => {
 
   useEffect(() => {
     if (initialApp) {
-      const url = getSearchParams("url");
+      const url = getSearchParam("url");
 
       open(initialApp, { url });
     }

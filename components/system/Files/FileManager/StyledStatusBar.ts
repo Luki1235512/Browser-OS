@@ -3,7 +3,7 @@ import styled from "styled-components";
 const StyledStatusBar = styled.footer`
   align-items: center;
   background-color: rgb(230, 20, 230);
-  color: #fff;
+  color: rgb(255, 255, 255);
   display: flex;
   font-size: 12px;
   font-weight: 100;
@@ -18,7 +18,7 @@ const StyledStatusBar = styled.footer`
     padding: 0 3px 0 10px;
 
     &::after {
-      border-right-color: #fff;
+      border-right-color: rgb(255, 255, 255);
       border-right-style: solid;
       border-right-width: 1px;
       content: "";

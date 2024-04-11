@@ -44,7 +44,6 @@ const Dialog = ({ id }: ComponentProcessProps): JSX.Element => {
     () => fileReaders.reduce((acc, [{ size = 0 }]) => acc + size, 0) || 0,
     [fileReaders]
   );
-
   const processing = useRef(false);
 
   useEffect(() => {

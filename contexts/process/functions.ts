@@ -53,7 +53,6 @@ export const openProcess =
   (currentProcesses: Processes): Processes => {
     const { url = "" } = processArguments;
     const { singleton } = processDirectory[processId] || {};
-
     if (singleton && currentProcesses[processId]) {
       return setProcessSettings(processId, { url })(currentProcesses);
     }

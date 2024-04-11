@@ -111,7 +111,6 @@ const FileManager = ({
         if (!currentlyMounted) {
           mountFs(url).then(() => setTimeout(updateFiles, 100));
         }
-
         return true;
       });
     }
