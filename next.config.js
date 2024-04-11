@@ -4,6 +4,9 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: isProduction,
 });
 
+/**
+ * @type {import("next").NextConfig}
+ * */
 const nextConfig = {
   compiler: {
     reactRemoveProperties: isProduction,
