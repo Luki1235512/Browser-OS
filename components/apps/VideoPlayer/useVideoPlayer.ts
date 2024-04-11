@@ -1,4 +1,5 @@
 import {
+  config,
   getVideoType,
   libs,
   YT_TYPE,
@@ -18,6 +19,8 @@ import {
   cleanUpBufferUrl,
   isYouTubeUrl,
   loadFiles,
+  viewHeight,
+  viewWidth,
 } from "utils/functions";
 
 const useVideoPlayer = (
@@ -32,8 +35,7 @@ const useVideoPlayer = (
     processes: { [id]: { closing = false } = {} },
   } = useProcesses();
   const { updateWindowSize } = useWindowSize(id);
-  // const [player, setPlayer] = useState<VideoPlayer>();
-  const [player] = useState<VideoPlayer>();
+  const [player, setPlayer] = useState<VideoPlayer>();
   const { appendFileToTitle } = useTitle(id);
   const cleanUpSource = useCallback((): void => {
     const { src: sources = [] } = player?.getMedia() || {};
@@ -56,26 +58,28 @@ const useVideoPlayer = (
     return { src, type, url };
   }, [cleanUpSource, readFile, url]);
   const loadPlayer = useCallback(() => {
-    // const [videoElement] = containerRef.current
-    //   ?.childNodes as NodeListOf<HTMLVideoElement>;
-    // const videoPlayer = window.videojs(videoElement, config, () => {
-    //   videoPlayer.on("firstplay", () => {
-    //     const [height, width] = [
-    //       videoPlayer.videoHeight(),
-    //       videoPlayer.videoWidth(),
-    //     ];
-    //     const [vh, vw] = [viewHeight(), viewWidth()];
-    //     if (height && width) {
-    //       if (height > vh || width > vw) {
-    //         updateWindowSize(vw * (height / width), vw);
-    //       } else {
-    //         updateWindowSize(height, width);
-    //       }
-    //     }
-    //   });
-    //   setPlayer(videoPlayer);
-    //   setLoading(false);
-    // });
+    const [videoElement] =
+      (containerRef.current?.childNodes as NodeListOf<HTMLVideoElement>) ?? [];
+    const videoPlayer = window.videojs(videoElement, config, () => {
+      videoPlayer.on("firstplay", () => {
+        const [height, width] = [
+          videoPlayer.videoHeight(),
+          videoPlayer.videoWidth(),
+        ];
+        const [vh, vw] = [viewHeight(), viewWidth()];
+
+        if (height && width) {
+          if (height > vh || width > vw) {
+            updateWindowSize(vw * (height / width), vw);
+          } else {
+            updateWindowSize(height, width);
+          }
+        }
+      });
+
+      setPlayer(videoPlayer);
+      setLoading(false);
+    });
   }, [containerRef, setLoading, updateWindowSize]);
   const loadVideo = useCallback(async () => {
     if (player && url) {

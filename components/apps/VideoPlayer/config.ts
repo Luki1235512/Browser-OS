@@ -19,7 +19,7 @@ export const config = {
     },
   },
   inactivityTimeout: 1000,
-  preload: "auto",
+  preload: undefined,
   youtube: {
     enablePrivacyEnhancedMode: true,
     ytControls: 2,

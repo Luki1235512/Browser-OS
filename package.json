@@ -49,11 +49,11 @@
     "html-to-image": "^1.11.11",
     "idb-keyval": "^6.1.0",
     "ini": "^4.1.1",
-    "isomorphic-git": "^1.13.1",
+    "isomorphic-git": "^1.14.0",
     "music-metadata-browser": "^2.5.10",
     "next": "^13.4.4",
     "node-unrar-js": "^1.0.5",
-    "prettier": "^2.5.1",
+    "prettier": "2.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-rnd": "^10.4.1",
@@ -73,8 +73,8 @@
     "@types/styled-components": "^5.1.26",
     "@types/video.js": "^7.3.52",
     "@types/wicg-file-system-access": "^2020.9.5",
-    "@typescript-eslint/eslint-plugin": "^5.14.0",
-    "@typescript-eslint/parser": "^5.14.0",
+    "@typescript-eslint/eslint-plugin": "^5.15.0",
+    "@typescript-eslint/parser": "^5.15.0",
     "browserfs": "https://github.com/jvilk/BrowserFS.git#a96aa2d",
     "emulators": "^0.73.8",
     "emulators-ui": "^0.73.9",
@@ -109,6 +109,6 @@
     "tinymce": "5.10.3",
     "typescript": "^5.0.4",
     "webamp": "^1.5.0",
-    "xterm": "4.18.0"
+    "xterm": "^4.18.0"
   }
 }
