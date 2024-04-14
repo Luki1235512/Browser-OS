@@ -13,6 +13,10 @@ export class ErrorBoundary extends Component<
     this.state = { hasError: false };
   }
 
+  public shouldComponentUpdate(): boolean {
+    return false;
+  }
+
   public static getDerivedStateFromError(): ErrorBoundaryState {
     return { hasError: true };
   }
