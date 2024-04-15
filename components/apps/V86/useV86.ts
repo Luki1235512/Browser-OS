@@ -100,7 +100,7 @@ const useV86 = (
 
     if (saveContents) v86StarterConfig.initial_state = { url: saveContents };
 
-    v86StarterConfig.fileSystem = {
+    v86StarterConfig.filesystem = {
       basefs: URL.createObjectURL(
         new Blob([JSON.stringify(fs9pV4ToV3())], { type: "application/json" })
       ),
@@ -120,8 +120,8 @@ const useV86 = (
           cleanUpBufferUrl(v86StarterConfig.initial_state.url);
         }
 
-        if (v86StarterConfig.fileSystem) {
-          cleanUpBufferUrl(v86StarterConfig.fileSystem.basefs);
+        if (v86StarterConfig.filesystem) {
+          cleanUpBufferUrl(v86StarterConfig.filesystem.basefs);
         }
 
         containerRef.current?.addEventListener("click", v86.lock_mouse);

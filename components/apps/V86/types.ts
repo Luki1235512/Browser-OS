@@ -16,7 +16,7 @@ export type V86Starter = {
 export type V86Config = V86ImageConfig &
   typeof config & {
     boot_order: number;
-    fileSystem?: {
+    filesystem?: {
       basefs: string;
       baseurl: string;
     };

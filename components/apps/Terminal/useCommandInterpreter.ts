@@ -341,7 +341,7 @@ const useCommandInterpreter = (
 
             if (
               (await exists(fullPath)) &&
-              !(await stat(fullPath)).isDirectory()
+              !(await stat(fullPath, true)).isDirectory()
             ) {
               const convertOrTranscode =
                 lcBaseCommand === "ffmpeg" ? transcode : convert;
