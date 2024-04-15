@@ -104,7 +104,7 @@ const useCommandInterpreter = (
             const fullPath = getFullPath(file);
 
             if (await exists(fullPath)) {
-              if ((await stat(fullPath)).isDirectory()) {
+              if ((await stat(fullPath, true)).isDirectory()) {
                 localEcho?.println("Access is denied.");
               } else {
                 localEcho?.println((await readFile(fullPath)).toString());
@@ -126,7 +126,7 @@ const useCommandInterpreter = (
             const fullPath = getFullPath(directory);
 
             if (await exists(fullPath)) {
-              if (!(await stat(fullPath)).isDirectory()) {
+              if (!(await stat(fullPath, true)).isDirectory()) {
                 localEcho?.println("The directory name is invalid.");
               } else if (cd.current !== fullPath && localEcho) {
                 cd.current = fullPath;
@@ -301,7 +301,7 @@ const useCommandInterpreter = (
             const fullPath = getFullPath(directory);
 
             if (await exists(fullPath)) {
-              if ((await stat(fullPath)).isDirectory()) {
+              if ((await stat(fullPath, true)).isDirectory()) {
                 await listDir(fullPath);
               } else {
                 localEcho?.println(basename(fullPath));
