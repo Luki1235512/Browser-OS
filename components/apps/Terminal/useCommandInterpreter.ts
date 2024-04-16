@@ -52,6 +52,7 @@ const useCommandInterpreter = (
     deletePath,
     exists,
     fs,
+    lstat,
     mkdirRecursive,
     readdir,
     readFile,
@@ -104,7 +105,7 @@ const useCommandInterpreter = (
             const fullPath = getFullPath(file);
 
             if (await exists(fullPath)) {
-              if ((await stat(fullPath, true)).isDirectory()) {
+              if ((await lstat(fullPath)).isDirectory()) {
                 localEcho?.println("Access is denied.");
               } else {
                 localEcho?.println((await readFile(fullPath)).toString());
@@ -126,7 +127,7 @@ const useCommandInterpreter = (
             const fullPath = getFullPath(directory);
 
             if (await exists(fullPath)) {
-              if (!(await stat(fullPath, true)).isDirectory()) {
+              if (!(await lstat(fullPath)).isDirectory()) {
                 localEcho?.println("The directory name is invalid.");
               } else if (cd.current !== fullPath && localEcho) {
                 cd.current = fullPath;
@@ -301,7 +302,7 @@ const useCommandInterpreter = (
             const fullPath = getFullPath(directory);
 
             if (await exists(fullPath)) {
-              if ((await stat(fullPath, true)).isDirectory()) {
+              if ((await lstat(fullPath)).isDirectory()) {
                 await listDir(fullPath);
               } else {
                 localEcho?.println(basename(fullPath));
@@ -341,7 +342,7 @@ const useCommandInterpreter = (
 
             if (
               (await exists(fullPath)) &&
-              !(await stat(fullPath, true)).isDirectory()
+              !(await lstat(fullPath)).isDirectory()
             ) {
               const convertOrTranscode =
                 lcBaseCommand === "ffmpeg" ? transcode : convert;
@@ -613,6 +614,7 @@ const useCommandInterpreter = (
       fs,
       id,
       localEcho,
+      lstat,
       mkdirRecursive,
       open,
       processes,
