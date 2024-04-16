@@ -6,7 +6,7 @@ yarn.lock
 
 public/robots.txt
 public/.index/*
-public/Users/Public/**
+# public/Users/Public/**
 
 !public/Users/**/desktop.ini
 !public/Users/Public/Desktop
