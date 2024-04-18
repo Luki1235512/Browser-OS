@@ -136,19 +136,17 @@ export const getIconsFromCache = (
           resolveIcons(
             (
               await Promise.all(
-                [firstIcon, otherIcons[otherIcons.length - 1]]
-                  .filter(Boolean)
-                  .map(
-                    (cachedIcon): Promise<string> =>
-                      new Promise((resolveIcon) => {
-                        fs?.readFile(
-                          join(iconCacheDirectory, cachedIcon),
-                          (fileError, contents = Buffer.from("")) => {
-                            resolveIcon(fileError ? "" : bufferToUrl(contents));
-                          }
-                        );
-                      })
-                  )
+                [firstIcon, otherIcons.at(-1)].filter(Boolean).map(
+                  (cachedIcon): Promise<string> =>
+                    new Promise((resolveIcon) => {
+                      fs?.readFile(
+                        join(iconCacheDirectory, cachedIcon ?? ""),
+                        (fileError, contents = Buffer.from("")) => {
+                          resolveIcon(fileError ? "" : bufferToUrl(contents));
+                        }
+                      );
+                    })
+                )
               )
             ).filter(Boolean)
           );
