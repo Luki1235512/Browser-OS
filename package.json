@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "yarn build:fs && yarn build:search && next build",
-    "build:fs": "node scripts/fs2json.js --exclude .index --out public/.index/fs.9p.json ./public",
+    "build:fs": "node scripts/fs2json.js --exclude .index --out public/.index/fs.9p.json ./public && node scripts/preloadIcons.js",
     "build:html": "node scripts/minifyHtml.js",
     "build:robots": "node scripts/robots.js",
     "build:search": "node scripts/searchIndex.js",
@@ -28,8 +28,7 @@
   },
   "lint-staged": {
     "*": "prettier --ignore-unknown --write",
-    "*.{ts,tsx}": "stylelint --fix",
-    "*.{js,ts,tsx}": "eslint --fix"
+    "*.{ts,tsx}": "stylelint --fix"
   },
   "engines": {
     "node": ">=16 <17"

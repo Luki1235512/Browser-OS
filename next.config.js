@@ -1,3 +1,5 @@
+// @ts-check
+
 const isProduction = process.env.NODE_ENV === "production";
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
@@ -19,11 +21,6 @@ const nextConfig = {
   optimizeFonts: false,
   reactStrictMode: true,
   swcMinify: !isProduction,
-  webpack: (config, { isServer }) => {
-    if (!isServer) config.resolve.fallback.fs = false;
-
-    return config;
-  },
 };
 
 module.exports = withBundleAnalyzer(nextConfig);
