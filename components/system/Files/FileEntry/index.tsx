@@ -272,7 +272,6 @@ const FileEntry: FC<FileEntryProps> = ({
     const type =
       extensions[extension as ExtensionType]?.type ||
       `${extension.toUpperCase().replace(".", "")} File`;
-    // eslint-disable-next-line sonarjs/no-collection-size-mischeck
     const fullStats = stats.size < 0 ? await stat(path) : stats;
     const { size: sizeInBytes } = fullStats;
     const modifiedTime = getModifiedTime(path, fullStats);
