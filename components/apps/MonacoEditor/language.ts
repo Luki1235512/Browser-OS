@@ -15,6 +15,7 @@ const prettyLanguages = new Set([
 
 export const getLanguageParser = async (
   language: string
+  // eslint-disable-next-line @typescript-eslint/require-await
 ): Promise<Parser | undefined> => {
   if (language === "javascript" || language === "typescript") {
     // return {
@@ -50,6 +51,7 @@ export const isPrettyLanguage = (language: string): boolean =>
 export const prettyPrint = async (
   language: string,
   code: string
+  // eslint-disable-next-line @typescript-eslint/require-await
 ): Promise<string> => {
   const lcLanguage = language.toLowerCase();
 
