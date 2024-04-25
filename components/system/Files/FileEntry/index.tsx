@@ -235,14 +235,23 @@ const FileEntry: FC<FileEntryProps> = ({
           const cachedIconData = await readFile(cachedIconPath);
 
           setInfo((info) => ({ ...info, icon: bufferToUrl(cachedIconData) }));
-        } else if (!isDynamicIconLoaded.current) {
+        } else if (!isDynamicIconLoaded.current && iconRef.current) {
           isDynamicIconLoaded.current = true;
-          getIcon();
+          new IntersectionObserver(
+            ([{ intersectionRatio }], ovserver) => {
+              if (intersectionRatio > 0) {
+                ovserver.disconnect();
+                getIcon();
+              }
+            },
+            { root: fileManagerRef.current }
+          ).observe(iconRef.current);
         }
       }
     }
   }, [
     exists,
+    fileManagerRef,
     getIcon,
     icon,
     isLoadingFileManager,
