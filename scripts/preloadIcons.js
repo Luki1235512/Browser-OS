@@ -16,12 +16,15 @@ const getPublicDirectoryIcons = (directory) => {
       const {
         InternetShortcut: { IconFile: icon = "" },
       } = parse(readFileSync(join(baseDirectory, file)).toString());
+
       if (icon) icons.push(icon);
     }
+
     return icons;
   }, []);
 };
+
 writeFileSync(
   "./public/.index/preload.json",
-  JSON.stringify([SHORTCUT_ICON, ...getPublicDirectoryIcons(DESKTOP_PATH)])
+  JSON.stringify([...getPublicDirectoryIcons(DESKTOP_PATH), SHORTCUT_ICON])
 );
