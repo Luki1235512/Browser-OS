@@ -26,8 +26,8 @@ const IRC: FC<ComponentProcessProps> = () => {
 
   const newLine = (
     { command, parameters, type }: Message,
-    name?: string,
-    connectedServer?: string,
+    name = "",
+    connectedServer = "",
     seenCommands: string[] = []
   ): void => {
     if (parameters) {

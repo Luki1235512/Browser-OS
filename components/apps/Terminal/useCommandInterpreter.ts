@@ -590,14 +590,11 @@ const useCommandInterpreter = (
               const fileExtension = extname(
                 baseCommand
               ).toLowerCase() as ExtensionType;
+              const { command: extCommand = "" } =
+                extensions[fileExtension] || {};
 
-              if (
-                extensions[fileExtension]?.process.includes("Terminal") &&
-                extensions[fileExtension]?.command
-              ) {
-                await commandInterpreter(
-                  `${extensions[fileExtension].command} ${baseCommand}`
-                );
+              if (extCommand) {
+                await commandInterpreter(`${extCommand} ${baseCommand}`);
               } else {
                 const basePid = getProcessByFileExtension(fileExtension);
 
