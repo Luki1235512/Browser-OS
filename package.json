@@ -77,6 +77,7 @@
     "@typescript-eslint/eslint-plugin": "^5.17.0",
     "@typescript-eslint/parser": "^5.17.0",
     "browserfs": "https://github.com/jvilk/BrowserFS.git#a96aa2d",
+    "byuu": "^0.16.0",
     "emulators": "^0.73.8",
     "emulators-ui": "^0.73.9",
     "eruda": "https://github.com/liriliri/eruda",
