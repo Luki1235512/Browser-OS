@@ -6,6 +6,8 @@ import { join } from "path";
 import { DESKTOP_PATH } from "utils/constants";
 import { haltEvent } from "utils/functions";
 
+import type { CompleteAction } from "./useFolder";
+
 type FileDrop = {
   onDragLeave?: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
   onDragOver: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
@@ -32,18 +34,18 @@ const useFileDrop = ({
   const updateProcessUrl = async (
     filePath: string,
     fileData?: Buffer,
-    updateUrl = true
+    completeAction?: CompleteAction
   ): Promise<void> => {
     if (id) {
       if (!fileData) {
-        if (updateUrl) url(id, filePath);
+        if (completeAction === "updateUrl") url(id, filePath);
       } else {
         const tempPath = join(DESKTOP_PATH, filePath);
 
         await mkdirRecursive(DESKTOP_PATH);
 
         if (await writeFile(tempPath, fileData, true)) {
-          if (updateUrl) url(id, tempPath);
+          if (completeAction === "updateUrl") url(id, tempPath);
           updateFolder(DESKTOP_PATH, filePath);
         }
       }
