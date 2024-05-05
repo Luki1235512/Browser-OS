@@ -1,5 +1,10 @@
 import type Byuu from "byuu";
-import { keyMap, prettyKey } from "components/apps/Byuu/config";
+import {
+  keyMap,
+  prettyEmulator,
+  prettyKey,
+  saveExtension,
+} from "components/apps/Byuu/config";
 import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystem } from "contexts/fileSystem";
@@ -8,8 +13,6 @@ import type React from "react";
 import { useCallback, useEffect, useRef } from "react";
 import { SAVE_PATH } from "utils/constants";
 import { loadFiles } from "utils/functions";
-
-import { saveExtension } from "../JSDOS/config";
 
 declare global {
   interface Window {
@@ -90,7 +93,7 @@ const useByuu = (
       const baseName = basename(url);
 
       window.byuu.start();
-      appendFileToTitle(`${baseName} (${emulatorName})`);
+      appendFileToTitle(`${baseName} (${prettyEmulator[emulatorName]})`);
       const multipler = canvas.width > 256 ? 1 : 2;
       updateWindowSize(canvas.height * multipler, canvas.width * multipler);
 
@@ -134,7 +137,7 @@ const useByuu = (
   }, [containerRef, loadFile, setLoading, url]);
 
   useEffect(() => {
-    if (loadedUrl.current !== url) {
+    if (loadedUrl.current !== url || !url) {
       loadedUrl.current = url;
       loadByuu();
     }
