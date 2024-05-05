@@ -16,10 +16,11 @@ export const keyMap: Record<string, string> = {
   l: "L",
   r: "R",
 };
-
 export const prettyKey: Record<string, string> = {
+  ArrowUp: "↑",
   ArrowDown: "↓",
   ArrowLeft: "←",
   ArrowRight: "→",
-  ArrowUp: "↑",
 };
+
+export const saveExtension = ".sav";
