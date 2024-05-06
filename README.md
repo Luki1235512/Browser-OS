@@ -122,12 +122,25 @@ npm/yarn test
   - /Users/Public/Snapshots
 - Automatic window resize
 
+### [Byuu](https://github.com/Wizcorp/byuu-web) (**_.gen, .nes, .sfc, .smc, .smd_**)
+
+- NES/SNES/Sega Genesis Emulator
+- Automatic save states on close
+  - /Users/Public/Snapshots
+- Automatic window resize
+
+### [Marked](https://marked.js.org/) (**_.md_**)
+
+- Markdown Viewer
+
 ### [Monaco Editor](https://microsoft.github.io/monaco-editor/)
 
 - Code/text editor
 - Supports all file types
 - Save files via **_CTRL+S_**
 - Line count, cursor position, language id
+- [Prettier](https://prettier.io/) formatting
+  - json, js/ts, css/sass/less, html, markdown
 
 ### [PDF](https://mozilla.github.io/pdf.js/) (**_.pdf_**)
 
@@ -155,6 +168,7 @@ npm/yarn test
     - `wapm cowsay moo` ([\#](https://wapm.io/package/cowsay))
     - `wax fortune` ([\#](https://wapm.io/package/fortune))
 - [Weather information](https://wttr.in/)
+- [eSheep](https://adrianotiger.github.io/web-esheep/)
 - Activate from Start Menu or **_SHIFT+F10_**
 
 ### [TinyMCE](https://www.tiny.cloud/tinymce/) (**_.whtml_**)
@@ -169,9 +183,10 @@ npm/yarn test
   - /Users/Public/Snapshots
 - Automatic window resize
 
-### [Marked](https://marked.js.org/) (**_.md_**)
+### [Video Player](https://videojs.com/)
 
-- Markdown Viewer
+- [Supported Formats](https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Video_codecs)
+- Plays [YouTube](https://github.com/videojs/videojs-youtube) videos/shortcuts
 
 ### [Webamp](https://webamp.org/) (**_.mp3, .wsz_**)
 
