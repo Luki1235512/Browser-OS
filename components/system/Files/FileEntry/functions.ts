@@ -261,7 +261,7 @@ export const getInfoWithExtension = (
             url,
           });
         } else {
-          callback({ comment, icon, pid, subIcons, url });
+          callback({ comment, icon: icon || UNKNOWN_ICON, pid, subIcons, url });
         }
       }
     });
