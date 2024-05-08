@@ -8,6 +8,7 @@ import type {
   Message,
   MessageTypes,
 } from "components/apps/IRC/types";
+import { isParsebleUrl } from "utils/functions";
 
 let seenCommands: string[] = [];
 let connectedServer: string = "";
@@ -92,7 +93,7 @@ export const connect = (
   port: number | string,
   nickName: string,
   cb?: IrcOutput
-): WebSocket => {
+): WebSocket | undefined => {
   seenCommands = [];
 
   cb?.({
@@ -100,7 +101,11 @@ export const connect = (
     type: "system",
   });
 
-  const socket = new WebSocket(`wss://${address}:${port}`);
+  const url = `wss://${address}:${port}`;
+
+  if (!isParsebleUrl(url)) return undefined;
+
+  const socket = new WebSocket(url);
   const onOpen = (): void => {
     socket.send(`NICK ${nickName}`);
     socket.send(`USER ${nickName} 0 0 0`);
