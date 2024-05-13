@@ -7,7 +7,11 @@ type StyledMenuProps = {
   $y: number;
 };
 
-const StyledMenu = styled(motion.nav)<StyledMenuProps>`
+const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
+  style: {
+    transform: `translate(${$x}px, ${$y}px)`,
+  },
+}))<StyledMenuProps>`
   background-color: rgb(220, 55, 210);
   border: 1px solid rgb(210, 35, 160);
   box-shadow: 1px 1px 1px hsla(300, 80%, 60%, 70%),
@@ -19,7 +23,6 @@ const StyledMenu = styled(motion.nav)<StyledMenuProps>`
   max-width: fit-content;
   padding: 4px 2px;
   position: absolute;
-  transform: ${({ $x, $y }) => `translate(${$x}px, ${$y}px);`};
   width: max-content;
   z-index: ${({ $isSubMenu }) => $isSubMenu && 1};
 
