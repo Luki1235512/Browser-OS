@@ -219,6 +219,7 @@ const useCommandInterpreter = (
           break;
         }
         case "del":
+        case "erase":
         case "rd":
         case "rm":
         case "rmdir": {
@@ -325,7 +326,8 @@ const useCommandInterpreter = (
           closeWithTransition(id);
           break;
         }
-        case "find": {
+        case "find":
+        case "search": {
           const results = await fullSearch(
             commandArgs.join(" "),
             readFile,
