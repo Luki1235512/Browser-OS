@@ -7,7 +7,11 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename } from "path";
 import { useEffect, useState } from "react";
-import { MOUNTED_FOLDER_ICON, ROOT_NAME } from "utils/constants";
+import {
+  COMPRESSED_FOLDER_ICON,
+  MOUNTED_FOLDER_ICON,
+  ROOT_NAME,
+} from "utils/constants";
 
 const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
   const {
@@ -35,7 +39,9 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
         } else if (fs) {
           setProcessIcon(
             id,
-            `/System/Icons/${directoryName ? "folder" : "pc"}.webp`
+            rootFs?.mntMap[url].getName() === "FileSystemAccess"
+              ? MOUNTED_FOLDER_ICON
+              : COMPRESSED_FOLDER_ICON
           );
           getIconFromIni(fs, url).then((iconFile) => {
             if (iconFile) setProcessIcon(id, iconFile);
@@ -52,6 +58,7 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
     icon,
     id,
     isMounted,
+    rootFs?.mntMap,
     setProcessIcon,
     title,
     url,
