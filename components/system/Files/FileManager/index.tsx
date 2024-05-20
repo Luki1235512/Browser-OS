@@ -108,21 +108,33 @@ const FileManager: FC<FileManagerProps> = ({
       });
     }
   }, [mountFs, mounted, stat, updateFiles, url]);
+  const requestingPermission = useRef(false);
 
   useEffect(() => {
     if (
+      !requestingPermission.current &&
       permission !== "granted" &&
       rootFs?.mntMap[url]?.getName() === "FileSystemAccess"
     ) {
-      requestPermission(currentUrl).then((permissions) => {
-        const isGranted = permissions === "granted";
+      requestingPermission.current = true;
+      requestPermission(currentUrl)
+        .then((permissions) => {
+          const isGranted = permissions === "granted";
 
-        if (!permissions || isGranted) {
-          setPermission("granted");
+          if (!permissions || isGranted) {
+            setPermission("granted");
 
-          if (isGranted) updateFiles();
-        }
-      });
+            if (isGranted) updateFiles();
+          }
+        })
+        .catch((error: Error) => {
+          if (error.message === "Permission alerady granted") {
+            setPermission("granted");
+          }
+        })
+        .finally(() => {
+          requestingPermission.current = false;
+        });
     }
   }, [currentUrl, permission, rootFs?.mntMap, updateFiles, url]);
 
