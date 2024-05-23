@@ -59,7 +59,7 @@ This project is greatly augmented by code from the open source community. Thank 
 
 ## Services
 
-- [NTP](http://www.ntpjs.org/)
+- [ntp.js](http://www.ntpjs.org/)
 
 ## General Idea
 
