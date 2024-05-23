@@ -1,6 +1,7 @@
 import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
 import type {
+  ClockSource,
   SessionContextState,
   SessionData,
   SortOrders,
@@ -19,6 +20,7 @@ const useSessionContextState = (): SessionContextState => {
   const [foregroundId, setForegroundId] = useState("");
   const [stackOrder, setStackOrder] = useState<string[]>([]);
   const [themeName, setThemeName] = useState<ThemeName>(DEFAULT_THEME);
+  const [clockSource, setClockSource] = useState<ClockSource>("local");
   const [windowStates, setWindowStates] = useState<WindowStates>({});
   const [sortOrders, setSortOrders] = useState<SortOrders>({});
   const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>("fill");
@@ -61,6 +63,7 @@ const useSessionContextState = (): SessionContextState => {
       writeFile(
         SESSION_FILE,
         JSON.stringify({
+          clockSource,
           sortOrders,
           themeName,
           wallpaperFit,
@@ -71,6 +74,7 @@ const useSessionContextState = (): SessionContextState => {
       );
     }
   }, [
+    clockSource,
     sessionLoaded,
     sortOrders,
     themeName,
@@ -109,10 +113,12 @@ const useSessionContextState = (): SessionContextState => {
   }, [initSession]);
 
   return {
+    clockSource,
     foregroundId,
     prependToStack,
     removeFromStack,
     sessionLoaded,
+    setClockSource,
     setForegroundId,
     setSortOrder,
     setThemeName,

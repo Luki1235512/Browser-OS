@@ -57,6 +57,10 @@ This project is greatly augmented by code from the open source community. Thank 
 - [Byuu](https://github.com/Wizcorp/byuu-web)
 - [SheetJS](https://github.com/SheetJS/sheetjs)
 
+## Services
+
+- [NTP](http://www.ntpjs.org/)
+
 ## General Idea
 
 - [daedalOS](https://github.com/DustinBrett/daedalOS)
