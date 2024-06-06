@@ -1,14 +1,14 @@
+import type { OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
 import {
   config,
   disableControls,
-  isWebGLAvailable,
   libs,
 } from "components/system/Desktop/Wallpapers/vantaWaves/config";
 import type {
-  OffscreenRenderProps,
   VantaObject,
   VantaWaves,
 } from "components/system/Desktop/Wallpapers/vantaWaves/types";
+import { isWebGLAvailable } from "utils/functions";
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
