@@ -37,6 +37,8 @@ import {
   isYouTubeUrl,
 } from "utils/functions";
 
+import { createIcon } from "./exeIcons";
+
 type InternetShortcut = {
   InternetShortcut: {
     BaseURL: string;
@@ -283,6 +285,25 @@ export const getInfoWithExtension = (
 
           getInfoByFileExtension(
             imageToBufferUrl(path, Buffer.from(firstImage))
+          );
+        }
+      })
+    );
+  } else if (extension === ".exe") {
+    getInfoByFileExtension("/System/Icons/executable.webp", () =>
+      fs.readFile(path, async (error, contents = Buffer.from("")) => {
+        if (!error && contents.length > 0) {
+          const PELibrary = await import("pe-library");
+          const ResEdit = await import("resedit");
+
+          const { entries } = PELibrary.NtExecutableResource.from(
+            PELibrary.NtExecutable.from(contents, { ignoreCert: true })
+          );
+          const [iconGroupEntry] =
+            ResEdit.Resource.IconGroupEntry.fromEntries(entries);
+
+          getInfoByFileExtension(
+            bufferToUrl(Buffer.from(createIcon(iconGroupEntry, entries)))
           );
         }
       })
