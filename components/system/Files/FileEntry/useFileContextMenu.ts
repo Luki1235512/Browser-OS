@@ -132,7 +132,10 @@ const useFileContextMenu = (
       if (path) {
         menuItems.unshift(MENU_SEPARATOR);
 
-        if (EXTRACTABLE_EXTENSIONS.has(pathExtension)) {
+        if (
+          EXTRACTABLE_EXTENSIONS.has(pathExtension) ||
+          MOUNTABLE_EXTENSIONS.has(pathExtension)
+        ) {
           menuItems.unshift({
             action: () => extractFiles(path),
             label: "Extract Here",
