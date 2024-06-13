@@ -510,6 +510,7 @@ const useCommandInterpreter = (
           }
           break;
         }
+        case "logout":
         case "restart":
         case "shutdown": {
           resetStorage().finally(() => window.location.reload());
