@@ -1,6 +1,6 @@
 import type { FlattenSimpleInterpolation } from "styled-components";
 import { css } from "styled-components";
-import { DOWN, LEFT, UP } from "styles/SystemIcons";
+import { DOWN, LEFT, RIGHT, UP } from "styles/SystemIcons";
 
 const ScrollBars = (
   size: number,
@@ -97,7 +97,7 @@ const ScrollBars = (
   }
 
   ::-webkit-scrollbar-button:single-button:horizontal:increment {
-    background-image: url(${UP});
+    background-image: url(${RIGHT});
   }
 
   ::-webkit-scrollbar-button:single-button:vertical:decrement:active,

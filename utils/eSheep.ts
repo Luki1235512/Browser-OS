@@ -1,21 +1,21 @@
-import { loadFiles } from "./functions";
+import { loadFiles } from "utils/functions";
 
 declare global {
   interface Window {
-    Sheep?: new (config: { allowPopup: string; collisionWith: string[] }) => {
+    Sheep?: new (config: { allowPopup: string; collisionsWith: string[] }) => {
       Start: (animationXmlUrl: string) => void;
     };
   }
 }
 
 const spawnSheep = (): Promise<void> =>
-  loadFiles(["/Promise Files/eSheep/eSheep.js"]).then(() => {
+  loadFiles(["/Program Files/eSheep/eSheep.js"]).then(() => {
     if (window.Sheep) {
       const sheep = new window.Sheep({
         allowPopup: "no",
-        collisionWith: ["nav", "section"],
+        collisionsWith: ["nav", "section"],
       });
-      sheep.Start("/Promise Files/eSheep/animations.xml");
+      sheep.Start("/Program Files/eSheep/animations.xml");
     }
   });
 

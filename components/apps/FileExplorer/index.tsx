@@ -35,13 +35,16 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
         (isMounted && icon !== MOUNTED_FOLDER_ICON)
       ) {
         if (isMounted) {
-          setProcessIcon(id, MOUNTED_FOLDER_ICON);
-        } else if (fs) {
           setProcessIcon(
             id,
             rootFs?.mntMap[url].getName() === "FileSystemAccess"
               ? MOUNTED_FOLDER_ICON
               : COMPRESSED_FOLDER_ICON
+          );
+        } else if (fs) {
+          setProcessIcon(
+            id,
+            `/System/Icons/${directoryName ? "folder" : "pc"}.webp`
           );
           getIconFromIni(fs, url).then((iconFile) => {
             if (iconFile) setProcessIcon(id, iconFile);

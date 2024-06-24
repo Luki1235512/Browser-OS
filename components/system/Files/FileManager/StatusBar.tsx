@@ -28,7 +28,7 @@ const StatusBar: FC<StatusBarProps> = ({ count, directory, selected }) => {
         await selected.reduce(async (totalSize, file) => {
           const currentSize = await totalSize;
 
-          if (currentSize === UNKNOWN_SIZE) return UNCALCULATED_SIZE;
+          if (currentSize === UNCALCULATED_SIZE) return UNCALCULATED_SIZE;
 
           const path = join(directory, file);
 

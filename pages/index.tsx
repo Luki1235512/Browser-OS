@@ -11,7 +11,6 @@ const Index = (): React.ReactElement => {
   useIFrameFocuser();
   useUrlLoader();
   useGlobalKeyboardShortcuts();
-
   useLockTitle();
 
   return (

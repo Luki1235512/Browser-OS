@@ -1,8 +1,7 @@
 import { formatLocaleDateTime } from "components/system/Taskbar/Clock/functions";
+import { getNtpAdjustedTime } from "components/system/Taskbar/Clock/ntp";
 import type { ClockSource } from "contexts/session/types";
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
-
-import { getNtpAdjustedTime } from "./ntp";
 
 let mode: ClockSource;
 

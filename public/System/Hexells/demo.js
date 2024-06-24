@@ -5,7 +5,7 @@ class Demo {
       alpha: false,
       desynchronized: true,
       powerPreference: "high-performance"
-     });
+    });
 
     this.brushRadius = 16;
     this.stepPerFrame = 1;

@@ -245,9 +245,9 @@ const FileEntry: FC<FileEntryProps> = ({
         } else if (!isDynamicIconLoaded.current && iconRef.current) {
           isDynamicIconLoaded.current = true;
           new IntersectionObserver(
-            ([{ intersectionRatio }], ovserver) => {
+            ([{ intersectionRatio }], observer) => {
               if (intersectionRatio > 0) {
-                ovserver.disconnect();
+                observer.disconnect();
                 getIcon();
               }
             },

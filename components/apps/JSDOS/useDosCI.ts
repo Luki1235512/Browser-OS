@@ -90,7 +90,6 @@ const useDosCI = (
     const stateUrl = (await exists(savePath))
       ? bufferToUrl(await readFile(savePath))
       : undefined;
-
     const ci = await dosInstance?.run(bundleURL, stateUrl);
 
     if (ci) {

@@ -47,7 +47,7 @@ export const commands: Record<string, string> = {
   rd: "Removes a directory.",
   ren: "Renames a file or directory.",
   rm: "Removes a file or directory.",
-  sheep: "Spawn a sheep.",
+  sheep: "Spawn a new sheep",
   shutdown: "Allows proper local shutdown of machine.",
   taskkill: "Kill or stop a running process or application.",
   tasklist: "Displays all currently running processes.",

@@ -48,13 +48,13 @@ const useWebamp = (id: string): Webamp => {
     callback: async (
       fileName: string,
       buffer?: Buffer,
-      copmpleteAction?: CompleteAction
+      completeAction?: CompleteAction
     ) => {
       if (webampCI.current) {
         const data = buffer || (await readFile(fileName));
         const track = await parseTrack(data, fileName);
 
-        if (copmpleteAction !== "updateUrl") {
+        if (completeAction !== "updateUrl") {
           webampCI.current.appendTracks([track]);
         }
       }

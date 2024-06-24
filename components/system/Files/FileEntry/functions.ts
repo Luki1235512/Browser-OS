@@ -418,7 +418,6 @@ export const getInfoWithExtension = (
             ONE_TIME_PASSIVE_EVENT
           );
           video.src = bufferToUrl(contents);
-          video.load();
         }
       })
     );

@@ -153,7 +153,7 @@ export const requestPermission = async (
     if (currentPermissions === "prompt") {
       await handle.requestPermission();
     } else if (currentPermissions === "granted") {
-      throw new Error("Permission alerady granted");
+      throw new Error("Permission already granted");
     }
 
     return handle.queryPermission();

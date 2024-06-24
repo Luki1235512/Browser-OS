@@ -1103,7 +1103,7 @@ function listenOnce(object, event, func) {
 
 function autoResumeAudioContext(ctx, elements) {
  if (!elements) {
-  elements = [ document, document.getElementById("canvas") ];
+  elements = [ document, document.getElementById("boxedWineCanvas") ];
  }
  [ "keydown", "mousedown", "touchstart" ].forEach(function(event) {
   elements.forEach(function(element) {
