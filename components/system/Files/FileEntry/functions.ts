@@ -1,5 +1,6 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import { monacoExtensions } from "components/apps/MonacoEditor/extensions";
+import { extractExeIcon } from "components/system/Files/FileEntry/exeIcons";
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
@@ -36,8 +37,6 @@ import {
   imageToBufferUrl,
   isYouTubeUrl,
 } from "utils/functions";
-
-import { createIcon } from "./exeIcons";
 
 type InternetShortcut = {
   InternetShortcut: {
@@ -309,22 +308,10 @@ export const getInfoWithExtension = (
     getInfoByFileExtension("/System/Icons/executable.webp", () =>
       fs.readFile(path, async (error, contents = Buffer.from("")) => {
         if (!error && contents.length > 0) {
-          const ResEdit = await import("resedit");
+          const exeIcon = await extractExeIcon(contents);
 
-          try {
-            const { entries } = ResEdit.NtExecutableResource.from(
-              ResEdit.NtExecutable.from(contents, { ignoreCert: true })
-            );
-            const [iconGroupEntry] =
-              ResEdit.Resource.IconGroupEntry.fromEntries(entries);
-
-            if (iconGroupEntry) {
-              getInfoByFileExtension(
-                bufferToUrl(Buffer.from(createIcon(iconGroupEntry, entries)))
-              );
-            }
-          } catch {
-            // Couldn't parse the executable
+          if (exeIcon) {
+            getInfoByFileExtension(bufferToUrl(exeIcon));
           }
         }
       })
