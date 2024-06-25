@@ -404,7 +404,7 @@ export const getInfoWithExtension = (
               const frameStep = 4 / ICON_GIF_FPS;
               const frameCount = framesRemaining / capturePoints.length;
 
-              capturePoints.forEach(async (capturePoint) => {
+              capturePoints.forEach(async (capturePoint, index) => {
                 for (
                   let frame = capturePoint;
                   frame < capturePoint + frameCount * frameStep;
@@ -412,6 +412,10 @@ export const getInfoWithExtension = (
                 ) {
                   // eslint-disable-next-line no-await-in-loop
                   await getFrame(frame);
+
+                  if (index === 0 && frame === capturePoint) {
+                    getInfoByFileExtension(canvas.toDataURL("image/jpeg"));
+                  }
                 }
               });
             },
