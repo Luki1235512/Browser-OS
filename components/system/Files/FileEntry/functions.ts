@@ -200,7 +200,7 @@ export const getInfoWithoutExtension = (
       }
     });
   } else {
-    callback({ icon: UNKNOWN_ICON, pid: "", url: "" });
+    callback({ icon: UNKNOWN_ICON, pid: "", url: path });
   }
 };
 
