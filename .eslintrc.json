@@ -147,10 +147,11 @@
       }
     ],
 
-    //TODO
+    //TODO remove these rules
     "unicorn/no-negated-condition": "off",
     "unicorn/prefer-blob-reading-methods": "off",
-    "unicorn/prefer-string-replace-all": "off"
+    "unicorn/prefer-string-replace-all": "off",
+    "sonarjs/no-collection-size-mischeck": "off"
   },
   "parserOptions": {
     "project": ["tsconfig.json"]
