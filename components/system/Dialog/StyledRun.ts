@@ -1,6 +1,5 @@
+import StyledButton from "components/system/Dialog/StyledButton";
 import styled from "styled-components";
-
-import StyledButton from "./StyledButton";
 
 const StyledRun = styled.div`
   background-color: #fff;
@@ -41,6 +40,7 @@ const StyledRun = styled.div`
       border: 1px solid rgb(122, 122, 122);
       font-size: 12px;
       height: 23px;
+      margin: 0 13px 21px 8px;
       padding-left: 5px;
       width: 100%;
 
