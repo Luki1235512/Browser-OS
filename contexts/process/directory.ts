@@ -130,6 +130,17 @@ const processDirectory: Processes = {
     lockAspectRatio: true,
     title: "Ruffle",
   },
+  Run: {
+    Component: dynamic(() => import("components/system/Dialog/Run")),
+    allowResizing: false,
+    defaultSize: {
+      height: 174,
+      width: 397,
+    },
+    icon: "/System/Icons/run.webp",
+    singleton: true,
+    title: "Run",
+  },
   SpaceCadet: {
     Component: dynamic(() => import("components/apps/SpaceCadet")),
     background: "#000",
