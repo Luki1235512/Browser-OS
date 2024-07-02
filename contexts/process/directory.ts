@@ -137,6 +137,8 @@ const processDirectory: Processes = {
       height: 174,
       width: 397,
     },
+    hideMaximizeButton: true,
+    hideMinimizeButton: true,
     icon: "/System/Icons/run.webp",
     initialRelativePosition: {
       bottom: TASKBAR_HEIGHT + 11,
