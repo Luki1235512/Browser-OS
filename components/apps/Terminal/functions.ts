@@ -180,7 +180,8 @@ export const printTable = (
     row
       .map((rowData, index) => {
         const [, padding, alignRight] = headers[index];
-        const truncatedText = rowData.slice(0, padding);
+        const truncatedText =
+          index === row.length - 1 ? rowData : rowData.slice(0, padding);
 
         return alignRight
           ? truncatedText.padStart(padding, " ")
