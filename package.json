@@ -24,6 +24,7 @@
     "prettier": "prettier --write .",
     "test": "jest",
     "test:watch": "jest --watch",
+    "unused-exports": "ts-unused-exports tsconfig.json --excludePathsFromReport=pages",
     "prepare": "husky install"
   },
   "lint-staged": {
@@ -115,6 +116,7 @@
     "stylelint-config-sass-guidelines": "^10.0.0",
     "stylelint-config-styled-components": "^0.1.1",
     "tinymce": "^6.0.2",
+    "ts-unused-exports": "^8.0.0",
     "typescript": "^5.0.4",
     "webamp": "^1.5.0",
     "xlsx": "^0.18.5",
