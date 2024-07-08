@@ -23,7 +23,7 @@ export const getLanguageParser = async (
     //   plugins: [await import("prettier/parser-babel")],
     // };
   }
-  if (language === "css" || language === "sass" || language === "less") {
+  if (["css", "sass", "less"].includes(language)) {
     // return {
     //   parser: language,
     //   plugins: [await import("prettier/parser-postcss")],
