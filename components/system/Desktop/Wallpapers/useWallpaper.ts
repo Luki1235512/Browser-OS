@@ -6,11 +6,13 @@ import { useSession } from "contexts/session";
 import type { WallpaperFit } from "contexts/session/types";
 import useWorker from "hooks/useWorker";
 import { useCallback, useEffect } from "react";
+import { MILLISECONDS_IN_DAY } from "utils/constants";
 import {
   bufferToUrl,
   cleanUpBufferUrl,
   createOffscreenCanvas,
   jsonFetch,
+  viewWidth,
 } from "utils/functions";
 
 const cssFit: Record<WallpaperFit, string> = {
@@ -97,16 +99,17 @@ const useWallpaper = (
     if (wallpaperImage === "VANTA") vantaWaves(config)();
 
     let wallpaperUrl = "";
+    let newWallpaperFit = wallpaperFit;
 
     if (wallpaperImage.startsWith("APOD")) {
       const [, currentUrl, currentDate] = wallpaperImage.split(" ");
-      const now = new Date();
+      const [month, , day, , year] = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Europe/Warsaw",
+      })
+        .formatToParts(Date.now())
+        .map(({ value }) => value);
 
-      if (
-        currentDate &&
-        (currentDate === now.toISOString().slice(0, 10) ||
-          new Date(currentDate) > now)
-      ) {
+      if (currentDate === `${day}-${month}-${year}`) {
         wallpaperUrl = currentUrl;
       } else {
         const {
@@ -117,16 +120,16 @@ const useWallpaper = (
           "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY"
         );
 
-        if (hdurl || url) wallpaperUrl = (hdurl || url) as string;
+        if (hdurl || url) {
+          wallpaperUrl = ((viewWidth() > 1024 ? hdurl : url) || url) as string;
+          newWallpaperFit = "fit";
 
-        const newWallpaperImage = `APOD ${wallpaperUrl} ${date as string}`;
+          const newWallpaperImage = `APOD ${wallpaperUrl} ${date as string}`;
 
-        if (newWallpaperImage !== wallpaperImage) {
-          setWallpaper(newWallpaperImage, wallpaperFit);
-          setTimeout(
-            loadWallpaper,
-            new Date().setUTCHours(24, 0, 0, 0) - Date.now()
-          );
+          if (newWallpaperImage !== wallpaperImage) {
+            setWallpaper(newWallpaperImage, newWallpaperFit);
+            setTimeout(loadWallpaper, MILLISECONDS_IN_DAY);
+          }
         }
       }
     } else if (await exists(wallpaperImage)) {
@@ -138,7 +141,7 @@ const useWallpaper = (
         "style",
         `
         background-image: url("${wallpaperUrl}");
-        ${cssFit[wallpaperFit]}
+        ${cssFit[newWallpaperFit]}
       `
       );
     } else {
