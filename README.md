@@ -81,14 +81,17 @@ npm/yarn test
 ### Clock
 
 - Runs in a [Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)
+- NTP server time mode ([ntp.js](http://www.ntpjs.org/))
 - Synced to system clock on load
 - Date tooltip
 
 ### Wallpaper
 
-- [Dynamic animated wallpaper](https://www.vantajs.com/)
-  - Uses [OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas)/[Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)
+- Dynamic animated wallpapers ([OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas)/[Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers))
+  - [Vanta.js](https://www.vantajs.com/)
+  - [Hexells](https://znah.net/hexells/)
 - Set via images (Fill, Fit, Stretch, Tile, Center)
+- [Astronomy Picture of the Day](https://api.nasa.gov/#apod)
 
 ### URL
 
