@@ -62,7 +62,7 @@ const useWallpaper = (
   const loadWallpaper = useCallback(() => {
     if (desktopRef.current) {
       desktopRef.current.setAttribute("style", "");
-      desktopRef.current.querySelector("canvas")?.remove();
+      desktopRef.current.querySelector(":scope > canvas")?.remove();
 
       if (window.OffscreenCanvas !== undefined && wallpaperWorker.current) {
         const offscreen = createOffscreenCanvas(desktopRef.current);
@@ -95,7 +95,8 @@ const useWallpaper = (
 
     if (currentWallpaperUrl === wallpaperImage) return;
     if (currentWallpaperUrl) cleanUpBufferUrl(currentWallpaperUrl);
-    desktopRef.current?.querySelector("canvas")?.remove();
+    desktopRef.current?.setAttribute("style", "");
+    desktopRef.current?.querySelector(":scope > canvas")?.remove();
     if (wallpaperImage === "VANTA") vantaWaves(config)();
 
     let wallpaperUrl = "";
