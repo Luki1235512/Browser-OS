@@ -153,7 +153,6 @@ const useTinyMCE = (
   ]);
 
   useEffect(() => {
-    // readFile
     if (url && editor) loadFile();
   }, [editor, loadFile, readFile, url]);
 
