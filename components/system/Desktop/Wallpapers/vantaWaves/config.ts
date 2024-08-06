@@ -4,7 +4,7 @@ export const config = {
     fov: 30,
     near: 0.1,
   },
-  color: 0xf886d4,
+  color: "hsl(319, 89%, 75%)",
   // colorCycleSpeed: 5,
   forceAnimate: true,
   hh: 50,
