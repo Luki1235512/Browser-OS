@@ -23,8 +23,8 @@ type VimModule = {
     _vimjs_prepare_exit: () => void;
   };
   exit?: () => void;
-  loadedFS: boolean;
   memoryInitializerPrefixURL: string;
+  postRun: (() => void)[];
   preRun: (() => void)[];
   print: (args: unknown) => void;
   printErr: (args: unknown) => void;
@@ -34,9 +34,9 @@ type VimModule = {
 
 declare global {
   interface Window {
-    VimModule?: VimModule;
-    vimjs?: {
-      pre_run: () => void;
+    VimWrapperModule?: {
+      VimModule?: VimModule;
+      init?: (config: VimModule) => void;
     };
   }
 }
