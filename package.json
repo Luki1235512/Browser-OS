@@ -32,9 +32,6 @@
     "*.{ts,tsx}": "stylelint --fix",
     "*.{js,ts,tsx}": "eslint --fix"
   },
-  "engines": {
-    "node": ">=16 <17"
-  },
   "resolutions": {
     "styled-components": "^5"
   },
@@ -79,8 +76,8 @@
     "@types/styled-components": "^5.1.26",
     "@types/video.js": "^7.3.52",
     "@types/wicg-file-system-access": "^2020.9.5",
-    "@typescript-eslint/eslint-plugin": "^5.27.0",
-    "@typescript-eslint/parser": "^5.27.0",
+    "@typescript-eslint/eslint-plugin": "^5.27.1",
+    "@typescript-eslint/parser": "^5.27.1",
     "browserfs": "https://github.com/jvilk/BrowserFS.git#a96aa2d",
     "byuu": "^0.16.0",
     "emulators": "^0.73.8",
