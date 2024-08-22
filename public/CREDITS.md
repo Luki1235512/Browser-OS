@@ -25,6 +25,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [fflate](https://github.com/101arrowz/fflate)
 - [7z-wasm](https://github.com/use-strict/7z-wasm)
 - [music-metadata-browser](https://github.com/Borewit/music-metadata-browser)
+- [iptv-playlist-parser](https://github.com/freearhey/iptv-playlist-parser)
 - [isomorphic-git](https://github.com/isomorphic-git/isomorphic-git)
 - [ini](https://github.com/npm/ini)
 - [gif.js](https://github.com/jnordberg/gif.js)
@@ -35,6 +36,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [Panzoom](https://github.com/timmywil/panzoom)
 - [Vanta.js](https://github.com/tengbao/vanta)
 - [Hexells](https://github.com/znah/hexells)
+- [Coastal Landscape](https://www.shadertoy.com/view/fstyD4)
 
 ## App Libraries
 
@@ -63,6 +65,7 @@ This project is greatly augmented by code from the open source community. Thank 
 ## Services
 
 - [ntp.js](http://www.ntpjs.org/)
+- [Astronomy Picture of the Day](https://apod.nasa.gov/apod/)
 
 ## General Idea
 
