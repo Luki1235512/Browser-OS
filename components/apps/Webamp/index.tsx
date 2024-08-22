@@ -38,6 +38,15 @@ const Webamp: FC<ComponentProcessProps> = ({ id }) => {
     if (url) {
       const extension = extname(url).toLowerCase();
 
+      if (extension === ".m3u") {
+        return {
+          initialTracks: await m3uToTracks(
+            (await readFile(url)).toString(),
+            basename(url, extname(url))
+          ),
+        };
+      }
+
       if (extension === ".mp3") {
         return {
           initialTracks: [await parseTrack(await readFile(url), basename(url))],
