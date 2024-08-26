@@ -45,7 +45,10 @@ const useDoubleClick = (
         }
       };
 
-      if (singleClick || (!mouseEvent && doubleClickEvent)) {
+      if (
+        (singleClick && !doubleClickEvent) ||
+        (!mouseEvent && doubleClickEvent)
+      ) {
         runHandler();
       } else if (timer.current === undefined) {
         timer.current = window.setTimeout(
