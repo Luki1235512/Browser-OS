@@ -113,6 +113,7 @@ const useWallpaper = (
     if (wallpaperImage === "VANTA") vantaWaves(config)();
 
     let wallpaperUrl = "";
+    let fallbackBackground = "";
     let newWallpaperFit = wallpaperFit;
 
     if (wallpaperImage.startsWith("APOD")) {
@@ -144,6 +145,10 @@ const useWallpaper = (
             )}/maxresdefault.jpg`;
           }
 
+          if (hdurl && url && hdurl !== url) {
+            fallbackBackground = url as string;
+          }
+
           const newWallpaperImage = `APOD ${wallpaperUrl} ${date as string}`;
 
           if (newWallpaperImage !== wallpaperImage) {
@@ -160,7 +165,9 @@ const useWallpaper = (
       desktopRef.current?.setAttribute(
         "style",
         `
-        background-image: url("${wallpaperUrl}");
+        background-image: url("${wallpaperUrl}")${
+          fallbackBackground ? `, url(${fallbackBackground})` : ""
+        };
         ${cssFit[newWallpaperFit]}
       `
       );
