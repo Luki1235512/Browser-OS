@@ -88,6 +88,7 @@
     "import/prefer-default-export": "off",
     "jsx-a11y/label-has-associated-control": "off",
     "no-console": ["error", { "allow": ["info", "error"] }],
+    "no-constant-binary-expression": "error",
     "no-implicit-coercion": "error",
     "no-new-wrappers": "error",
     "no-restricted-syntax": [
@@ -130,6 +131,7 @@
     "unicorn/no-array-for-each": "off",
     "unicorn/no-array-reduce": "off",
     "unicorn/no-await-expression-member": "off",
+    "unicorn/no-empty-file": "off",
     "unicorn/numeric-separators-style": "off",
     "unicorn/prefer-dom-node-append": "off",
     "unicorn/prefer-module": "off",
@@ -146,13 +148,7 @@
         "args": "after-used",
         "argsIgnorePattern": "^_"
       }
-    ],
-
-    //TODO remove these rules
-    "unicorn/no-negated-condition": "off",
-    "unicorn/prefer-blob-reading-methods": "off",
-    "unicorn/prefer-string-replace-all": "off",
-    "sonarjs/no-collection-size-mischeck": "off"
+    ]
   },
   "parserOptions": {
     "project": ["tsconfig.json"]
