@@ -234,7 +234,10 @@ export const getInfoWithExtension = (
   callback: (value: FileInfo) => void
 ): void => {
   const subIcons: string[] = [];
-  const getInfoByFileExtension = (icon?: string, getIcon?: () => void): void =>
+  const getInfoByFileExtension = (
+    icon?: string,
+    getIcon?: (signal: AbortSignal) => void
+  ): void =>
     callback({
       getIcon,
       icon: icon || getIconByFileExtension(extension),
@@ -305,39 +308,39 @@ export const getInfoWithExtension = (
       }
     });
   } else if (extension === ".ani") {
-    getInfoByFileExtension("/System/Icons/photo.webp", () =>
+    getInfoByFileExtension("/System/Icons/photo.webp", (signal) =>
       fs.readFile(path, async (error, contents = Buffer.from("")) => {
-        if (!error && contents.length > 0) {
+        if (!error && contents.length > 0 && !signal.aborted) {
           const firstImage = await getFirstAniImage(contents);
 
-          if (firstImage) {
+          if (firstImage && !signal.aborted) {
             getInfoByFileExtension(imageToBufferUrl(path, firstImage));
           }
         }
       })
     );
   } else if (extension === ".exe") {
-    getInfoByFileExtension("/System/Icons/executable.webp", () =>
+    getInfoByFileExtension("/System/Icons/executable.webp", (signal) =>
       fs.readFile(path, async (error, contents = Buffer.from("")) => {
-        if (!error && contents.length > 0) {
+        if (!error && contents.length > 0 && !signal.aborted) {
           const exeIcon = await extractExeIcon(contents);
 
-          if (exeIcon) {
+          if (exeIcon && !signal.aborted) {
             getInfoByFileExtension(bufferToUrl(exeIcon));
           }
         }
       })
     );
   } else if (IMAGE_FILE_EXTENSIONS.has(extension)) {
-    getInfoByFileExtension("/System/Icons/photo.webp", () =>
+    getInfoByFileExtension("/System/Icons/photo.webp", (signal) =>
       fs.readFile(path, (error, contents = Buffer.from("")) => {
-        if (!error && contents.length > 0) {
+        if (!error && contents.length > 0 && !signal.aborted) {
           const imageIcon = new Image();
 
           imageIcon.addEventListener(
             "load",
             () => getInfoByFileExtension(imageIcon.src),
-            ONE_TIME_PASSIVE_EVENT
+            { signal, ...ONE_TIME_PASSIVE_EVENT }
           );
           imageIcon.addEventListener(
             "error",
@@ -345,12 +348,12 @@ export const getInfoWithExtension = (
               if (extension === ".cur") {
                 const firstImage = await getFirstAniImage(contents);
 
-                if (firstImage) {
+                if (firstImage && !signal.aborted) {
                   getInfoByFileExtension(imageToBufferUrl(path, firstImage));
                 }
               }
             },
-            ONE_TIME_PASSIVE_EVENT
+            { signal, ...ONE_TIME_PASSIVE_EVENT }
           );
           imageIcon.src = imageToBufferUrl(path, contents);
         }
@@ -358,7 +361,7 @@ export const getInfoWithExtension = (
     );
   } else if (MEDIA_FILE_EXTENSIONS.has(extension)) {
     subIcons.push(processDirectory["VideoPlayer"].icon);
-    getInfoByFileExtension(processDirectory["VideoPlayer"].icon, () => {
+    getInfoByFileExtension(processDirectory["VideoPlayer"].icon, (signal) => {
       if (AUDIO_FILE_EXTENSIONS.has(extension)) return;
       fs.readFile(path, async (error, contents = Buffer.from("")) => {
         if (!error) {
@@ -401,7 +404,7 @@ export const getInfoWithExtension = (
 
                   resolve();
                 },
-                ONE_TIME_PASSIVE_EVENT
+                { signal, ...ONE_TIME_PASSIVE_EVENT }
               );
               video.currentTime = second;
               if ("seekToNextFrame" in video) {
@@ -424,11 +427,15 @@ export const getInfoWithExtension = (
               const frameCount = framesRemaining / capturePoints.length;
 
               capturePoints.forEach(async (capturePoint, index) => {
+                if (signal.aborted) return;
+
                 for (
                   let frame = capturePoint;
                   frame < capturePoint + frameCount * frameStep;
                   frame += frameStep
                 ) {
+                  if (signal.aborted) return;
+
                   // eslint-disable-next-line no-await-in-loop
                   await getFrame(frame);
 
@@ -438,7 +445,7 @@ export const getInfoWithExtension = (
                 }
               });
             },
-            ONE_TIME_PASSIVE_EVENT
+            { signal, ...ONE_TIME_PASSIVE_EVENT }
           );
           video.src = bufferToUrl(contents);
         }
@@ -447,11 +454,13 @@ export const getInfoWithExtension = (
   } else if (extension === ".mp3") {
     getInfoByFileExtension(
       `/System/Icons/${extensions[".mp3"].icon as string}.webp`,
-      () =>
+      (signal) =>
         fs.readFile(path, (error, contents = Buffer.from("")) => {
-          if (!error) {
+          if (!error && !signal.aborted) {
             import("music-metadata-browser").then(
-              ({ parseBuffer, selectCover }) =>
+              ({ parseBuffer, selectCover }) => {
+                if (signal.aborted) return;
+
                 parseBuffer(
                   contents,
                   {
@@ -460,12 +469,15 @@ export const getInfoWithExtension = (
                   },
                   { skipPostHeaders: true }
                 ).then(({ common: { picture } = {} }) => {
+                  if (signal.aborted) return;
+
                   const { data: coverPicture } = selectCover(picture) || {};
 
                   if (coverPicture) {
                     getInfoByFileExtension(bufferToUrl(coverPicture));
                   }
-                })
+                });
+              }
             );
           }
         })

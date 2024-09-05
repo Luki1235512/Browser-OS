@@ -75,7 +75,7 @@ const truncateName = (
   fontFamily: string,
   maxWidth: number
 ): string => {
-  const nonBreakingName = name.replace(/-/g, NON_BREAKING_HYPHEN);
+  const nonBreakingName = name.replaceAll("-", NON_BREAKING_HYPHEN);
   const { lines } = getTextWrapData(
     nonBreakingName,
     fontSize,
@@ -184,6 +184,7 @@ const FileEntry: FC<FileEntryProps> = ({
   const iconRef = useRef<HTMLImageElement | null>(null);
   const isIconCached = useRef(false);
   const isDynamicIconLoaded = useRef(false);
+  const getIconAbortController = useRef<AbortController>();
   const updateIcon = useCallback(async (): Promise<void> => {
     if (!isLoadingFileManager && !isIconCached.current) {
       if (icon.startsWith("blob:") || icon.startsWith("data:")) {
@@ -251,7 +252,8 @@ const FileEntry: FC<FileEntryProps> = ({
             ([{ intersectionRatio }], observer) => {
               if (intersectionRatio > 0) {
                 observer.disconnect();
-                getIcon();
+                getIconAbortController.current = new AbortController();
+                getIcon(getIconAbortController.current.signal);
               }
             },
             { root: fileManagerRef.current, rootMargin: "5px" }
@@ -289,6 +291,7 @@ const FileEntry: FC<FileEntryProps> = ({
     const type =
       extensions[extension as ExtensionType]?.type ||
       `${extension.toUpperCase().replace(".", "")} File`;
+    // eslint-disable-next-line sonarjs/no-collection-size-mischeck
     const fullStats = stats.size < 0 ? await stat(path) : stats;
     const { size: sizeInBytes } = fullStats;
     const modifiedTime = getModifiedTime(path, fullStats);
@@ -317,6 +320,8 @@ const FileEntry: FC<FileEntryProps> = ({
   useEffect(() => {
     updateIcon();
   }, [updateIcon]);
+
+  useEffect(() => () => getIconAbortController?.current?.abort(), []);
 
   useEffect(() => {
     if (buttonRef.current) {
