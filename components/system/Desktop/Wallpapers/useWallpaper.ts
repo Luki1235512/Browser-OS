@@ -29,6 +29,11 @@ const cssFit: Record<WallpaperFit, string> = {
   tile: "",
 };
 
+const BRIGHT_WALLPAPERS: Record<string, `${number}%`> = {
+  COASTAL_LANDSCAPE: "85%",
+  HEXELLS: "85%",
+};
+
 const WALLPAPER_WORKERS: Record<string, () => Worker> = {
   COASTAL_LANDSCAPE: (): Worker =>
     new Worker(
@@ -93,6 +98,15 @@ const useWallpaper = (
         CoastalLandscape(desktopRef.current);
       } else {
         setWallpaper("VANTA");
+      }
+
+      if (BRIGHT_WALLPAPERS[wallpaperImage]) {
+        desktopRef.current
+          ?.querySelector("canvas")
+          ?.setAttribute(
+            "style",
+            `filter: brightness(${BRIGHT_WALLPAPERS[wallpaperImage]})`
+          );
       }
     }
   }, [
