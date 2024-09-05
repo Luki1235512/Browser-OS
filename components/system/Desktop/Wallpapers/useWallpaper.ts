@@ -165,7 +165,7 @@ const useWallpaper = (
       desktopRef.current?.setAttribute(
         "style",
         `
-        background-image: url("${wallpaperUrl}")${
+        background-image: url(${wallpaperUrl})${
           fallbackBackground ? `, url(${fallbackBackground})` : ""
         };
         ${cssFit[newWallpaperFit]}
