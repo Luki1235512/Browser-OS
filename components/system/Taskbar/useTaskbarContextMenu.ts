@@ -35,6 +35,15 @@ const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
     if (onStartButton) {
       menuItems.unshift(
         {
+          action: () => open("Terminal"),
+          label: "Command Prompt",
+        },
+        MENU_SEPARATOR,
+        {
+          action: () => open("FileExplorer"),
+          label: "File Explorer",
+        },
+        {
           action: () => open("Run"),
           label: "Run",
         },
