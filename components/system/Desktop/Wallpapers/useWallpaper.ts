@@ -1,12 +1,12 @@
 import hexells from "components/system/Desktop/Wallpapers/hexells";
-import CoastalLandscape from "components/system/Desktop/Wallpapers/ShaderToy/CoastalLandscape";
+import coastalLandscape from "components/system/Desktop/Wallpapers/ShaderToy/CoastalLandscape";
 import vantaWaves from "components/system/Desktop/Wallpapers/vantaWaves";
 import { config } from "components/system/Desktop/Wallpapers/vantaWaves/config";
 import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import type { WallpaperFit } from "contexts/session/types";
 import useWorker from "hooks/useWorker";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { MILLISECONDS_IN_DAY } from "utils/constants";
 import {
   bufferToUrl,
@@ -30,11 +30,11 @@ const cssFit: Record<WallpaperFit, string> = {
 };
 
 const BRIGHT_WALLPAPERS: Record<string, `${number}%`> = {
-  COASTAL_LANDSCAPE: "85%",
-  HEXELLS: "85%",
+  COASTAL_LANDSCAPE: "80%",
+  HEXELLS: "80%",
 };
 
-const WALLPAPER_WORKERS: Record<string, () => Worker> = {
+const WALLPAPER_WORKERS: Record<string, (info?: string) => Worker> = {
   COASTAL_LANDSCAPE: (): Worker =>
     new Worker(
       new URL(
@@ -51,15 +51,17 @@ const WALLPAPER_WORKERS: Record<string, () => Worker> = {
       ),
       { name: "Wallpaper (Hexells)" }
     ),
-  VANTA: (): Worker =>
+  VANTA: (info?: string): Worker =>
     new Worker(
       new URL(
         "components/system/Desktop/Wallpapers/vantaWaves/wallpaper.worker",
         import.meta.url
       ),
-      { name: "Wallpaper (Vanta Waves)" }
+      { name: `Wallpaper (Vanta Waves)${info ? ` [${info}]` : ""}` }
     ),
 };
+
+const BASE_CANVAS_SELECTOR = ":scope > canvas";
 
 const useWallpaper = (
   desktopRef: React.MutableRefObject<HTMLElement | null>
@@ -67,52 +69,74 @@ const useWallpaper = (
   const { exists, readFile } = useFileSystem();
   const { sessionLoaded, setWallpaper, wallpaperImage, wallpaperFit } =
     useSession();
-  const wallpaperWorker = useWorker<void>(WALLPAPER_WORKERS[wallpaperImage]);
-  const resizeListener = useCallback(
-    () =>
-      wallpaperWorker.current?.postMessage(
-        desktopRef.current?.getBoundingClientRect()
-      ),
-    [desktopRef, wallpaperWorker]
+  const [wallpaperName] = wallpaperImage.split(" ");
+  const vantaWireframe = wallpaperImage === "VANTA WIREFRAME";
+  const wallpaperWorker = useWorker<void>(
+    WALLPAPER_WORKERS[wallpaperName],
+    undefined,
+    vantaWireframe ? "Wireframe" : ""
+  );
+  const resizeListener = useCallback(() => {
+    if (!desktopRef.current) return;
+
+    const desktopRect = desktopRef.current.getBoundingClientRect();
+
+    wallpaperWorker.current?.postMessage(desktopRect);
+
+    const canvasElement =
+      desktopRef.current.querySelector(BASE_CANVAS_SELECTOR);
+
+    if (canvasElement instanceof HTMLCanvasElement) {
+      canvasElement.style.width = `${desktopRect.width}px`;
+      canvasElement.style.height = `${desktopRect.height}px`;
+    }
+  }, [desktopRef, wallpaperWorker]);
+  const vantaConfig = useMemo(
+    () => ({
+      ...config,
+      material: {
+        options: {
+          wireframe: vantaWireframe,
+        },
+      },
+    }),
+    [vantaWireframe]
   );
   const loadWallpaper = useCallback(() => {
     if (desktopRef.current) {
       desktopRef.current.setAttribute("style", "");
-      desktopRef.current.querySelector(":scope > canvas")?.remove();
+      desktopRef.current.querySelector(BASE_CANVAS_SELECTOR)?.remove();
 
       if (window.OffscreenCanvas !== undefined && wallpaperWorker.current) {
         const offscreen = createOffscreenCanvas(desktopRef.current);
 
         wallpaperWorker.current.postMessage(
-          { canvas: offscreen, devicePixelRatio: 1 },
+          {
+            canvas: offscreen,
+            config: wallpaperName === "VANTA" ? vantaConfig : undefined,
+            devicePixelRatio: 1,
+          },
           [offscreen]
         );
 
         window.removeEventListener("resize", resizeListener);
         window.addEventListener("resize", resizeListener, { passive: true });
-      } else if (wallpaperImage.startsWith("VANTA")) {
-        vantaWaves({
-          ...config,
-          material: {
-            options: {
-              wireframe: wallpaperImage === "VANTA-WIREFRAME",
-            },
-          },
-        })(desktopRef.current);
-      } else if (wallpaperImage === "HEXELLS") {
+      } else if (wallpaperName === "VANTA") {
+        vantaWaves(vantaConfig)(desktopRef.current);
+      } else if (wallpaperName === "HEXELLS") {
         hexells(desktopRef.current);
-      } else if (wallpaperImage === "COASTAL_LANDSCAPE") {
-        CoastalLandscape(desktopRef.current);
+      } else if (wallpaperName === "COASTAL_LANDSCAPE") {
+        coastalLandscape(desktopRef.current);
       } else {
         setWallpaper("VANTA");
       }
 
-      if (BRIGHT_WALLPAPERS[wallpaperImage]) {
+      if (BRIGHT_WALLPAPERS[wallpaperName]) {
         desktopRef.current
-          ?.querySelector("canvas")
+          ?.querySelector(BASE_CANVAS_SELECTOR)
           ?.setAttribute(
             "style",
-            `filter: brightness(${BRIGHT_WALLPAPERS[wallpaperImage]})`
+            `filter: brightness(${BRIGHT_WALLPAPERS[wallpaperName]})`
           );
       }
     }
@@ -120,7 +144,8 @@ const useWallpaper = (
     desktopRef,
     resizeListener,
     setWallpaper,
-    wallpaperImage,
+    vantaConfig,
+    wallpaperName,
     wallpaperWorker,
   ]);
   const loadFileWallpaper = useCallback(async () => {
@@ -130,31 +155,24 @@ const useWallpaper = (
     if (currentWallpaperUrl === wallpaperImage) return;
     if (currentWallpaperUrl) cleanUpBufferUrl(currentWallpaperUrl);
     desktopRef.current?.setAttribute("style", "");
-    desktopRef.current?.querySelector(":scope > canvas")?.remove();
-    if (wallpaperImage.startsWith("VANTA")) {
-      vantaWaves({
-        ...config,
-        material: {
-          options: {
-            wireframe: wallpaperImage === "VANTA-WIREFRAME",
-          },
-        },
-      })();
+    desktopRef.current?.querySelector(BASE_CANVAS_SELECTOR)?.remove();
+    if (wallpaperName === "VANTA") {
+      vantaWaves(vantaConfig)();
     }
 
     let wallpaperUrl = "";
     let fallbackBackground = "";
     let newWallpaperFit = wallpaperFit;
 
-    if (wallpaperImage.startsWith("APOD")) {
+    if (wallpaperName === "APOD") {
       const [, currentUrl, currentDate] = wallpaperImage.split(" ");
-      const [month, , day, , year] = new Intl.DateTimeFormat("en-GB", {
-        timeZone: "Europe/Warsaw",
+      const [month, , day, , year] = new Intl.DateTimeFormat("en-US", {
+        timeZone: "US/Eastern",
       })
         .formatToParts(Date.now())
         .map(({ value }) => value);
 
-      if (currentDate === `${day}-${month}-${year}`) {
+      if (currentDate === `${year}-${month}-${day}`) {
         wallpaperUrl = currentUrl;
       } else {
         const {
@@ -210,22 +228,24 @@ const useWallpaper = (
     loadWallpaper,
     readFile,
     setWallpaper,
+    vantaConfig,
     wallpaperFit,
     wallpaperImage,
+    wallpaperName,
   ]);
 
   useEffect(() => {
     if (sessionLoaded) {
       if (
-        wallpaperImage &&
-        !Object.keys(WALLPAPER_WORKERS).includes(wallpaperImage)
+        wallpaperName &&
+        !Object.keys(WALLPAPER_WORKERS).includes(wallpaperName)
       ) {
         loadFileWallpaper().catch(loadWallpaper);
       } else {
         loadWallpaper();
       }
     }
-  }, [loadFileWallpaper, loadWallpaper, sessionLoaded, wallpaperImage]);
+  }, [loadFileWallpaper, loadWallpaper, sessionLoaded, wallpaperName]);
 };
 
 export default useWallpaper;
