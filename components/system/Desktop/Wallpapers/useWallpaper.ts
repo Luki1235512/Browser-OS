@@ -190,7 +190,7 @@ const useWallpaper = (
           }
 
           if (hdurl && url && hdurl !== url) {
-            fallbackBackground = url as string;
+            fallbackBackground = (wallpaperUrl === url ? hdurl : url) as string;
           }
 
           const newWallpaperImage = `APOD ${wallpaperUrl} ${date as string}`;
@@ -206,15 +206,24 @@ const useWallpaper = (
     }
 
     if (wallpaperUrl) {
-      desktopRef.current?.setAttribute(
-        "style",
-        `
-        background-image: url(${wallpaperUrl})${
-          fallbackBackground ? `, url(${fallbackBackground})` : ""
-        };
+      const wallpaperStyle = (url: string): string => `
+        background-image: url(${url});
         ${cssFit[newWallpaperFit]}
-      `
-      );
+      `;
+
+      desktopRef.current?.setAttribute("style", wallpaperStyle(wallpaperUrl));
+
+      if (fallbackBackground) {
+        const img = document.createElement("img");
+
+        img.addEventListener("error", () =>
+          desktopRef.current?.setAttribute(
+            "style",
+            wallpaperStyle(fallbackBackground)
+          )
+        );
+        img.src = wallpaperUrl;
+      }
     } else {
       loadWallpaper();
     }
