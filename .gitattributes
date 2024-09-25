@@ -2,3 +2,9 @@
 
 public/** linguist-vendored
 public/**/*.js linguist-vendored
+public/System/Hexells/ca.js linguist-vendored
+public/System/Hexells/demo.js linguist-vendored
+public/Program Files/DX-Ball/game.js linguist-vendored
+public/Program Files/eSheep/eSheep.js linguist-vendored
+public/Program Files/BoxedWine/boxedwine.js linguist-vendored
+public/Program Files/BoxedWine/boxedwine-shell.js linguist-vendored
