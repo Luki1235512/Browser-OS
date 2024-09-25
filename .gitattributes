@@ -1,2 +1,4 @@
 * text=auto eol=crlf
+
 public/** linguist-vendored
+public/**/*.js linguist-vendored
