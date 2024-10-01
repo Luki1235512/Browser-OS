@@ -15,12 +15,19 @@ const nextConfig = {
   compiler: {
     reactRemoveProperties: isProduction,
     removeConsole: isProduction,
-    styledComponents: true,
+    styledComponents: {
+      displayName: !isProduction,
+      minify: isProduction,
+      pure: true,
+    },
   },
+  crossOrigin: false,
   devIndicators: {
-    buildActivity: false,
+    buildActivityPosition: "top-right",
   },
   optimizeFonts: false,
+  output: "standalone",
+  productionBrowserSourceMaps: false,
   reactStrictMode: true,
   swcMinify: !isProduction,
   webpack: (config) => {
