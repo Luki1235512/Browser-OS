@@ -42,8 +42,8 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
         word-break: break-word;
       }
 
-      img,
       picture {
+        height: ${({ theme }) => theme.sizes.fileEntry.iconSize};
         width: ${({ theme }) => theme.sizes.fileEntry.iconSize};
 
         &:not(:first-of-type) {
