@@ -74,6 +74,7 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
       $width: size,
     };
   }, [$displaySize, $imgSize]);
+  const [failedUrls, setFailedUrls] = useState<string[]>([]);
 
   useEffect(
     () => () => {
@@ -85,9 +86,23 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
   const RenderedIcon = (
     <StyledIcon
       ref={$imgRef}
+      onError={() => {
+        const { currentSrc = "" } = $imgRef?.current || {};
+
+        if (currentSrc && !failedUrls.includes(currentSrc)) {
+          const { pathname } = new URL(currentSrc);
+
+          setFailedUrls((currentFailedUrls) => [
+            ...currentFailedUrls,
+            pathname,
+          ]);
+        }
+      }}
       onLoad={() => setLoaded(true)}
       src={isStaticIcon ? src : undefined}
-      srcSet={!isStaticIcon ? imageSrcs(src, $imgSize, ".png") : undefined}
+      srcSet={
+        !isStaticIcon ? imageSrcs(src, $imgSize, ".png", failedUrls) : undefined
+      }
       style={style}
       {...componentProps}
       {...dimensionProps}
