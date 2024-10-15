@@ -112,14 +112,31 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
   return (
     <picture>
       {!isStaticIcon &&
-        SUPPORTED_PIXEL_RATIOS.map((ratio) => (
-          <source
-            key={ratio}
-            media={ratio > 1 ? `screen and (resolution > ${ratio - 1}x)` : ""}
-            srcSet={imageSrc(src, $imgSize, ratio, ".webp")}
-            type="image/webp"
-          />
-        ))}
+        SUPPORTED_PIXEL_RATIOS.map((ratio) => {
+          const srcSet = imageSrc(src, $imgSize, ratio, ".webp");
+          const mediaRatio = ratio - 0.99;
+
+          if (
+            failedUrls.length > 0 &&
+            failedUrls.includes(srcSet.split(" ")[0])
+          ) {
+            return;
+          }
+
+          // eslint-disable-next-line consistent-return
+          return (
+            <source
+              key={ratio}
+              media={
+                ratio > 1
+                  ? `(min-resolution: ${mediaRatio}x), (-webkit-min-device-pixel-ratio: ${mediaRatio})`
+                  : undefined
+              }
+              srcSet={srcSet}
+              type="image/webp"
+            />
+          );
+        })}
       {RenderedIcon}
     </picture>
   );
