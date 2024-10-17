@@ -126,7 +126,7 @@ const useFolderContextMenu = (
         ? [
             MENU_SEPARATOR,
             {
-              label: "Wallpaper",
+              label: "Background",
               menu: [
                 {
                   action: () => setWallpaper("APOD"),
