@@ -80,7 +80,6 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
             }}
             value={`${Math.round(scale * 100)}%`}
           />
-
           <Button
             disabled={scale === 5 || count === 0}
             onClick={() =>
