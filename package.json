@@ -90,7 +90,7 @@
     "byuu": "^0.16.0",
     "emulators": "^0.73.8",
     "emulators-ui": "^0.73.9",
-    "eruda": "https://github.com/liriliri/eruda#5823e12",
+    "eruda": "^2.5.0",
     "eslint": "^8.19.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-next": "^13.4.6",
