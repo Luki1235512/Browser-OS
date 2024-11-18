@@ -91,7 +91,7 @@
     "emulators": "^0.73.8",
     "emulators-ui": "^0.73.9",
     "eruda": "^2.5.0",
-    "eslint": "^8.19.0",
+    "eslint": "^8.20.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-next": "^13.4.6",
     "eslint-config-prettier": "^8.8.0",
