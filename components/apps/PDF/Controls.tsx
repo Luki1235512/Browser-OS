@@ -23,7 +23,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
   return (
     <StyledControls>
       <div className="side-menu" id="title">
-        {subTitle}
+        <span>{subTitle}</span>
       </div>
       <ol>
         {count !== 0 && (
@@ -102,7 +102,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
           </Button>
         </li>
       </ol>
-      <div className="side-menu" id="subMenu">
+      <div className="side-menu">
         <Button
           id="download"
           onClick={async () => {
