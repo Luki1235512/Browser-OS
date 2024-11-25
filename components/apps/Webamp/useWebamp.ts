@@ -210,9 +210,12 @@ const useWebamp = (id: string): Webamp => {
                 webamp.store.getState() || {};
 
               if (tracks[currentTrack]) {
-                const { artist, title: trackTitle } = tracks[currentTrack];
+                const { artist, title: trackTitle } =
+                  tracks[currentTrack] || {};
 
-                title(id, `${artist} - ${trackTitle}`);
+                if (artist && trackTitle) {
+                  title(id, `${artist} - ${trackTitle}`);
+                }
               }
             }
           } else {
