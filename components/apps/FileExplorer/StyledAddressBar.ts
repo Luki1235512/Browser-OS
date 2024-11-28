@@ -26,6 +26,12 @@ const StyledAddressBar = styled.div`
     width: calc(100% - 6px);
   }
 
+  img {
+    left: 2px;
+    position: absolute;
+    top: 5px;
+  }
+
   #refresh {
     background-color: rgb(300, 100, 255);
     height: 28px;
