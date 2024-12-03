@@ -14,6 +14,7 @@ const StyledSearch = styled.div`
     fill: rgb(255, 255, 255);
     height: 12px;
     left: 14px;
+    pointer-events: none;
     position: absolute;
     stroke: rgb(255, 255, 255);
     stroke-width: 1;
