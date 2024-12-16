@@ -27,7 +27,7 @@ import {
   getProcessByFileExtension,
 } from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
-import { requestPermission } from "contexts/fileSystem/functions";
+import { requestPermission, resetStorage } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { basename, dirname, extname, isAbsolute, join } from "path";
@@ -66,7 +66,6 @@ const useCommandInterpreter = (
     readdir,
     readFile,
     rename,
-    resetStorage,
     rootFs,
     stat,
     updateFolder,
@@ -346,8 +345,9 @@ const useCommandInterpreter = (
             if (await exists(fullPath)) {
               const { fileTypeFromBuffer } = await import("file-type");
               const { mime = "Unknown" } =
-                (await fileTypeFromBuffer(await readFile(fullPath))) || {};
-
+                (await fileTypeFromBuffer(
+                  new Uint8Array(await readFile(fullPath))
+                )) || {};
               localEcho?.println(`${commandPath}: ${mime}`);
             }
           }
@@ -557,7 +557,7 @@ const useCommandInterpreter = (
         case "logout":
         case "restart":
         case "shutdown": {
-          resetStorage().finally(() => window.location.reload());
+          resetStorage(rootFs).finally(() => window.location.reload());
           break;
         }
         case "time": {
@@ -712,7 +712,6 @@ const useCommandInterpreter = (
       readFile,
       readdir,
       rename,
-      resetStorage,
       rootFs,
       stat,
       terminal,
