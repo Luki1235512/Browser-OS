@@ -5,7 +5,8 @@ import { useMemo, useRef, useState } from "react";
 import type { DefaultTheme, StyledComponent } from "styled-components";
 
 const StyledLoading = dynamic(
-  () => import("components/system/Files/FileManager/StyledLoading")
+  () => import("components/system/Files/FileManager/StyledLoading"),
+  { ssr: false }
 );
 
 type ContainerHook = (
