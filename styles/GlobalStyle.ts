@@ -35,7 +35,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   picture > img {
-    display: block;;
+    display: block;
   }
 
   ol,

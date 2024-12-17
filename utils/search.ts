@@ -100,6 +100,7 @@ export const useSearch = (searchTerm: string): Index.Result[] => {
     const updateResults = async (): Promise<void> => {
       if (searchTerm.length > 0) {
         if (!window.lunr) await loadFiles([LUNR_LIB]);
+
         search(searchTerm).then(setResults);
         buildDynamicIndex(readFile, rootFs).then((dynamicIndex) =>
           search(searchTerm, dynamicIndex).then((searchResults) =>

@@ -22,7 +22,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
 
   return (
     <StyledControls>
-      <div className="side-menu" id="title">
+      <div className="side-menu">
         <span>{subTitle}</span>
       </div>
       <ol>

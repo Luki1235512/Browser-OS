@@ -22,6 +22,7 @@ const StatusBar: FC<StatusBarProps> = ({ count, directory, selected }) => {
   const updateShowSelected = (width: number): void =>
     setShowSelected(width > MINIMUM_STATUSBAR_WIDTH);
   const statusBarRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     const updateSelectedSize = async (): Promise<void> =>
       setSelectedSize(
@@ -63,11 +64,11 @@ const StatusBar: FC<StatusBarProps> = ({ count, directory, selected }) => {
   return (
     <StyledStatusBar ref={statusBarRef} onContextMenuCapture={haltEvent}>
       <div {...label("Total item count")}>
-        {count} item{count !== 1 ? "s" : ""}
+        {count} item{count === 1 ? "" : "s"}
       </div>
       {showSelected && selected.length > 0 && (
         <div className="selected" {...label("Selected item count and size")}>
-          {selected.length} item{selected.length !== 1 ? "s" : ""} selected
+          {selected.length} item{selected.length === 1 ? "" : "s"} selected
           {selectedSize !== UNKNOWN_SIZE && selectedSize !== UNCALCULATED_SIZE
             ? `\u00A0\u00A0${getFormattedSize(selectedSize)}`
             : ""}
