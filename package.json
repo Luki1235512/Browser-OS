@@ -72,7 +72,7 @@
   },
   "devDependencies": {
     "7z-wasm": "^1.0.0-beta.5",
-    "@next/bundle-analyzer": "^12.2.3",
+    "@next/bundle-analyzer": "^12.2.4",
     "@next/eslint-plugin-next": "^13.4.6",
     "@stylelint/postcss-css-in-js": "^0.38.0",
     "@types/gif.js": "^0.2.2",
