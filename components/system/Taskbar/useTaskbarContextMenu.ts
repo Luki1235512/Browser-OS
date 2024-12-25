@@ -21,13 +21,6 @@ const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
       : "Show the desktop";
     const menuItems: MenuItem[] = [
       {
-        action: toggleFullScreen,
-        label: document.fullscreenElement
-          ? "Exit full screen"
-          : "Enter full screen",
-      },
-      MENU_SEPARATOR,
-      {
         action: () => toggleShowDesktop(processes, minimize),
         label: onStartButton ? "Desktop" : toggleLabel,
       },
@@ -47,6 +40,16 @@ const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
         {
           action: () => open("Run"),
           label: "Run",
+        },
+        MENU_SEPARATOR
+      );
+    } else {
+      menuItems.unshift(
+        {
+          action: toggleFullScreen,
+          label: document.fullscreenElement
+            ? "Exit full screen"
+            : "Enter full screen",
         },
         MENU_SEPARATOR
       );
