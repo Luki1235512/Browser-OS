@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - dev
+    branches-ignore:
+      - master
+      - Tests-test
 
 jobs:
   tests:
