@@ -6,7 +6,6 @@ on:
       - dev
     branches-ignore:
       - master
-      - Tests-test
 
 jobs:
   tests:
