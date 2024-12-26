@@ -22,7 +22,7 @@ export const config = {
     },
   },
   inactivityTimeout: 1000,
-  preload: undefined,
+  preload: "auto",
   youtube: {
     enablePrivacyEnhancedMode: true,
     ytControls: 2,
@@ -33,31 +33,24 @@ const FALLBACK_TYPE = "video/mp4";
 
 export const getMimeType = (url: string): string | undefined => {
   switch (extname(url).toLowerCase()) {
-    case ".m3u8": {
+    case ".m3u8":
       return "application/x-mpegURL";
-    }
     case ".m4v":
     case ".mkv":
     case ".mov":
-    case ".mp4": {
+    case ".mp4":
       return "video/mp4";
-    }
-    case ".oga": {
+    case ".oga":
       return "audio/ogg";
-    }
     case ".ogg":
     case ".ogm":
-    case ".ogv": {
+    case ".ogv":
       return "video/ogg";
-    }
-    case ".wav": {
+    case ".wav":
       return "audio/wav";
-    }
-    case ".webm": {
+    case ".webm":
       return "video/webm";
-    }
-    default: {
+    default:
       return FALLBACK_TYPE;
-    }
   }
 };

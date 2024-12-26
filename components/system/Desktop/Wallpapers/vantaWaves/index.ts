@@ -13,7 +13,7 @@ const vantaWaves =
     try {
       currentEffect?.destroy();
     } catch {
-      // Failed to clean up effect
+      // Failed to cleanup effect
     }
 
     if (!el || typeof WebGLRenderingContext === "undefined") return;

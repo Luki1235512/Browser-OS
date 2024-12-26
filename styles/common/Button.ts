@@ -5,7 +5,7 @@ type ButtonProps = {
 };
 
 const Button = styled.button.attrs({
-  onKeyDown: (event: React.KeyboardEvent<HTMLButtonElement>) => {
+  onKeyDown: (event) => {
     if (!(event.target instanceof HTMLTextAreaElement)) event.preventDefault();
   },
   type: "button",

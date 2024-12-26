@@ -75,7 +75,6 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
 
               if (
                 Number.isNaN(newScale) ||
-                // eslint-disable-next-line unicorn/prefer-at
                 newScale > scales[scales.length - 1] ||
                 newScale < scales[0]
               ) {

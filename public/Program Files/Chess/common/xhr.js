@@ -1,5 +1,4 @@
 
-
 // retrieves a file via XMLHTTPRequest, calls fncCallback when done or fncError on error.
 
 function XHR(strURL, fncCallback /*, argumentToPass1, argumentToPass2, etc. */) {

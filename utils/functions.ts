@@ -87,7 +87,7 @@ export const imageSrc = (
     dirname(imagePath),
     `${imageSize}x${imageSize}`,
     `${imageName}${extension}`
-  ).replaceAll("\\", "/")}${ratio > 1 ? ` ${ratio}x` : ""}`;
+  ).replace(/\\/g, "/")}${ratio > 1 ? ` ${ratio}x` : ""}`;
 };
 
 export const imageSrcs = (

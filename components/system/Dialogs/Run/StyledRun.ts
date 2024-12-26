@@ -67,11 +67,11 @@ const StyledRun = styled.div`
         margin-right: 33px;
 
         &:focus {
-          border: 1px solid rgb(244, 63, 255);
+          border: 1px solid rgb(0, 120, 215);
           border-right: 0;
 
           + select {
-            border-color: rgb(244, 63, 255);
+            border-color: rgb(0, 120, 215);
           }
         }
       }
@@ -79,7 +79,7 @@ const StyledRun = styled.div`
   }
 
   nav {
-    background-color: rgb(245, 245, 245);
+    background-color: rgb(240, 240, 240);
     display: flex;
     flex-direction: row;
     height: 100%;

@@ -155,7 +155,11 @@ const useCommandInterpreter = (
         case "color": {
           const [r, g, b] = commandArgs;
 
-          if (r !== undefined && g !== undefined && b !== undefined) {
+          if (
+            typeof r !== "undefined" &&
+            typeof g !== "undefined" &&
+            typeof b !== "undefined"
+          ) {
             localEcho?.print(rgbAnsi(Number(r), Number(g), Number(b)));
           } else {
             const [[bg, fg] = []] = commandArgs;
@@ -215,11 +219,10 @@ const useCommandInterpreter = (
           break;
         }
         case "clear":
-        case "cls": {
+        case "cls":
           terminal?.reset();
           terminal?.write(`\u001Bc${colorOutput.current.join("")}`);
           break;
-        }
         case "date": {
           localEcho?.println(
             `The current date is: ${getTZOffsetISOString().slice(0, 10)}`
@@ -327,15 +330,13 @@ const useCommandInterpreter = (
           }
           break;
         }
-        case "echo": {
+        case "echo":
           localEcho?.println(command.slice(command.indexOf(" ") + 1));
           break;
-        }
         case "exit":
-        case "quit": {
+        case "quit":
           closeWithTransition(id);
           break;
-        }
         case "file": {
           const [commandPath] = commandArgs;
 
@@ -345,9 +346,8 @@ const useCommandInterpreter = (
             if (await exists(fullPath)) {
               const { fileTypeFromBuffer } = await import("file-type");
               const { mime = "Unknown" } =
-                (await fileTypeFromBuffer(
-                  new Uint8Array(await readFile(fullPath))
-                )) || {};
+                (await fileTypeFromBuffer(await readFile(fullPath))) || {};
+
               localEcho?.println(`${commandPath}: ${mime}`);
             }
           }
@@ -455,10 +455,9 @@ const useCommandInterpreter = (
           }
           break;
         }
-        case "license": {
+        case "license":
           localEcho?.println(displayLicense);
           break;
-        }
         case "md":
         case "mkdir": {
           const [directory] = commandArgs;
@@ -556,20 +555,17 @@ const useCommandInterpreter = (
         }
         case "logout":
         case "restart":
-        case "shutdown": {
+        case "shutdown":
           resetStorage(rootFs).finally(() => window.location.reload());
           break;
-        }
-        case "time": {
+        case "time":
           localEcho?.println(
             `The current time is: ${getTZOffsetISOString().slice(11, 22)}`
           );
           break;
-        }
-        case "title": {
+        case "title":
           changeTitle(id, command.slice(command.indexOf(" ") + 1));
           break;
-        }
         case "touch": {
           const [file] = commandArgs;
 
@@ -603,10 +599,9 @@ const useCommandInterpreter = (
           break;
         }
         case "ver":
-        case "version": {
+        case "version":
           localEcho?.println(displayVersion());
           break;
-        }
         case "wapm":
         case "wax": {
           if (localEcho) await loadWapm(commandArgs, localEcho);
@@ -622,14 +617,13 @@ const useCommandInterpreter = (
           localEcho?.println(await response.text());
           break;
         }
-        case "whoami": {
+        case "whoami":
           if (window.navigator.userAgent) {
             localEcho?.println(window.navigator.userAgent);
           } else {
             localEcho?.println(unknownCommand(baseCommand));
           }
           break;
-        }
         case "xlsx": {
           const [file, format = "xlsx"] = commandArgs;
 
@@ -659,7 +653,7 @@ const useCommandInterpreter = (
           }
           break;
         }
-        default: {
+        default:
           if (baseCommand) {
             const pid = Object.keys(processDirectory).find(
               (process) => process.toLowerCase() === lcBaseCommand
@@ -691,7 +685,6 @@ const useCommandInterpreter = (
               localEcho?.println(unknownCommand(baseCommand));
             }
           }
-        }
       }
 
       return cd.current;

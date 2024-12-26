@@ -149,17 +149,19 @@ const getIconsFromCache = (fs: FSModule, path: string): Promise<string[]> =>
           resolveIcons(
             (
               await Promise.all(
-                [firstIcon, otherIcons.at(-1)].filter(Boolean).map(
-                  (cachedIcon): Promise<string> =>
-                    new Promise((resolveIcon) => {
-                      fs?.readFile(
-                        join(iconCacheDirectory, cachedIcon ?? ""),
-                        (fileError, contents = Buffer.from("")) => {
-                          resolveIcon(fileError ? "" : bufferToUrl(contents));
-                        }
-                      );
-                    })
-                )
+                [firstIcon, otherIcons[otherIcons.length - 1]]
+                  .filter(Boolean)
+                  .map(
+                    (cachedIcon): Promise<string> =>
+                      new Promise((resolveIcon) => {
+                        fs?.readFile(
+                          join(iconCacheDirectory, cachedIcon),
+                          (fileError, contents = Buffer.from("")) => {
+                            resolveIcon(fileError ? "" : bufferToUrl(contents));
+                          }
+                        );
+                      })
+                  )
               )
             ).filter(Boolean)
           );

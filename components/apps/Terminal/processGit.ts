@@ -24,7 +24,7 @@ const processGit = async (
   const onMessage: MessageCallback = (message) =>
     localEcho.println(`remote: ${message.trim()}`);
   const onProgress: ProgressCallback = ({ phase }): void => {
-    if (events.at(-1) !== phase) {
+    if (events[events.length - 1] !== phase) {
       localEcho.println(phase);
       events.push(phase);
     }
@@ -73,9 +73,8 @@ const processGit = async (
       localEcho.println(`git version ${version()}.isomorphic-git`);
       break;
     }
-    default: {
+    default:
       help(localEcho, commands);
-    }
   }
 
   updateFolder(cd);

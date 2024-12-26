@@ -25,6 +25,7 @@ const RenameBox: FC<RenameBoxProps> = ({ name, path, renameFile }) => {
           formats.systemFont
         );
 
+        // Force height to re-calculate
         textArea.setAttribute("style", "height: 1px");
         textArea.setAttribute(
           "style",

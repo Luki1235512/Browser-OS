@@ -61,7 +61,10 @@ const useWallpaper = (
       desktopRef.current.setAttribute("style", "");
       desktopRef.current.querySelector(BASE_CANVAS_SELECTOR)?.remove();
 
-      if (window.OffscreenCanvas !== undefined && wallpaperWorker.current) {
+      if (
+        typeof window.OffscreenCanvas !== "undefined" &&
+        wallpaperWorker.current
+      ) {
         const offscreen = createOffscreenCanvas(desktopRef.current);
 
         wallpaperWorker.current.postMessage(

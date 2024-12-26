@@ -58,12 +58,11 @@ const useDosCI = (
         updateFolder(dirname(SAVE_PATH));
       }
 
-      const dosCIBundle = dosCI[bundleUrl];
       if (
-        dosCIBundle !== undefined &&
+        typeof dosCI[bundleUrl] !== "undefined" &&
         (await writeFile(
           join(SAVE_PATH, saveName),
-          Buffer.from(await dosCIBundle.persist()),
+          Buffer.from(await (dosCI[bundleUrl] as CommandInterface).persist()),
           true
         ))
       ) {

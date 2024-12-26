@@ -6,7 +6,6 @@ type StyledButtonProps = {
 
 const StyledButton = styled.button<StyledButtonProps>`
   background-color: rgb(235, 76, 250);
-  /* border: 1px solid rgb(215, 56, 230); */
   border: ${({ $active }) =>
     $active ? "2px solid rgb(215, 56, 230)" : "1px solid rgb(215, 56, 230)"};
   font-family: ${({ theme }) => theme.formats.systemFont};

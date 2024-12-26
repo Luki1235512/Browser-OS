@@ -268,7 +268,7 @@ type MetadataGetter = () => Promise<Track["metaData"]>;
 type MetadataProvider = (url: string) => MetadataGetter;
 
 const removeCData = (string = ""): string =>
-  string.replaceAll(/<!\[CDATA\[|]]>/g, "");
+  string.replace(/<!\[CDATA\[|]]>/g, "");
 
 const streamingMetadataProviders: Record<string, MetadataProvider> = {
   "somafm.com": (url: string) => async () => {

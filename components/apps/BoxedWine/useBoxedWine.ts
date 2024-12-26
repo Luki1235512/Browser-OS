@@ -40,7 +40,7 @@ const useBoxedWine = (
   const blankCanvasCheckerTimer = useRef<number | undefined>();
   const loadEmulator = useCallback(async (): Promise<void> => {
     let dynamicConfig = {};
-    const appPayload = url ? await readFile(url) : Buffer.from("");
+    let appPayload = url ? await readFile(url) : Buffer.from("");
     const extension = extname(url).toLowerCase();
     const isExecutable = extension === ".exe";
     const { zipAsync } = await import("utils/zipFunctions");

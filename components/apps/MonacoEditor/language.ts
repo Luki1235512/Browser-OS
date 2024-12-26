@@ -1,4 +1,4 @@
-// import type { Plugin } from "prettier";
+import type { Plugin } from "prettier";
 
 type Parser = { parser: string; plugins: Plugin[] };
 
@@ -13,33 +13,32 @@ const prettyLanguages = new Set([
   "markdown",
 ]);
 
-export const getLanguageParser = async (
+const getLanguageParser = async (
   language: string
-  // eslint-disable-next-line @typescript-eslint/require-await
 ): Promise<Parser | undefined> => {
   if (language === "javascript" || language === "typescript") {
-    // return {
-    //   parser: "babel",
-    //   plugins: [await import("prettier/parser-babel")],
-    // };
+    return {
+      parser: "babel",
+      plugins: [await import("prettier/parser-babel")],
+    };
   }
   if (["css", "sass", "less"].includes(language)) {
-    // return {
-    //   parser: language,
-    //   plugins: [await import("prettier/parser-postcss")],
-    // };
+    return {
+      parser: language,
+      plugins: [await import("prettier/parser-postcss")],
+    };
   }
   if (language === "html") {
-    // return {
-    //   parser: "html",
-    //   plugins: [await import("prettier/parser-html")],
-    // };
+    return {
+      parser: "html",
+      plugins: [await import("prettier/parser-html")],
+    };
   }
   if (language === "markdown") {
-    // return {
-    //   parser: "markdown",
-    //   plugins: [await import("prettier/parser-markdown")],
-    // };
+    return {
+      parser: "markdown",
+      plugins: [await import("prettier/parser-markdown")],
+    };
   }
 
   return undefined;
@@ -51,7 +50,6 @@ export const isPrettyLanguage = (language: string): boolean =>
 export const prettyPrint = async (
   language: string,
   code: string
-  // eslint-disable-next-line @typescript-eslint/require-await
 ): Promise<string> => {
   const lcLanguage = language.toLowerCase();
 
@@ -59,9 +57,7 @@ export const prettyPrint = async (
     return JSON.stringify(JSON.parse(code), undefined, 2);
   }
 
-  // const prettier = await import("prettier/standalone");
+  const prettier = await import("prettier/standalone");
 
-  // return prettier.format(code, await getLanguageParser(lcLanguage));
-
-  return "";
+  return prettier.format(code, await getLanguageParser(lcLanguage));
 };

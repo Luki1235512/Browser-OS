@@ -89,7 +89,7 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
                 <Button
                   onClick={() => {
                     editor?.focus();
-                    editor?.getAction("editor.action.gotoLine")?.run();
+                    editor?.getAction("editor.action.gotoLine").run();
                   }}
                   {...label("Go to Line/Column")}
                 >
