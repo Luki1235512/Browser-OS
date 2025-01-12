@@ -19,6 +19,8 @@
     "deploy": "yarn build:robots && next export && yarn build:html && yarn build:js",
     "docker:build": "docker build -t cute-os .",
     "docker:run": "docker run -dp 3000:3000 --rm --name cute-os cute-os",
+    "dev": "next dev",
+    "eslint": "eslint --report-unused-disable-directives .",
     "export": "next export",
     "prepare": "husky install",
     "prettier": "prettier --write .",

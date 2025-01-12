@@ -55,7 +55,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [Pyodide](https://github.com/pyodide/pyodide)
 - [Video.js](https://github.com/videojs/video.js)
 - [TinyMCE](https://github.com/tinymce/tinymce)
-- [Space Cadet Pinball](https://github.com/k4zmu2a/SpaceCadetPinball)
+- [Space Cadet Pinball](https://github.com/alula/SpaceCadetPinball)
 - [FFmpeg](https://github.com/ffmpegwasm/ffmpeg.wasm)
 - [ImageMagick](https://github.com/KnicKnic/WASM-ImageMagick)
 - [Lunr](https://github.com/olivernn/lunr.js)
