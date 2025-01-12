@@ -7,9 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
       - name: Install Modules
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
         run: yarn install
       - name: Run Build
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
         run: yarn run build
       - name: Run Tests
         run: yarn test
