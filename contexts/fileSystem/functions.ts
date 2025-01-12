@@ -159,7 +159,7 @@ export const addFileSystemHandle = async (
       FS_HANDLES
     );
   } catch {
-    // Ignore errors stroing handle
+    // Ignore errors storing handle
   }
 };
 

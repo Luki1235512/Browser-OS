@@ -1,8 +1,9 @@
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import { useSession } from "contexts/session";
-import type { Position } from "eruda";
+import type { IconPosition } from "contexts/session/types";
 import { join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { Position } from "react-rnd";
 import { MILLISECONDS_IN_SECOND, UNKNOWN_ICON } from "utils/constants";
 import {
   calcGridDropPosition,
@@ -41,7 +42,7 @@ const useDraggableEntries = (
   const onDragEnd =
     (entryUrl: string): React.DragEventHandler =>
     () => {
-      if (allowMoving) {
+      if (allowMoving && focusedEntries.length > 0) {
         const currentIconPositions = updateIconPositionsIfEmpty(
           entryUrl,
           fileManagerRef.current,
@@ -62,21 +63,26 @@ const useDraggableEntries = (
         ) {
           const targetUrl = join(entryUrl, focusedEntries[0]);
           const newIconPositions = Object.fromEntries(
-            focusedEntries.map((entryFile) => {
-              const url = join(entryUrl, entryFile);
+            focusedEntries
+              .map<[string, IconPosition]>((entryFile) => {
+                const url = join(entryUrl, entryFile);
 
-              return [
-                url,
-                url === targetUrl
-                  ? gridDropPosition
-                  : calcGridPositionOffset(
-                      url,
-                      targetUrl,
-                      currentIconPositions,
-                      gridDropPosition
-                    ),
-              ];
-            })
+                return [
+                  url,
+                  url === targetUrl
+                    ? gridDropPosition
+                    : calcGridPositionOffset(
+                        url,
+                        targetUrl,
+                        currentIconPositions,
+                        gridDropPosition
+                      ),
+                ];
+              })
+              .filter(
+                ([, { gridColumnStart, gridRowStart }]) =>
+                  gridColumnStart >= 1 && gridRowStart >= 1
+              )
           );
 
           setIconPositions({
