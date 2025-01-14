@@ -5,11 +5,13 @@ import {
   Circle,
 } from "components/system/Menu/MenuIcons";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
+import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import type { Position } from "react-rnd";
 import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
+import { FOCUSABLE_ELEMENT } from "utils/constants";
 
 type MenuItemEntryProps = MenuItem & {
   resetMenu: () => void;
@@ -40,7 +42,14 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
       setShowSubMenu(false);
     }
   };
-  const subMenuEvents = menu ? { onMouseEnter, onMouseLeave } : {};
+  const subMenuEvents = menu
+    ? {
+        onBlur: onMouseLeave as unknown as React.FocusEventHandler,
+        onMouseEnter,
+        onMouseLeave,
+        onTouchStart: onMouseEnter as unknown as React.TouchEventHandler,
+      }
+    : {};
 
   useEffect(() => {
     if (menu && entryRef.current) {
@@ -57,6 +66,7 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
     <li
       ref={entryRef}
       className={disabled ? "disabled" : undefined}
+      {...FOCUSABLE_ELEMENT}
       {...subMenuEvents}
     >
       {separator ? (
