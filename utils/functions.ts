@@ -216,6 +216,7 @@ export const calcGridDropPosition = (
 
   const gridComputedStyle = window.getComputedStyle(gridElement);
   const gridTemplateRows = gridComputedStyle
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     .getPropertyValue("grid-template-rows")
     .split(" ");
   const gridTemplateColumns = gridComputedStyle
@@ -280,17 +281,107 @@ export const calcGridPositionOffset = (
   url: string,
   targetUrl: string,
   currentIconPositions: IconPositions,
-  gridDropPosition: IconPosition
-): IconPosition => ({
-  gridColumnStart:
-    currentIconPositions[url].gridColumnStart +
-    (gridDropPosition.gridColumnStart -
-      currentIconPositions[targetUrl].gridColumnStart),
-  gridRowStart:
-    currentIconPositions[url].gridRowStart +
-    (gridDropPosition.gridRowStart -
-      currentIconPositions[targetUrl].gridRowStart),
-});
+  gridDropPosition: IconPosition,
+  [, ...draggedEntries]: string[],
+  gridElement: HTMLElement
+): IconPosition => {
+  if (currentIconPositions[url] && currentIconPositions[targetUrl]) {
+    return {
+      gridColumnStart:
+        currentIconPositions[url].gridColumnStart +
+        (gridDropPosition.gridColumnStart -
+          currentIconPositions[targetUrl].gridColumnStart),
+      gridRowStart:
+        currentIconPositions[url].gridRowStart +
+        (gridDropPosition.gridRowStart -
+          currentIconPositions[targetUrl].gridRowStart),
+    };
+  }
+
+  const gridComputedStyle = window.getComputedStyle(gridElement);
+  const gridTemplateRowCount = gridComputedStyle
+    .getPropertyValue("grid-template-rows")
+    .split(" ").length;
+  const {
+    gridColumnStart: targetGridColumnStart,
+    gridRowStart: targetGridRowStart,
+  } = gridDropPosition;
+  const gridRowStart =
+    targetGridRowStart + draggedEntries.indexOf(basename(url)) + 1;
+
+  return gridRowStart > gridTemplateRowCount
+    ? {
+        gridColumnStart:
+          targetGridColumnStart +
+          Math.ceil(gridRowStart / gridTemplateRowCount) -
+          1,
+        gridRowStart:
+          gridRowStart % gridTemplateRowCount || gridTemplateRowCount,
+      }
+    : {
+        gridColumnStart: targetGridColumnStart,
+        gridRowStart,
+      };
+};
+
+export const updateIconPositions = (
+  directory: string,
+  gridElement: HTMLElement | null,
+  iconPositions: IconPositions,
+  sortOrders: SortOrders,
+  dragPosition: DragPosition,
+  draggedEntries: string[],
+  setIconPositions: React.Dispatch<React.SetStateAction<IconPositions>>
+): void => {
+  if (!gridElement) return;
+
+  const currentIconPositions = updateIconPositionsIfEmpty(
+    directory,
+    gridElement,
+    iconPositions,
+    sortOrders
+  );
+  const gridDropPosition = calcGridDropPosition(gridElement, dragPosition);
+
+  if (
+    !Object.values(currentIconPositions).some(
+      ({ gridColumnStart, gridRowStart }) =>
+        gridColumnStart === gridDropPosition.gridColumnStart &&
+        gridRowStart === gridDropPosition.gridRowStart
+    )
+  ) {
+    const targetUrl = join(directory, draggedEntries[0]);
+    const newIconPositions = Object.fromEntries(
+      draggedEntries
+        .map<[string, IconPosition]>((entryFile) => {
+          const url = join(directory, entryFile);
+
+          return [
+            url,
+            url === targetUrl
+              ? gridDropPosition
+              : calcGridPositionOffset(
+                  url,
+                  targetUrl,
+                  currentIconPositions,
+                  gridDropPosition,
+                  draggedEntries,
+                  gridElement
+                ),
+          ];
+        })
+        .filter(
+          ([, { gridColumnStart, gridRowStart }]) =>
+            gridColumnStart >= 1 && gridRowStart >= 1
+        )
+    );
+
+    setIconPositions({
+      ...currentIconPositions,
+      ...newIconPositions,
+    });
+  }
+};
 
 export const isCanvasDrawn = (canvas?: HTMLCanvasElement | null): boolean =>
   canvas instanceof HTMLCanvasElement &&
