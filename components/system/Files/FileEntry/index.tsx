@@ -31,6 +31,7 @@ import {
   FOLDER_BACK_ICON,
   FOLDER_FRONT_ICON,
   ICON_CACHE,
+  ICON_CACHE_EXTENSION,
   ICON_PATH,
   IMAGE_FILE_EXTENSIONS,
   MOUNTABLE_EXTENSIONS,
@@ -235,7 +236,7 @@ const FileEntry: FC<FileEntryProps> = ({
 
           const cachedIconPath = join(
             ICON_CACHE,
-            `${path}.${stats.mtime.getTime()}.cache`
+            `${path}${ICON_CACHE_EXTENSION}`
           );
 
           if (
@@ -295,7 +296,10 @@ const FileEntry: FC<FileEntryProps> = ({
             }
           }
         } else if (getIcon) {
-          const cachedIconPath = join(ICON_CACHE, `${path}.cache`);
+          const cachedIconPath = join(
+            ICON_CACHE,
+            `${path}${ICON_CACHE_EXTENSION}`
+          );
 
           if (await exists(cachedIconPath)) {
             isIconCached.current = true;
