@@ -20,6 +20,8 @@ const colors = {
   },
   highlight: "hsla(312, 69%, 87%)",
   highlightBackground: "hsla(312, 69% 57%, 25%)",
+  progress: "hsla(205, 75%, 100%, 25%)",
+  progressBackground: "hsla(300, 100%, 80%, 60%)",
   startButton: "#FFF",
   taskbar: {
     active: "hsla(300, 100%, 80%, 40%)",
@@ -27,6 +29,7 @@ const colors = {
     background: "hsla(300, 100%, 50%, 40%)",
     foreground: "hsla(0, 0%, 80%, 40%)",
     foregroundHover: "hsla(300, 100%, 100%, 40%)",
+    foregroundProgress: "hsla(300, 90%, 70%, 40%)",
     hover: "hsla(300, 100%, 70%, 40%)",
     peekBorder: "hsla(300, 100%, 95%, 20%)",
   },
