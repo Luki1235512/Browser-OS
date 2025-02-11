@@ -6,7 +6,7 @@ import {
 } from "components/system/Menu/MenuIcons";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Position } from "react-rnd";
 import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
@@ -69,7 +69,7 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
       menuEntryElement?.removeEventListener("touchstart", touchListener);
   }, [isSubMenu, menu, showSubMenu]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (menu && entryRef.current) {
       const { height, width } = entryRef.current.getBoundingClientRect();
 
