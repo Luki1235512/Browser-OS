@@ -10,7 +10,7 @@ import {
   PROCESS_DELIMITER,
 } from "utils/constants";
 
-import { getIpfsResource } from "./functions";
+import { getIpfsFileName, getIpfsResource } from "./functions";
 
 type UseFile = (pid: string, icon?: string) => Promise<void>;
 
@@ -28,15 +28,14 @@ const useFile = (url: string): UseFile => {
       let runUrl = url;
 
       if (url.startsWith("ipfs://")) {
-        const { searchParams } = new URL(url);
+        const ipfsData = await getIpfsResource(url);
 
         runUrl = join(
           DESKTOP_PATH,
           await createPath(
-            searchParams.get("filename") ||
-              url.replace("ipfs://", "").split("/").filter(Boolean).join("_"),
+            await getIpfsFileName(url, ipfsData),
             DESKTOP_PATH,
-            await getIpfsResource(url)
+            ipfsData
           )
         );
 
