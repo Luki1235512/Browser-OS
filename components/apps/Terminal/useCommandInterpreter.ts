@@ -148,9 +148,15 @@ const useCommandInterpreter = (
           break;
         }
         case "cd":
+        case "cd/":
+        case "cd.":
+        case "cd..":
         case "chdir":
         case "pwd": {
-          const [directory] = commandArgs;
+          const [directory] =
+            lcBaseCommand.startsWith("cd") && lcBaseCommand.length > 2
+              ? [lcBaseCommand.slice(2)]
+              : commandArgs;
 
           if (directory && lcBaseCommand !== "pwd") {
             const fullPath = await getFullPath(directory);
@@ -329,10 +335,19 @@ const useCommandInterpreter = (
             );
             localEcho?.println(` Directory of ${dirPath}`);
             localEcho?.println("");
+
+            const fullSizeTerminal =
+              !localEcho?._termSize?.cols || localEcho?._termSize?.cols > 52;
+
             printTable(
               [
-                ["Date", 22],
-                ["Type/Size", 15, true, (size) => (size !== "-1" ? size : "")],
+                ["Date", fullSizeTerminal ? 22 : 20],
+                [
+                  "Type/Size",
+                  fullSizeTerminal ? 15 : 13,
+                  true,
+                  (size) => (size !== "-1" ? size : ""),
+                ],
                 ["Name", terminal?.cols ? terminal.cols - 40 : 30],
               ],
               entriesWithStats,
@@ -522,11 +537,11 @@ const useCommandInterpreter = (
                   const fullPath = join(cd.current, mappedFolder);
                   const files = await readdir(fullPath);
 
+                  updateFolder(cd.current, mappedFolder);
+
                   // eslint-disable-next-line no-param-reassign
                   cd.current = fullPath;
                   autoComplete(files, localEcho);
-
-                  updateFolder(cd.current, mappedFolder);
                 }
               } catch {
                 // Ignore failure to mount
@@ -546,7 +561,17 @@ const useCommandInterpreter = (
 
           if (await exists(fullSourcePath)) {
             if (destination) {
-              const fullDestinationPath = await getFullPath(destination);
+              let fullDestinationPath = await getFullPath(destination);
+
+              if (
+                ["move", "mv"].includes(lcBaseCommand) &&
+                (await stat(fullDestinationPath)).isDirectory()
+              ) {
+                fullDestinationPath = join(
+                  fullDestinationPath,
+                  basename(fullSourcePath)
+                );
+              }
 
               await rename(fullSourcePath, fullDestinationPath);
               updateFile(fullSourcePath, true);
