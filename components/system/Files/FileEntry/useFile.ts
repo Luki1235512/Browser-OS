@@ -10,8 +10,6 @@ import {
   PROCESS_DELIMITER,
 } from "utils/constants";
 
-import { getIpfsFileName, getIpfsResource } from "./functions";
-
 type UseFile = (pid: string, icon?: string) => Promise<void>;
 
 const useFile = (url: string): UseFile => {
@@ -28,6 +26,7 @@ const useFile = (url: string): UseFile => {
       let runUrl = url;
 
       if (url.startsWith("ipfs://")) {
+        const { getIpfsFileName, getIpfsResource } = await import("utils/ipfs");
         const ipfsData = await getIpfsResource(url);
 
         runUrl = join(

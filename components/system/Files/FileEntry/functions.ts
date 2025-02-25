@@ -14,7 +14,6 @@ import {
   FOLDER_BACK_ICON,
   FOLDER_FRONT_ICON,
   FOLDER_ICON,
-  HIGH_PRIORITY_REQUEST,
   ICON_CACHE,
   ICON_GIF_FPS,
   ICON_GIF_SECONDS,
@@ -36,7 +35,6 @@ import {
   blobToBase64,
   bufferToUrl,
   getGifJs,
-  getIpfsGatewayUrl,
   imageToBufferUrl,
   isYouTubeUrl,
 } from "utils/functions";
@@ -604,34 +602,4 @@ export const getIpfsFileName = async (
   return `${pathname.split("/").filter(Boolean).join("_")}${
     ext ? `.${ext}` : ""
   }`;
-};
-
-export const getIpfsResource = async (ipfsUrl: string): Promise<Buffer> => {
-  // eslint-disable-next-line unicorn/no-null
-  let response: Response | null = null;
-  const requestOptions = {
-    ...HIGH_PRIORITY_REQUEST,
-    cache: "no-cache",
-    credentials: "omit",
-    keepalive: false,
-    mode: "cors",
-    referrerPolicy: "no-referrer",
-    // eslint-disable-next-line unicorn/no-null
-    window: null,
-  } as RequestInit;
-
-  try {
-    response = await fetch(await getIpfsGatewayUrl(ipfsUrl), requestOptions);
-  } catch (error) {
-    if ((error as Error).message === "Failed to fetch") {
-      response = await fetch(
-        await getIpfsGatewayUrl(ipfsUrl, true),
-        requestOptions
-      );
-    }
-  }
-
-  return response instanceof Response
-    ? Buffer.from(await response.arrayBuffer())
-    : Buffer.from("");
 };
