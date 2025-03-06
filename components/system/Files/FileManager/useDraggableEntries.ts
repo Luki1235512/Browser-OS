@@ -104,7 +104,8 @@ const useDraggableEntries = (
 
         event.dataTransfer.setDragImage(
           dragImageRef.current,
-          "mozInputSource" in event.nativeEvent
+          "mozInputSource" in event.nativeEvent &&
+            fileManagerRef.current?.parentElement?.tagName === "MAIN"
             ? event.nativeEvent.clientX
             : event.nativeEvent.offsetX,
           draggedOnceRef.current
