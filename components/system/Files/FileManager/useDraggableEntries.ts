@@ -4,7 +4,11 @@ import { dirname, join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Position } from "react-rnd";
 import { MILLISECONDS_IN_SECOND, UNKNOWN_ICON } from "utils/constants";
-import { getHtmlToImage, updateIconPositions } from "utils/functions";
+import {
+  getHtmlToImage,
+  haltEvent,
+  updateIconPositions,
+} from "utils/functions";
 
 type DraggableEntryProps = {
   draggable: boolean;
@@ -40,7 +44,9 @@ const useDraggableEntries = (
   };
   const onDragEnd =
     (entryUrl: string): React.DragEventHandler =>
-    () => {
+    (event) => {
+      haltEvent(event);
+
       if (allowMoving && focusedEntries.length > 0) {
         updateIconPositions(
           entryUrl,
@@ -81,7 +87,7 @@ const useDraggableEntries = (
     (event) => {
       focusEntry(file);
       event.dataTransfer.setData(
-        "text/plain",
+        "application/json",
         JSON.stringify(
           focusedEntries.length <= 1
             ? [join(entryUrl, file)]
