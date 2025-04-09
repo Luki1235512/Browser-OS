@@ -12,6 +12,7 @@ import makeStripePass from "./stripePass.js";
 const effects = {
 	none: null,
 	plain: makePalettePass,
+  palette: makePalettePass,
 	customStripes: makeStripePass,
 	stripes: makeStripePass,
 	pride: makeStripePass,
@@ -43,8 +44,8 @@ window.Matrix = async (canvas, config) => {
 	const resize = (resOverride = config.resolution) => {
     const resolution = typeof resOverride === "number" ? resOverride : config.resolution;
 
-    canvas.width = Math.ceil(canvas.clientWidth * resolution);
-    canvas.height = Math.ceil(canvas.clientHeight * resolution);
+		canvas.width = Math.ceil(canvas.clientWidth * resolution);
+		canvas.height = Math.ceil(canvas.clientHeight * resolution);
 	};
 	window.onresize = resize;
 
@@ -64,7 +65,7 @@ window.Matrix = async (canvas, config) => {
 
 	// All this takes place in a full screen quad.
 	const fullScreenQuad = makeFullScreenQuad(regl);
-	const effectName = config.effect in effects ? config.effect : "plain";
+	const effectName = config.effect in effects ? config.effect : "palette";
 	const context = { regl, config, lkg };
 	const pipeline = makePipeline(context, [makeRain, makeBloomPass, effects[effectName], makeQuiltPass]);
 	const screenUniforms = { tex: pipeline[pipeline.length - 1].outputs.primary };
