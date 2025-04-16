@@ -1,6 +1,7 @@
 import type {
   ButterChurnPresets,
   ButterChurnWebampPreset,
+  SkinData,
   WebampCI,
 } from "components/apps/Webamp/types";
 import { centerPosition } from "components/system/Window/functions";
@@ -53,6 +54,12 @@ export const enabledMilkdrop = (webamp: WebampCI): void =>
   webamp.store.dispatch({
     open: false,
     type: "ENABLE_MILKDROP",
+  });
+
+export const setSkinData = (webamp: WebampCI, data: SkinData): void =>
+  webamp.store.dispatch({
+    data,
+    type: "SET_SKIN_DATA",
   });
 
 const loadButterchurn = (webamp: WebampCI, butterchurn: unknown): void =>
