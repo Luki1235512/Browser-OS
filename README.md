@@ -91,9 +91,10 @@ npm/yarn test
 ### Background
 
 - Dynamic animated wallpapers ([OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas)/[Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers))
-  - [Vanta.js](https://www.vantajs.com/)
+  - [Waves](https://www.vantajs.com/?effect=waves)
   - [Hexells](https://znah.net/hexells/)
   - [Matrix](https://rezmason.github.io/matrix/)
+  - [Coastal Landscape](https://www.shadertoy.com/view/fstyD4)
 - Set via images (Fill, Fit, Stretch, Tile, Center)
 - [Astronomy Picture of the Day](https://api.nasa.gov/#apod)
 
@@ -127,6 +128,11 @@ npm/yarn test
 
 - Plays console game roms
 
+### [IRC](https://kiwiirc.com/)
+
+ - Internet Relay Chat Client
+ - Connects over WebSockets
+
 ### [js-dos](https://js-dos.com/) (**_.exe, .jsdos, .zip_**)
 
 - DOS emulator
@@ -153,7 +159,7 @@ npm/yarn test
 
 ### [PDF](https://mozilla.github.io/pdf.js/) (**_.pdf_**)
 
-- Renders PDF's
+- Render/Print PDF's
 - Page current/count & Zoom
 
 ### Photos
@@ -205,3 +211,4 @@ npm/yarn test
 - Winamp audio player
 - [Skin support](https://skins.webamp.org/)
 - Playlist & streaming support
+- Visualization support (["Milkdrop"](https://github.com/jberg/butterchurn))
