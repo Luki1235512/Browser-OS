@@ -101,6 +101,34 @@ const Clock: FC = () => {
     updateTime
   );
 
+  const clockCallbackRef = useCallback(
+    (clockContainer: HTMLDivElement | null) => {
+      if (
+        !offScreenClockCanvas.current &&
+        currentWorker.current &&
+        clockContainer instanceof HTMLDivElement
+      ) {
+        [...clockContainer.children].forEach((element) => element.remove());
+
+        offScreenClockCanvas.current = createOffscreenCanvas(
+          clockContainer,
+          window.devicePixelRatio,
+          clockSize
+        );
+
+        currentWorker.current.postMessage(
+          {
+            canvas: offScreenClockCanvas.current,
+            devicePixelRatio: window.devicePixelRatio,
+          },
+          [offScreenClockCanvas.current]
+        );
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [currentWorker, now]
+  );
+
   useEffect(() => {
     offScreenClockCanvas.current = undefined;
   }, [clockSource]);
@@ -130,30 +158,7 @@ const Clock: FC = () => {
 
   return (
     <StyledClock
-      ref={(clockContainer) => {
-        if (
-          supportsOffscreenCanvas &&
-          !offScreenClockCanvas.current &&
-          currentWorker.current &&
-          clockContainer instanceof HTMLDivElement
-        ) {
-          [...clockContainer.children].forEach((element) => element.remove());
-
-          offScreenClockCanvas.current = createOffscreenCanvas(
-            clockContainer,
-            window.devicePixelRatio,
-            clockSize
-          );
-
-          currentWorker.current.postMessage(
-            {
-              canvas: offScreenClockCanvas.current,
-              devicePixelRatio: window.devicePixelRatio,
-            },
-            [offScreenClockCanvas.current]
-          );
-        }
-      }}
+      ref={supportsOffscreenCanvas ? clockCallbackRef : undefined}
       aria-label={!supportsOffscreenCanvas ? "Clock" : undefined}
       onClick={easterEggOnClick}
       title={date}
