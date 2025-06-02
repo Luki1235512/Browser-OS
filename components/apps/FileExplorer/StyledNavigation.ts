@@ -4,7 +4,6 @@ const StyledNavigation = styled.nav`
   background-color: rgb(230, 20, 230);
   display: flex;
   height: 43px;
-  margin-top: -1px;
 
   button {
     height: 16px;
