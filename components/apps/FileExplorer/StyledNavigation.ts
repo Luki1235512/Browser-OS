@@ -3,7 +3,7 @@ import styled from "styled-components";
 const StyledNavigation = styled.nav`
   background-color: rgb(230, 20, 230);
   display: flex;
-  height: 43px;
+  height: ${({ theme }) => theme.sizes.fileExplorer.navBarHeight};
 
   button {
     height: 16px;
