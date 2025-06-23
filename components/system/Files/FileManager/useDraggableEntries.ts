@@ -41,7 +41,9 @@ const useDraggableEntries = (
   const { iconPositions, sortOrders, setIconPositions, setSortOrder } =
     useSession();
   const dragImageRef = useRef<HTMLImageElement | null>();
-  const dragPositionRef = useRef<DragPosition>({});
+  const dragPositionRef = useRef<DragPosition>(
+    Object.create(null) as DragPosition
+  );
   const draggedOnceRef = useRef(false);
   const onDragging = ({ clientX: x, clientY: y }: DragEvent): void => {
     dragPositionRef.current = { ...dragPositionRef.current, x, y };
@@ -145,7 +147,7 @@ const useDraggableEntries = (
                 offsetX: event.nativeEvent.offsetX,
                 offsetY: event.nativeEvent.offsetY,
               }
-            : {};
+            : (Object.create(null) as DragPosition);
         fileManagerRef.current?.addEventListener("dragover", onDragging, {
           passive: true,
         });

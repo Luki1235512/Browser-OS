@@ -62,7 +62,9 @@ const easterEggOnClick: React.MouseEventHandler<HTMLElement> = async ({
 };
 
 const Clock: FC = () => {
-  const [now, setNow] = useState<LocaleTimeDate>({} as LocaleTimeDate);
+  const [now, setNow] = useState<LocaleTimeDate>(
+    Object.create(null) as LocaleTimeDate
+  );
   const { date, time } = now;
   const { clockSource } = useSession();
   const clockWorkerInit = useCallback(

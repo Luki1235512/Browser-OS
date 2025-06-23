@@ -3,7 +3,8 @@ import type { OffscreenRenderProps } from "components/system/Desktop/Wallpapers/
 
 /* eslint-disable vars-on-top, no-var  */
 declare global {
-  var Demo: new (canvas: OffscreenCanvas) => void;
+  var Demo: new (canvas: OffscreenCanvas) => unknown;
+  var Hexells: unknown;
   var demoCanvasRect: DOMRect;
   var devicePixelRatio: number;
 }
@@ -23,8 +24,7 @@ globalThis.addEventListener(
 
       globalThis.devicePixelRatio = devicePixelRatio;
 
-      // eslint-disable-next-line no-new
-      new globalThis.Demo(canvas);
+      globalThis.Hexells = new globalThis.Demo(canvas);
     }
   },
   { passive: true }
