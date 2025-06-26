@@ -281,15 +281,27 @@ export const getInfoWithExtension = (
           `${url}${ICON_CACHE_EXTENSION}`
         );
 
-        fs.exists(cachedIconPath, (cachedIconExists) => {
-          if (cachedIconExists) {
-            callback({
-              comment,
-              icon: cachedIconPath,
-              pid,
-              subIcons,
-              url,
-            });
+        fs.lstat(cachedIconPath, (statError, cachedIconStats) => {
+          if (!statError && cachedIconStats) {
+            if (cachedIconStats.birthtimeMs !== cachedIconStats.ctimeMs) {
+              fs.readFile(cachedIconPath, (_readError, cachedIconData) =>
+                callback({
+                  comment,
+                  icon: bufferToUrl(cachedIconData as Buffer),
+                  pid,
+                  subIcons,
+                  url,
+                })
+              );
+            } else {
+              callback({
+                comment,
+                icon: cachedIconPath,
+                pid,
+                subIcons,
+                url,
+              });
+            }
           } else {
             getInfoWithExtension(fs, url, urlExt, (fileInfo) => {
               const {
@@ -652,21 +664,4 @@ export const getTextWrapData = (
     lines,
     width: Math.min(maxWidth, totalWidth),
   };
-};
-
-export const getIpfsFileName = async (
-  ipfsUrl: string,
-  ipfsData: Buffer
-): Promise<string> => {
-  const { pathname, searchParams } = new URL(ipfsUrl);
-  const fileName = searchParams.get("filename");
-
-  if (fileName) return fileName;
-
-  const { fileTypeFromBuffer } = await import("file-type");
-  const { ext = "" } = (await fileTypeFromBuffer(ipfsData)) || {};
-
-  return `${pathname.split("/").filter(Boolean).join("_")}${
-    ext ? `.${ext}` : ""
-  }`;
 };
