@@ -24,7 +24,7 @@ const Matrix = async (
   canvas.width = window.innerHeight;
   canvas.width = window.innerWidth;
 
-  el.appendChild(canvas);
+  el.append(canvas);
 
   await loadFiles(libs, undefined, undefined, true);
 

@@ -155,7 +155,7 @@ export const loadMilkdropWhenNeeded = (webamp: WebampCI): void => {
                   node.remove();
                 }
               });
-              main.appendChild(webampDesktop);
+              main.append(webampDesktop);
             }
           }
         });
