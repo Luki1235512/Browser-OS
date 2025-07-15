@@ -5,6 +5,8 @@ import type { Position } from "react-rnd";
 import { PROCESS_DELIMITER, TASKBAR_HEIGHT } from "utils/constants";
 import { pxToNum, viewHeight, viewWidth } from "utils/functions";
 
+import { MIN_WINDOW_HEIGHT, MIN_WINDOW_WIDTH } from "./RndWindow/rndDefaults";
+
 export const cascadePosition = (
   id: string,
   processes: Processes,
@@ -75,13 +77,16 @@ export const isWindowOutsideBounds = (
   );
 };
 
-export const maxSize = (size: Size, lockAspectRatio: boolean): Size => {
+export const minMaxSize = (size: Size, lockAspectRatio: boolean): Size => {
   const desiredHeight = Number(size.height);
   const desiredWidth = Number(size.width);
   const [vh, vw] = [viewHeight(), viewWidth()];
   const vhWithoutTaskbar = vh - TASKBAR_HEIGHT;
-  const height = Math.min(desiredHeight, vhWithoutTaskbar);
-  const width = Math.min(desiredWidth, vw);
+  const height = Math.max(
+    MIN_WINDOW_HEIGHT,
+    Math.min(desiredHeight, vhWithoutTaskbar)
+  );
+  const width = Math.max(MIN_WINDOW_WIDTH, Math.min(desiredWidth, vw));
 
   if (!lockAspectRatio) return { height, width };
 
