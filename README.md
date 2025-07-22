@@ -184,7 +184,7 @@ npm/yarn test
 - [eSheep](https://adrianotiger.github.io/web-esheep/)
 - Activate from Start Menu or **_SHIFT+F10_**
 
-### [TinyMCE](https://www.tiny.cloud/tinymce/) (**_.whtml_**)
+### [TinyMCE](https://www.tiny.cloud/tinymce/) (**_.rtf, .whtml_**)
 
 - Read & WYSIWYG modes
 - File save support
