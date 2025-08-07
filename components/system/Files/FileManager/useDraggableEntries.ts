@@ -4,11 +4,7 @@ import { join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Position } from "react-rnd";
 import { MILLISECONDS_IN_SECOND, UNKNOWN_ICON } from "utils/constants";
-import {
-  getHtmlToImage,
-  haltEvent,
-  updateIconPositions,
-} from "utils/functions";
+import { haltEvent, updateIconPositions } from "utils/functions";
 
 type DraggableEntryProps = {
   draggable: boolean;
@@ -168,7 +164,7 @@ const useDraggableEntries = (
         if (dragImageRef.current) dragImageRef.current.src = "";
         else dragImageRef.current = new Image();
 
-        const htmlToImage = await getHtmlToImage();
+        const htmlToImage = await import("html-to-image");
         const newDragImage = await htmlToImage?.toPng(fileManagerRef.current, {
           filter: (element) => {
             return (
