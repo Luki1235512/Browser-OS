@@ -58,6 +58,7 @@
     "next": "^13.1.1",
     "playlist-parser": "^0.0.12",
     "prettier": "2.8.2",
+    "minimist": "^1.2.7",
     "print-js": "^1.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
