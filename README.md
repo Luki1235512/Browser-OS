@@ -50,6 +50,7 @@ npm/yarn test
   - Open with, Open file/folder location, Open in new window, Open Terminal here
   - Download, Add to archive, Extract here, Set as wallpaper, Convert audio/video/photo/spreadsheets
   - Sort by, New Folder, New Text Document
+  - Screen Capture
 - Keyboard Shortcuts
   - CTRL+C, CTRL+V, CTRL+X, CTRL+A, Delete
   - In Fullscreen: Windows Key, Windows Key + R
