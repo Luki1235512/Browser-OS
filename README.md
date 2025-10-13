@@ -206,6 +206,7 @@ npm/yarn test
 
 - [Supported Formats](https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Video_codecs)
 - Plays [YouTube](https://github.com/videojs/videojs-youtube) videos/shortcuts
+- Keyboard Shortcuts (Volume, Seek, Scale, Fullscreen)
 
 ### [Vim](https://github.com/coolwanglu/vim.js)
 
