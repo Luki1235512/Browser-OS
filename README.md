@@ -97,6 +97,7 @@ npm/yarn test
   - [Matrix](https://rezmason.github.io/matrix/)
   - [Coastal Landscape](https://www.shadertoy.com/view/fstyD4)
 - Set via images (Fill, Fit, Stretch, Tile, Center)
+- Picture Slideshow
 - [Astronomy Picture of the Day](https://api.nasa.gov/#apod)
 
 ### URL
