@@ -17,7 +17,10 @@ import {
 } from "components/apps/Webamp/functions";
 import type { SkinData, WebampCI } from "components/apps/Webamp/types";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
-import type { CompleteAction } from "components/system/Files/FileManager/useFolder";
+import {
+  COMPLETE_ACTION,
+  type CompleteAction,
+} from "components/system/Files/FileManager/useFolder";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
@@ -75,7 +78,7 @@ const useWebamp = (id: string): Webamp => {
         const data = buffer || (await readFile(fileName));
         const track = await parseTrack(data, fileName);
 
-        if (completeAction !== "updateUrl") {
+        if (completeAction !== COMPLETE_ACTION.UPDATE_URL) {
           webampCI.current.appendTracks([track]);
         }
       }
