@@ -103,7 +103,7 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
 
       setSubMenuOffset({
         x: width - sizes.contextMenu.subMenuOffset,
-        y: -height - sizes.contextMenu.subMenuOffset,
+        y: 0 - height - sizes.contextMenu.subMenuOffset,
       });
     }
   }, [menu, sizes.contextMenu.subMenuOffset]);
