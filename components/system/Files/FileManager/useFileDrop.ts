@@ -23,7 +23,11 @@ export type FileDrop = {
 };
 
 type FileDropProps = {
-  callback?: (path: string, buffer?: Buffer) => Promise<void>;
+  callback?: (
+    path: string,
+    buffer?: Buffer,
+    completeAction?: CompleteAction
+  ) => Promise<void>;
   directory?: string;
   id?: string;
   onDragLeave?: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
