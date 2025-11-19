@@ -68,6 +68,12 @@ const loadButterchurn = (webamp: WebampCI, butterchurn: unknown): void =>
     type: "GOT_BUTTERCHURN",
   });
 
+export const stopGlobalMusicVisualization = (): void =>
+  window.WebampGlobal?.store.dispatch({
+    enabled: false,
+    type: "SET_MILKDROP_DESKTOP",
+  });
+
 const loadButterchurnPresets = (
   webamp: WebampCI,
   presets: ButterChurnWebampPreset[]
