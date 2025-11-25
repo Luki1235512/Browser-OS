@@ -2,11 +2,12 @@ import type {
   ButterChurnPresets,
   ButterChurnWebampPreset,
   SkinData,
+  WebampApiResponse,
   WebampCI,
 } from "components/apps/Webamp/types";
 import { centerPosition } from "components/system/Window/functions";
 import type { Position } from "react-rnd";
-import { HOME, MP3_MIME_TYPE } from "utils/constants";
+import { HOME, MP3_MIME_TYPE, PACKAGE_DATA } from "utils/constants";
 import { bufferToBlob, cleanUpBufferUrl, loadFiles } from "utils/functions";
 import type { Track, URLTrack } from "webamp";
 
@@ -17,11 +18,73 @@ const BROKEN_PRESETS = new Set([
 
 const WEBAMP_SKINS_PATH = `${HOME}/Documents/Winamp Skins`;
 
+const ALLOWS_CORS_IN_WINAMP_SKIN_MUSEUM =
+  typeof window !== "undefined" &&
+  ["localhost", PACKAGE_DATA.author.url.replace("https://", "")].includes(
+    window.location.hostname
+  );
+
+const createWebampSkinMuseumQuery = (offset: number): string => `
+  query {
+    skins(filter: APPROVED, first: 1, offset: ${offset}) {
+      nodes {
+        download_url
+      }
+    }
+  }
+`;
+
 export const BASE_WEBAMP_OPTIONS = {
   availableSkins: [
-    { name: "Cuteamp", url: `${WEBAMP_SKINS_PATH}/cuteamp.wsz` },
-    { name: "Morbamp", url: `${WEBAMP_SKINS_PATH}/Morbamp.wsz` },
-    { name: "Bathory", url: `${WEBAMP_SKINS_PATH}/Bathory.wsz` },
+    {
+      name: "Cuteamp",
+      url: `${WEBAMP_SKINS_PATH}/cuteamp.wsz`,
+    },
+    {
+      name: "Morbamp",
+      url: `${WEBAMP_SKINS_PATH}/Morbamp.wsz`,
+    },
+    {
+      name: "Bathory",
+      url: `${WEBAMP_SKINS_PATH}/Bathory.wsz`,
+    },
+    ...(ALLOWS_CORS_IN_WINAMP_SKIN_MUSEUM
+      ? [
+          {
+            defaultName: "Random (Winamp Skin Museum)",
+            loading: false,
+            get name(): string {
+              if (this.loading) return this.defaultName;
+
+              this.loading = true;
+
+              fetch("https://api.webamp.org/graphql", {
+                body: JSON.stringify({
+                  query: createWebampSkinMuseumQuery(
+                    Math.floor(Math.random() * 1000)
+                  ),
+                }),
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                method: "POST",
+              }).then(async (response) => {
+                const { data } = ((await response.json()) ||
+                  {}) as WebampApiResponse;
+
+                this.skinUrl = data?.skins?.nodes?.[0]?.download_url as string;
+                this.loading = false;
+              });
+
+              return this.defaultName;
+            },
+            skinUrl: "",
+            get url(): string {
+              return this.skinUrl || `${WEBAMP_SKINS_PATH}/base-2.91.wsz`;
+            },
+          },
+        ]
+      : []),
   ],
 };
 
@@ -66,12 +129,6 @@ const loadButterchurn = (webamp: WebampCI, butterchurn: unknown): void =>
   webamp.store.dispatch({
     butterchurn,
     type: "GOT_BUTTERCHURN",
-  });
-
-export const stopGlobalMusicVisualization = (): void =>
-  window.WebampGlobal?.store.dispatch({
-    enabled: false,
-    type: "SET_MILKDROP_DESKTOP",
   });
 
 const loadButterchurnPresets = (
