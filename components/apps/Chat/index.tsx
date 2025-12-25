@@ -1,8 +1,6 @@
 import {
-  actionCommandsMap,
-  actionLabel,
   AI_IMAGES_FOLDER,
-  commandEmoji,
+  commandMap,
   EngineErrorMessage,
 } from "components/apps/Chat/config";
 import { getLetterTypingSpeed } from "components/apps/Chat/functions";
@@ -23,10 +21,10 @@ import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { useInference } from "hooks/useInference/useInference";
-import { basename, join } from "path";
+import { basename, extname, join } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
-import { PREVENT_SCROLL } from "utils/constants";
+import { IMAGE_FILE_EXTENSIONS, PREVENT_SCROLL } from "utils/constants";
 import { bufferToUrl, generatePrettyTimestamp } from "utils/functions";
 
 type ActionMessage = {
@@ -45,7 +43,11 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
   } = useProcesses();
   const { url } = process || {};
   const [engine, apiKey] = useMemo(() => aiApi.split(":"), [aiApi]);
-  const { engine: AI, error: aiError, resetError } = useInference(engine);
+  const {
+    engine: AI,
+    error: aiError,
+    resetError,
+  } = useInference(apiKey, engine);
   const messagesRef = useRef<HTMLUListElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [input, setInput] = useState<string>("");
@@ -138,7 +140,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
         );
       const userText = userMessage.trim();
 
-      waitForChat(AI?.chat(userText, userMessages, botMessages, messages)).then(
+      waitForChat(AI.chat(userText, userMessages, botMessages, messages)).then(
         (generatedMessage) =>
           generatedMessage &&
           addMessage({ text: generatedMessage.trim(), type: "assistant" })
@@ -183,7 +185,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
       const text = originalText.join(" ");
 
       addMessage({ command, text, type: "user" });
-      waitForRequest(resultLabel, text, commandPromise).then(
+      waitForRequest(command, text, commandPromise).then(
         (response) =>
           response &&
           addMessage({
@@ -239,6 +241,18 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
         const commandText = text.join(" ");
 
         switch (command) {
+          case "/classify":
+            addCommandMessage(
+              AI.classify(
+                commandText,
+                Object.keys(commandMap)
+                  .map((entry) => entry.replace("/", ""))
+                  .filter((entry) => entry !== "classify")
+              ),
+              inputRef.current.value,
+              "CLASSIFYING"
+            );
+            break;
           case "/draw":
           case "/wallpaper":
             addCommandMessage(
@@ -253,7 +267,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
               "DRAWING"
             );
             break;
-          case "/identify":
+          case "/caption":
             addCommandMessage(
               AI.imageToText(
                 basename(commandText),
@@ -261,7 +275,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
                 await readFile(commandText)
               ),
               inputRef.current.value,
-              "IDENTIFYING"
+              "CAPTIONING"
             );
             break;
           case "/summarize":
@@ -324,13 +338,17 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
 
     initRef.current = true;
 
-    AI?.init(apiKey).then(() => addMessage(AI?.greeting));
+    addMessage(AI.greeting);
     inputRef.current?.focus(PREVENT_SCROLL);
   }, [AI, addMessage, apiKey]);
 
   useEffect(() => {
-    if (url && inputRef.current) {
-      const newInput = `${input ? "" : "/identify "}${input}${
+    if (
+      url &&
+      inputRef.current &&
+      IMAGE_FILE_EXTENSIONS.has(extname(url).toLowerCase())
+    ) {
+      const newInput = `${input ? "" : "/caption "}${input}${
         input ? " " : ""
       }${url}`;
 
@@ -354,7 +372,9 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
             $writing={writing}
             title={image ? text : ""}
           >
-            {command && type !== "assistant" ? `${commandEmoji[command]} ` : ""}
+            {command && type !== "assistant"
+              ? `${commandMap[command].icon} `
+              : ""}
             {image ? "" : text}
           </StyledMessage>
         ))}
@@ -364,9 +384,9 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
         {awaitingRequests.map(({ command, text }) => (
           <StyledInfo key={`${command}-${text}`}>
             <figure>
-              {commandEmoji[actionCommandsMap[command]]}
+              {commandMap[command].icon}
               <figcaption>
-                {actionLabel[command]}: <b>{text}</b>...
+                {commandMap[command].label}: <b>{text}</b>...
               </figcaption>
             </figure>
           </StyledInfo>

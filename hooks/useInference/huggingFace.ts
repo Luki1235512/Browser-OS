@@ -1,67 +1,21 @@
 /* eslint-disable camelcase */
+import type {
+  Args,
+  ImageClassificationArgs,
+  Options,
+  TextGenerationReturn,
+} from "@huggingface/inference";
+import { HfInference } from "@huggingface/inference";
 import type { Message } from "components/apps/Chat/types";
 import type { Engine } from "hooks/useInference/useInference";
-import { bufferToBlob, loadFiles } from "utils/functions";
-
-type HfRequestConfig = {
-  wait_for_model: boolean;
-};
+import { bufferToBlob } from "utils/functions";
 
 type ImageToText = (
-  options: {
-    data: File;
-    model: string;
-  },
-  config: HfRequestConfig & {
+  options: Args & ImageClassificationArgs,
+  config: Options & {
     binary: boolean;
   }
-) => Promise<[{ generated_text: string }]>;
-
-type HfInference = {
-  conversational: (
-    options: {
-      inputs: {
-        generated_responses: string[];
-        past_user_inputs: string[];
-        text: string;
-      };
-      model: string;
-    },
-    config: HfRequestConfig
-  ) => Promise<{ generated_text: string }>;
-  request: ImageToText;
-  summarization: (
-    options: {
-      inputs: string;
-      model: string;
-      parameters: {
-        max_length: number;
-      };
-    },
-    config: HfRequestConfig
-  ) => Promise<{ summary_text: string }>;
-  textToImage: (
-    options: {
-      inputs: string;
-      model: string;
-      negative_prompt: string;
-    },
-    config: HfRequestConfig
-  ) => Promise<Buffer>;
-  translation: (
-    options: {
-      inputs: string;
-      model: string;
-    },
-    config: HfRequestConfig
-  ) => Promise<{ translation_text: string }>;
-};
-
-declare global {
-  interface Window {
-    HfInference?: new (apiKey?: string) => HfInference;
-  }
-}
+) => Promise<TextGenerationReturn[]>;
 
 const DEFAULT_GREETING = {
   text: "Hello, I'm an AI assistant. How can I help you?",
@@ -74,16 +28,17 @@ const DEFAULT_MODELS = {
   summarization: "philschmid/bart-large-cnn-samsum",
   textToImage: "stabilityai/stable-diffusion-2-1",
   translation: "t5-base",
+  zeroShotClassification: "facebook/bart-large-mnli",
 };
 
-const DEFAULT_OPTIONS = { wait_for_model: true };
+const DEFAULT_OPTIONS = { wait_for_model: true } as Options;
 
 const SUMMARY_MAX_LENGTH = 100;
 
 const TEXT_TO_IMAGE_NEGATIVE_PROMPT = "blurry";
 
 export class HuggingFace implements Engine {
-  private inference: HfInference | undefined;
+  private inference: HfInference;
 
   private setError: React.Dispatch<React.SetStateAction<number>>;
 
@@ -95,16 +50,12 @@ export class HuggingFace implements Engine {
 
   public greeting = DEFAULT_GREETING;
 
-  public constructor(setError: React.Dispatch<React.SetStateAction<number>>) {
+  public constructor(
+    apiKey: string,
+    setError: React.Dispatch<React.SetStateAction<number>>
+  ) {
+    this.inference = new HfInference(apiKey);
     this.setError = setError;
-  }
-
-  public async init(apiKey?: string): Promise<void> {
-    await loadFiles(["Program Files/HuggingFace/inference.js"]);
-
-    if (window.HfInference) {
-      this.inference = new window.HfInference(apiKey);
-    }
   }
 
   public async chat(
@@ -116,7 +67,7 @@ export class HuggingFace implements Engine {
 
     try {
       ({ generated_text = "" } =
-        (await this.inference?.conversational(
+        (await this.inference.conversational(
           {
             inputs: {
               generated_responses: generatedMessages,
@@ -134,16 +85,40 @@ export class HuggingFace implements Engine {
     return generated_text;
   }
 
+  public async classify(text: string, categories: string[]): Promise<string> {
+    try {
+      const [
+        {
+          labels: [topLabel],
+          scores: [topScore],
+        },
+      ] = await this.inference.zeroShotClassification(
+        {
+          inputs: [text],
+          model: DEFAULT_MODELS.zeroShotClassification,
+          parameters: { candidate_labels: categories },
+        },
+        DEFAULT_OPTIONS
+      );
+
+      return `${topLabel} (${(topScore * 100).toFixed(1)}%)`;
+    } catch (error) {
+      this.checkError(error as Error);
+    }
+
+    return "";
+  }
+
   public async draw(text: string): Promise<Buffer | void> {
     try {
-      return await this.inference?.textToImage(
+      return (await this.inference.textToImage(
         {
           inputs: text,
           model: DEFAULT_MODELS.textToImage,
           negative_prompt: TEXT_TO_IMAGE_NEGATIVE_PROMPT,
         },
         DEFAULT_OPTIONS
-      );
+      )) as unknown as Buffer;
     } catch (error) {
       return this.checkError(error as Error);
     }
@@ -154,29 +129,29 @@ export class HuggingFace implements Engine {
     type: string,
     image: Buffer
   ): Promise<string> {
-    let generated_text = "";
-
     try {
-      [{ generated_text = "" }] = (await this.inference?.request(
+      const [{ generated_text }] = await (
+        this.inference.request as ImageToText
+      )(
         {
           data: new File([bufferToBlob(image, type)], name, { type }),
           model: DEFAULT_MODELS.imageToText,
         },
         { ...DEFAULT_OPTIONS, binary: true }
-      )) || [{}];
+      );
+
+      return generated_text;
     } catch (error) {
       this.checkError(error as Error);
     }
 
-    return generated_text;
+    return "";
   }
 
   public async summarization(text: string): Promise<string> {
-    let summary_text = "";
-
     try {
-      ({ summary_text = "" } =
-        (await this.inference?.summarization(
+      return (
+        await this.inference.summarization(
           {
             inputs: text,
             model: DEFAULT_MODELS.summarization,
@@ -185,30 +160,30 @@ export class HuggingFace implements Engine {
             },
           },
           DEFAULT_OPTIONS
-        )) || {});
+        )
+      ).summary_text;
     } catch (error) {
       this.checkError(error as Error);
     }
 
-    return summary_text;
+    return "";
   }
 
   public async translation(text: string): Promise<string> {
-    let translation_text = "";
-
     try {
-      ({ translation_text = "" } =
-        (await this.inference?.translation(
+      return (
+        await this.inference.translation(
           {
             inputs: text,
             model: DEFAULT_MODELS.translation,
           },
           DEFAULT_OPTIONS
-        )) || {});
+        )
+      ).translation_text;
     } catch (error) {
       this.checkError(error as Error);
     }
 
-    return translation_text;
+    return "";
   }
 }
