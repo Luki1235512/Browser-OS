@@ -813,12 +813,13 @@ const useCommandInterpreter = (
             if (await exists(fullSourcePath)) {
               const code = await readFile(fullSourcePath);
 
-              await runPython(code.toString(), localEcho);
+              if (code.length > 0) {
+                await runPython(code.toString(), localEcho);
+              }
             } else {
-              await runPython(
-                command.slice(command.indexOf(" ") + 1),
-                localEcho
-              );
+              const [, code = "version"] = command.split(" ");
+
+              await runPython(code, localEcho);
             }
           }
           break;
