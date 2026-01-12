@@ -1,5 +1,5 @@
 import { colorAttributes, rgbAnsi } from "components/apps/Terminal/color";
-import { config, PI_ASCII } from "components/apps/Terminal/config";
+import { PI_ASCII, config } from "components/apps/Terminal/config";
 import {
   aliases,
   autoComplete,
@@ -42,10 +42,10 @@ import {
   DEFAULT_LOCALE,
   DESKTOP_PATH,
   HIGH_PRIORITY_REQUEST,
-  isFileSystemMappingSupported,
   MILLISECONDS_IN_SECOND,
   PACKAGE_DATA,
   SHORTCUT_EXTENSION,
+  isFileSystemMappingSupported,
 } from "utils/constants";
 import { transcode } from "utils/ffmpeg";
 import { getExtension, getTZOffsetISOString, loadFiles } from "utils/functions";
@@ -929,29 +929,39 @@ const useCommandInterpreter = (
                 url:
                   file && fullPath && (await exists(fullPath)) ? fullPath : "",
               });
-            } else if (await exists(baseCommand)) {
-              const fileExtension = getExtension(baseCommand);
-              const { command: extCommand = "" } =
-                extensions[fileExtension] || {};
-
-              if (extCommand) {
-                await commandInterpreter(`${extCommand} ${baseCommand}`);
-              } else {
-                let basePid = "";
-                let baseUrl = baseCommand;
-
-                if (fileExtension === SHORTCUT_EXTENSION) {
-                  ({ pid: basePid, url: baseUrl } = getShortcutInfo(
-                    await readFile(baseCommand)
-                  ));
-                } else {
-                  basePid = getProcessByFileExtension(fileExtension);
-                }
-
-                if (basePid) open(basePid, { url: baseUrl });
-              }
             } else {
-              localEcho?.println(unknownCommand(baseCommand));
+              const baseFileExists = await exists(baseCommand);
+
+              if (
+                baseFileExists ||
+                (await exists(join(cd.current, baseCommand)))
+              ) {
+                const fileExtension = getExtension(baseCommand);
+                const { command: extCommand = "" } =
+                  extensions[fileExtension] || {};
+
+                if (extCommand) {
+                  await commandInterpreter(`${extCommand} ${baseCommand}`);
+                } else {
+                  const fullFilePath = baseFileExists
+                    ? baseCommand
+                    : join(cd.current, baseCommand);
+                  let basePid = "";
+                  let baseUrl = fullFilePath;
+
+                  if (fileExtension === SHORTCUT_EXTENSION) {
+                    ({ pid: basePid, url: baseUrl } = getShortcutInfo(
+                      await readFile(fullFilePath)
+                    ));
+                  } else {
+                    basePid = getProcessByFileExtension(fileExtension);
+                  }
+
+                  if (basePid) open(basePid, { url: baseUrl });
+                }
+              } else {
+                localEcho?.println(unknownCommand(baseCommand));
+              }
             }
           }
       }
