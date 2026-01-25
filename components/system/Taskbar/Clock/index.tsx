@@ -102,7 +102,6 @@ const Clock: FC = () => {
     clockWorkerInit,
     updateTime
   );
-
   const clockCallbackRef = useCallback(
     (clockContainer: HTMLDivElement | null) => {
       if (
@@ -127,6 +126,7 @@ const Clock: FC = () => {
         );
       }
     },
+    // NOTE: Need `now` in the dependency array to ensure the clock is updated
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentWorker, now]
   );

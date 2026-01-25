@@ -49,7 +49,7 @@ const useEruda = (
           window.eruda.remove("info");
           window.eruda.remove("snippets");
           if (vw < FULL_TOOLBAR_WIDTH) {
-            window.eruda.remove("elements");
+            window.eruda.remove("resources");
           }
           if (vw < FULL_TOOLBAR_WIDTH - RESOURCES_BUTTON_WIDTH) {
             window.eruda.remove("sources");

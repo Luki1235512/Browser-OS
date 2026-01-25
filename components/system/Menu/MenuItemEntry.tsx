@@ -1,7 +1,6 @@
 import Menu, { topLeftPosition } from "components/system/Menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import dynamic from "next/dynamic";
-import type React from "react";
 import {
   useCallback,
   useEffect,

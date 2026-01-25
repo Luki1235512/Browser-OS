@@ -15,7 +15,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   width: 73px;
 
   &:focus {
-    border: 1px solid rgb(215, 56, 230);
+    border: 2px solid rgb(215, 56, 230);
   }
 
   &:hover {

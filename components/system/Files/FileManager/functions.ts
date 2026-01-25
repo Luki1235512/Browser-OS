@@ -4,11 +4,11 @@ import type {
   ObjectReaders,
 } from "components/system/Dialogs/Transfer/useTransferDialog";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
-import {
-  COMPLETE_ACTION,
-  type CompleteAction,
-  type Files,
+import type {
+  CompleteAction,
+  Files,
 } from "components/system/Files/FileManager/useFolder";
+import { COMPLETE_ACTION } from "components/system/Files/FileManager/useFolder";
 import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import { basename, dirname, extname, join } from "path";
 import { ONE_TIME_PASSIVE_EVENT, ROOT_SHORTCUT } from "utils/constants";

@@ -4,6 +4,7 @@ import { useMemo } from "react";
 
 const useAddressBarContextMenu = (address: string): ContextMenuCapture => {
   const { contextMenu } = useMenu();
+
   return useMemo(
     () =>
       contextMenu?.(() => [

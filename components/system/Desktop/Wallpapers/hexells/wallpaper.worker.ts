@@ -23,7 +23,6 @@ globalThis.addEventListener(
       const { canvas, devicePixelRatio } = data as OffscreenRenderProps;
 
       globalThis.devicePixelRatio = devicePixelRatio;
-
       globalThis.Hexells = new globalThis.Demo(canvas);
     }
   },

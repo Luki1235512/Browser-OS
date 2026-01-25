@@ -1,3 +1,4 @@
+import { getSaveFileInfo } from "components/apps/MonacoEditor/functions";
 import {
   isPrettyLanguage,
   prettyPrint,
@@ -12,8 +13,6 @@ import { basename, dirname } from "path";
 import { useEffect, useState } from "react";
 import Button from "styles/common/Button";
 import { haltEvent, label } from "utils/functions";
-
-import { getSaveFileInfo } from "./functions";
 
 const SaveIcon: FC = () => (
   <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">

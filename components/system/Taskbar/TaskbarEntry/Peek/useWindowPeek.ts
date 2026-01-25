@@ -22,6 +22,7 @@ const renderFrame = async (
 
   const htmlToImage = await getHtmlToImage();
   let dataCanvas: HTMLCanvasElement | undefined;
+
   try {
     dataCanvas = await htmlToImage?.toCanvas(previewElement, {
       ...(previewElement.clientWidth > PEEK_MAX_WIDTH && {

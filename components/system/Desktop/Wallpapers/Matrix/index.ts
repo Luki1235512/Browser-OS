@@ -21,7 +21,7 @@ const Matrix = async (
 
   const canvas = document.createElement("canvas");
 
-  canvas.width = window.innerHeight;
+  canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
 
   el.append(canvas);

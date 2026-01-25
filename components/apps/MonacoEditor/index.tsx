@@ -10,9 +10,8 @@ const MonacoEditor: FC<ComponentProcessProps> = ({ id }) => (
       StyledComponent={StyledMonacoEditor}
       id={id}
       useHook={useMonaco}
-    >
-      <StatusBar id={id} />
-    </AppContainer>
+    />
+    <StatusBar id={id} />
   </>
 );
 

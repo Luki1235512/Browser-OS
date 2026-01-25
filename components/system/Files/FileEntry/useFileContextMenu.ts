@@ -399,6 +399,7 @@ const useFileContextMenu = (
             label: "Edit",
           });
         }
+
         const hasBackgroundVideoExtension =
           VIDEO_FILE_EXTENSIONS.has(pathExtension);
 

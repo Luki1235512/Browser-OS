@@ -714,6 +714,7 @@ export const getInfoWithExtension = (
                 },
                 { signal, ...ONE_TIME_PASSIVE_EVENT }
               );
+
               video.src = bufferToUrl(
                 contents,
                 isSafari()

@@ -108,6 +108,7 @@ const DEFAULT_GREETING = {
 } as Message;
 
 const DEFAULT_MODELS: Record<string, string> = {
+  chat: "textGeneration",
   conversational: "facebook/blenderbot-400M-distill",
   imageToText: "Salesforce/blip-image-captioning-large",
   summarization: "philschmid/bart-large-cnn-samsum",

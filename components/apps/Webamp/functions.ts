@@ -37,10 +37,6 @@ const createWebampSkinMuseumQuery = (offset: number): string => `
 export const BASE_WEBAMP_OPTIONS = {
   availableSkins: [
     {
-      name: "Cuteamp",
-      url: `${WEBAMP_SKINS_PATH}/cuteamp.wsz`,
-    },
-    {
       name: "Morbamp",
       url: `${WEBAMP_SKINS_PATH}/Morbamp.wsz`,
     },
@@ -85,6 +81,10 @@ export const BASE_WEBAMP_OPTIONS = {
           },
         ]
       : []),
+    {
+      name: "Cuteamp",
+      url: `${WEBAMP_SKINS_PATH}/cuteamp.wsz`,
+    },
   ],
 };
 

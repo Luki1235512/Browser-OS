@@ -100,11 +100,12 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
 
     if ([".ani", ".cur"].includes(ext)) {
       fileContents = await aniToGif(fileContents);
-    } else if (ext === ".qoi") {
-      const { decodeQoi } = await import("components/apps/Photos/qoi");
-      fileContents = decodeQoi(fileContents);
     } else if (ext === ".jxl") {
       fileContents = imgDataToBuffer(await decodeJxl(fileContents));
+    } else if (ext === ".qoi") {
+      const { decodeQoi } = await import("components/apps/Photos/qoi");
+
+      fileContents = decodeQoi(fileContents);
     } else if (TIFF_IMAGE_FORMATS.has(ext)) {
       fileContents = (await import("utif"))
         .bufferToURI(fileContents)

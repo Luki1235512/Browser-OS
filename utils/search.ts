@@ -22,6 +22,7 @@ const search = async (
   if (!window.lunr) await loadFiles(SEARCH_LIBS);
   if (!index && !baseIndex.search) {
     const response = await fetch(FILE_INDEX, HIGH_PRIORITY_REQUEST);
+
     try {
       baseIndex = window.lunr?.Index.load(
         JSON.parse(await response.text()) as Index

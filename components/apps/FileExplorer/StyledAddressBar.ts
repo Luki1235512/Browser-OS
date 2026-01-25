@@ -5,7 +5,7 @@ const StyledAddressBar = styled.div`
   background-position: 2px 5px;
   background-repeat: no-repeat;
   background-size: 16px;
-  border: 1px solid rgb(300, 150, 200);
+  border: 1px solid rgb(255, 150, 200);
   display: flex;
   height: 30px;
   margin: 6px 12px 6px 5px;
@@ -34,7 +34,7 @@ const StyledAddressBar = styled.div`
   }
 
   #refresh {
-    background-color: rgb(300, 100, 255);
+    background-color: rgb(255, 100, 255);
     height: 28px;
     margin: 0;
     position: absolute;
@@ -45,13 +45,13 @@ const StyledAddressBar = styled.div`
     width: 28px;
 
     &:hover {
-      background-color: rgb(300, 80, 255);
-      border: 1px solid rgb(300, 150, 200);
+      background-color: rgb(255, 80, 255);
+      border: 1px solid rgb(255, 150, 200);
     }
 
     &:active {
-      background-color: rgb(300, 80, 255);
-      border: 1px solid rgb(300, 150, 200);
+      background-color: rgb(255, 80, 255);
+      border: 1px solid rgb(255, 150, 200);
     }
   }
 `;

@@ -4,10 +4,8 @@ import {
   handleFileInputEvent,
 } from "components/system/Files/FileManager/functions";
 import type { DragPosition } from "components/system/Files/FileManager/useDraggableEntries";
-import {
-  COMPLETE_ACTION,
-  type CompleteAction,
-} from "components/system/Files/FileManager/useFolder";
+import type { CompleteAction } from "components/system/Files/FileManager/useFolder";
+import { COMPLETE_ACTION } from "components/system/Files/FileManager/useFolder";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";

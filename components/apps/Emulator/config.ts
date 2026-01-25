@@ -31,7 +31,7 @@ export const emulatorCores: Record<string, Core> = {
   },
   "Nintendo 64": {
     core: "n64",
-    ext: [".n64", ".v64", "z64"],
+    ext: [".n64", ".v64", ".z64"],
   },
   "Nintendo DS": {
     core: "nds",

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const StyledSearch = styled.div`
-  border: 1px solid rgb(300, 150, 200);
+  border: 1px solid rgb(255, 150, 200);
   display: flex;
   height: 30px;
   margin: 6px 12px 6px 0;
