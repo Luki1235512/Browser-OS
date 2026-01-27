@@ -3,9 +3,11 @@ My attempt on creating operating system mockup in browser
 ![image](https://user-images.githubusercontent.com/49656590/236868869-c41fbc98-54d8-4a5b-bac3-4020186fca30.png)
 
 ## Demo
+
 Check out the live demo of the application [here](https://cute-os.vercel.app/).
 
 ##### Development
+
 ```
 yarn build:fs
 yarn dev
@@ -28,10 +30,13 @@ docker run -dp 3000:3000 --rm --name cute-os cute-os
 ```
 
 ## Running Tests
+
 To run the tests for this application, you can use the following command:
+
 ```
 npm/yarn test
 ```
+
 # System 💻
 
 ### [File System](https://github.com/jvilk/BrowserFS)
@@ -99,6 +104,7 @@ npm/yarn test
 - Set via image/video (Fill, Fit, Stretch, Tile, Center)
 - Picture Slideshow
 - [Astronomy Picture of the Day](https://api.nasa.gov/#apod)
+- AI Generated Wallpapers [Stable Diffusion](https://stability.ai/stable-diffusion)
 
 ### URL
 
@@ -132,8 +138,8 @@ npm/yarn test
 
 ### [IRC](https://kiwiirc.com/)
 
- - Internet Relay Chat Client
- - Connects over WebSockets
+- Internet Relay Chat Client
+- Connects over WebSockets
 
 ### [js-dos](https://js-dos.com/) (**_.exe, .jsdos, .zip_**)
 

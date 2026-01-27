@@ -190,7 +190,7 @@ class StableDiffusionPipeline {
     this.maxTokenLength = 77;
 
     this.device = this.tvm.webgpu();
-    this.tvm.bindCanvas(window.tvmjsGlobalEnv.canvas);
+    this.tvm.bindCanvas(globalThis.tvmjsGlobalEnv.canvas);
     // VM functions
     this.vm = this.tvm.detachFromCurrentScope(
       this.tvm.createVirtualMachine(this.device)
@@ -493,12 +493,6 @@ class StableDiffusionInstance {
       if (stage == "unet") {
         counter += 1;
         text += " step [" + counter + "/" + numSteps + "]"
-		if (counter === numSteps && tvmjsGlobalEnv.update && !tvmjsGlobalEnv.updateTimer) {
-			tvmjsGlobalEnv.updateTimer = window.setTimeout(() => {
-				tvmjsGlobalEnv.update();
-				tvmjsGlobalEnv.updateTimer = undefined;
-			}, 1000 * 60 * (tvmjsGlobalEnv.updateMins || 10));
-		}
       }
       if (stage == "vae") {
         counter = totalNumSteps;
@@ -559,7 +553,7 @@ class StableDiffusionInstance {
       const [prompt = "", negPrompt = ""] = tvmjsGlobalEnv.prompts[index];
       const schedulerId = 0; // 0 = Multi-step DPM Solver (20 steps) | 1 = PNDM (50 steps)
       const vaeCycle = -1; // -1 = No | 2 = Run VAE every two UNet steps after step 10
-	  console.log("Prompt: " + prompt + (negPrompt ? " (Negative: " + negPrompt + ")" : ""));
+	    console.log("Prompt: " + prompt + (negPrompt ? " (Negative: " + negPrompt + ")" : ""));
       await this.pipeline.generate(prompt, negPrompt, this.#getProgressCallback(), schedulerId, vaeCycle);
     } catch (err) {
       this.logger("Generate error, " + err.toString());
