@@ -11,10 +11,13 @@ import type { OffscreenRenderProps } from "components/system/Desktop/Wallpapers/
 
 /* eslint-disable vars-on-top, no-var  */
 declare global {
+  var initialized: boolean;
   var Tokenizer: ITokenizer;
   var tvmjsGlobalEnv: TvmjsGlobalEnv;
 }
 /* eslint-enable vars-on-top, no-var */
+
+globalThis.initialized = false;
 
 globalThis.addEventListener(
   "message",
@@ -22,16 +25,15 @@ globalThis.addEventListener(
     if (typeof WebGLRenderingContext === "undefined") return;
 
     if (data === "init") {
+      if (globalThis.initialized) return;
+
+      globalThis.initialized = true;
       globalThis.tvmjsGlobalEnv = globalThis.tvmjsGlobalEnv || {};
       globalThis.importScripts(...libs);
     } else if (!(data instanceof DOMRect)) {
       const { canvas, config } = data as OffscreenRenderProps;
 
-      runStableDiffusion(
-        config as StableDiffusionConfig,
-        canvas as unknown as HTMLCanvasElement,
-        true
-      );
+      runStableDiffusion(config as StableDiffusionConfig, canvas, true);
     }
   },
   { passive: true }

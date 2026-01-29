@@ -11,7 +11,7 @@ export const libs = [
 
 export const runStableDiffusion = async (
   config: StableDiffusionConfig,
-  canvas: HTMLCanvasElement,
+  canvas: HTMLCanvasElement | OffscreenCanvas,
   skipLibs = false
 ): Promise<void> => {
   if (!skipLibs) {
@@ -34,7 +34,7 @@ export const runStableDiffusion = async (
     );
   };
 
-  globalThis.tvmjsGlobalEnv.canvas = canvas;
+  globalThis.tvmjsGlobalEnv.canvas = globalThis.tvmjsGlobalEnv.canvas || canvas;
 
   const { prompts } = config;
 
@@ -42,7 +42,7 @@ export const runStableDiffusion = async (
     ? prompts
     : [["A photo of an astronaut riding a horse on mars", ""]];
 
-  globalThis.tvmjsGlobalEnv.asyncOnGenerate();
+  await globalThis.tvmjsGlobalEnv.asyncOnGenerate();
 };
 
 const StableDiffusion = (
