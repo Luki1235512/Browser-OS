@@ -50,6 +50,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
   const {
     engine: AI,
     error: aiError,
+    name,
     resetError,
   } = useInference(apiKey, engine);
   const messagesRef = useRef<HTMLUListElement>(null);
@@ -324,10 +325,10 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
   const canSend = input && !isResponding;
 
   useEffect(() => {
-    if (engine) {
-      title(id, `${processDirectory.Chat.title} (${engine})`);
+    if (name) {
+      title(id, `${processDirectory.Chat.title} (${name})`);
     }
-  }, [engine, id, title]);
+  }, [id, name, title]);
 
   useEffect(() => {
     if (messagesRef.current && messages.length > 0) {
@@ -360,6 +361,8 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
       setUrl(id, "");
     }
   }, [id, input, setUrl, updateHeight, url]);
+
+  useEffect(() => AI?.destroy?.(), [AI]);
 
   return (
     <StyledChat {...useFileDrop({ id })}>

@@ -2,22 +2,8 @@ import {
   libs,
   runStableDiffusion,
 } from "components/system/Desktop/Wallpapers/StableDiffusion";
-import type {
-  ITokenizer,
-  StableDiffusionConfig,
-  TvmjsGlobalEnv,
-} from "components/system/Desktop/Wallpapers/StableDiffusion/types";
+import type { StableDiffusionConfig } from "components/system/Desktop/Wallpapers/StableDiffusion/types";
 import type { OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
-
-/* eslint-disable vars-on-top, no-var  */
-declare global {
-  var initialized: boolean;
-  var Tokenizer: ITokenizer;
-  var tvmjsGlobalEnv: TvmjsGlobalEnv;
-}
-/* eslint-enable vars-on-top, no-var */
-
-globalThis.initialized = false;
 
 globalThis.addEventListener(
   "message",
@@ -25,9 +11,6 @@ globalThis.addEventListener(
     if (typeof WebGLRenderingContext === "undefined") return;
 
     if (data === "init") {
-      if (globalThis.initialized) return;
-
-      globalThis.initialized = true;
       globalThis.tvmjsGlobalEnv = globalThis.tvmjsGlobalEnv || {};
       globalThis.importScripts(...libs);
     } else if (!(data instanceof DOMRect)) {
