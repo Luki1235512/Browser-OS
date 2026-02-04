@@ -272,7 +272,11 @@ const useFolderContextMenu = (
                 MENU_SEPARATOR,
                 {
                   label: "Background",
-                  menu: WALLPAPER_MENU.reduce<MenuItem[]>(
+                  menu: WALLPAPER_MENU.filter(
+                    ({ requiresWebGPU }) =>
+                      !requiresWebGPU ||
+                      (typeof navigator !== "undefined" && "gpu" in navigator)
+                  ).reduce<MenuItem[]>(
                     (menu, item) => [
                       ...menu,
                       {
