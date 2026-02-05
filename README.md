@@ -148,6 +148,12 @@ npm/yarn test
   - /Users/Public/Snapshots
 - Automatic window resize
 
+### LLM Chat
+
+- Have conversations with LLM
+- Supports [OpenAI](https://platform.openai.com/docs/api-reference/chat) & [HuggingFace](https://huggingface.co/inference-api) API's
+- Can run locally using [WebLLM](https://mlc.ai/web-llm/)
+
 ### [Marked](https://marked.js.org/) (**_.md_**)
 
 - Markdown Viewer
@@ -181,6 +187,11 @@ npm/yarn test
 ### [Ruffle](https://ruffle.rs/) (**_.swf, .spl_**)
 
 - Flash Player emulator
+
+### [Stable Diffusion](https://stability.ai/stable-diffusion)
+
+- Creates 512x512 images using artificial intelligence
+- Runs locally using [WebSD](https://mlc.ai/web-stable-diffusion/)
 
 ### [Terminal](https://xtermjs.org/)
 
