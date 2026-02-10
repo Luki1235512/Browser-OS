@@ -36,7 +36,7 @@ const ScrollBars = (
   size: number,
   verticalX = 0,
   verticalY = 0,
-  scheme: ColorSchemes = "dark"
+  scheme: ColorSchemes = "light"
 ): FlattenSimpleInterpolation => css`
   overflow: auto;
   scrollbar-color: ${colorScheme[scheme].thumb} ${colorScheme[scheme].track};

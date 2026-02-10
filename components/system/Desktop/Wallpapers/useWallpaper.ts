@@ -97,7 +97,7 @@ const useWallpaper = (
       );
 
       if (!keepCanvas) {
-        desktopRef?.current.querySelector(BASE_CANVAS_SELECTOR)?.remove();
+        desktopRef.current.querySelector(BASE_CANVAS_SELECTOR)?.remove();
       }
 
       window.WallpaperDestroy?.();

@@ -558,12 +558,12 @@ class StableDiffusionInstance {
     this.requestInProgress = true;
     try {
       await this.asyncInit();
-	    tvmjsGlobalEnv.prompts = tvmjsGlobalEnv.prompts || [];
-	    const index = Math.floor(Math.random() * tvmjsGlobalEnv.prompts.length);
+      tvmjsGlobalEnv.prompts = tvmjsGlobalEnv.prompts || [];
+      const index = Math.floor(Math.random() * tvmjsGlobalEnv.prompts.length);
       const [prompt = "", negPrompt = ""] = tvmjsGlobalEnv.prompts[index];
       const schedulerId = 0; // 0 = Multi-step DPM Solver (20 steps) | 1 = PNDM (50 steps)
       const vaeCycle = -1; // -1 = No | 2 = Run VAE every two UNet steps after step 10
-	    this.logger("prompt", prompt + (negPrompt ? " (Negative: " + negPrompt + ")" : ""));
+      this.logger("prompt", prompt + (negPrompt ? " (Negative: " + negPrompt + ")" : ""));
       await this.pipeline.generate(prompt, negPrompt, this.#getProgressCallback(), schedulerId, vaeCycle);
     } catch (err) {
       this.logger("Generate error, " + err.toString());

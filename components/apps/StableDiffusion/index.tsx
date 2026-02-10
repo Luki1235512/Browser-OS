@@ -1,9 +1,9 @@
+import StyledStableDiffusion from "components/apps/StableDiffusion/StyledStableDiffusion";
 import type { StableDiffusionConfig } from "components/apps/StableDiffusion/types";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { runStableDiffusion } from "components/system/Desktop/Wallpapers/StableDiffusion";
 import useWorker from "hooks/useWorker";
 import { useCallback, useMemo, useRef, useState } from "react";
-import StyledStableDiffusion from "./StyledStableDiffusion";
 
 type WorkerMessage = { data: { message: string; type: string } };
 
@@ -53,7 +53,6 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
           ]);
           sdWorker.current.addEventListener(
             "message",
-
             ({ data }: WorkerMessage) => {
               statusLogger(data.type, data.message);
             }
