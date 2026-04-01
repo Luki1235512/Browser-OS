@@ -17,6 +17,7 @@ const EXCLUDED_PROCESSES = new Set([
   "ClassiCube",
   "DXBall",
   "DevTools",
+  "Emulator",
   "FileExplorer",
   "IRC",
   "OpenWith",
@@ -24,7 +25,9 @@ const EXCLUDED_PROCESSES = new Set([
   "Run",
   "SpaceCadet",
   "StableDiffusion",
+  "Terminal",
   "Transfer",
+  "Webamp",
 ]);
 
 type OpenWithEntryProps = {
