@@ -513,7 +513,7 @@ const useFileContextMenu = (
           });
         }
 
-        return menuItems;
+        return menuItems[0] === MENU_SEPARATOR ? menuItems.slice(1) : menuItems;
       }),
     [
       archiveFiles,
