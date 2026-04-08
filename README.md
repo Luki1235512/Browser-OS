@@ -6,37 +6,6 @@ My attempt on creating operating system mockup in browser
 
 Check out the live demo of the application [here](https://cute-os.vercel.app/).
 
-##### Development
-
-```
-yarn build:fs
-yarn dev
-```
-
-##### Production
-
-```
-yarn build
-yarn start
-```
-
-### Docker
-
-- [Docker Desktop](https://www.docker.com/products/docker-desktop)
-
-```
-docker build -t cute-os .
-docker run -dp 3000:3000 --rm --name cute-os cute-os
-```
-
-## Running Tests
-
-To run the tests for this application, you can use the following command:
-
-```
-npm/yarn test
-```
-
 # System 💻
 
 ### [File System](https://github.com/jvilk/BrowserFS)
@@ -48,7 +17,7 @@ npm/yarn test
 - ZIP ([write support](https://www.npmjs.com/package/fflate)), [ZIP](https://github.com/jvilk/BrowserFS/blob/master/src/backend/ZipFS.ts)/[ISO](https://github.com/jvilk/BrowserFS/blob/master/src/backend/IsoFS.ts) read support, [7Z/GZ/RAR/TAR/etc. extract](https://github.com/use-strict/7z-wasm) support
 - Writes to [IndexedDb](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
 - Group selection/manipulation & drag to sort/arrange
-- Dynamic and auto cached icons for [music](https://github.com/Borewit/music-metadata-browser), images, video & game saves
+- Dynamic and auto cached icons for [music](https://github.com/Borewit/music-metadata-browser), images, video & emulator states
 - Context Menus
   - Cut, Copy, Create shortcut, Delete, Rename
   - [Add file(s)](https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications), [Map directory](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API)
@@ -236,3 +205,33 @@ npm/yarn test
 - [Skin support](https://skins.webamp.org/)
 - Playlist & streaming support
 - Visualization support (["Milkdrop"](https://github.com/jberg/butterchurn))
+
+# Try It
+
+##### Requirements
+
+- [Node.js](https://nodejs.org/en/download/)
+- [Yarn](https://yarnpkg.com/en/)
+
+##### Development
+
+```
+yarn build:fs
+yarn dev
+```
+
+##### Production
+
+```
+yarn build
+yarn start
+```
+
+#### Docker
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+
+```
+docker build -t cute-os .
+docker run -dp 3000:3000 --rm --name cute-os cute-os
+```
