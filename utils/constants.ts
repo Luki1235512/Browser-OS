@@ -60,6 +60,8 @@ export const PICTURES_FOLDER = `${HOME}/Pictures`;
 
 export const PROMPT_FILE = "prompts.json";
 
+export const INDEX_FILE = "/index.html";
+
 export const SLIDESHOW_FILE = "slideshow.json";
 
 export const ICON_GIF_SECONDS = 2;
