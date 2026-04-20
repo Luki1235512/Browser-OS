@@ -20,7 +20,6 @@ import {
   DESKTOP_PATH,
   FOLDER_ICON,
   INDEX_FILE,
-  isFileSystemMappingSupported,
   MENU_SEPARATOR,
   MOUNTABLE_EXTENSIONS,
 } from "utils/constants";
@@ -28,6 +27,7 @@ import {
   bufferToBlob,
   generatePrettyTimestamp,
   getExtension,
+  isFileSystemMappingSupported,
   isFirefox,
   isSafari,
 } from "utils/functions";
