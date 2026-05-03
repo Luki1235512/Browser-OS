@@ -30,7 +30,7 @@ const config: PlaywrightTestConfig = {
     trace: "on-first-retry",
   },
   webServer: {
-    command: "yarn dev",
+    command: process.env.CI ? "yarn start" : "yarn dev",
     reuseExistingServer: !process.env.CI,
     url: baseURL,
   },
