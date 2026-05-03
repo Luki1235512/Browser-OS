@@ -1,64 +1,77 @@
+import useFullscreen from "components/apps/Photos/useFullscreen";
 import { useMenu } from "contexts/menu";
 import type {
   ContextMenuCapture,
   MenuItem,
 } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
-import { useCallback } from "react";
+import { useProcessesRef } from "hooks/useProcessesRef";
+import { useMemo } from "react";
 import { MENU_SEPARATOR } from "utils/constants";
-import { toggleFullScreen, toggleShowDesktop } from "utils/functions";
+import { toggleShowDesktop } from "utils/functions";
 
 const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
   const { contextMenu } = useMenu();
-  const { minimize, open, processes = {} } = useProcesses();
-  const getItems = useCallback(() => {
-    const processArray = Object.entries(processes);
-    const allWindowsMinimized =
-      processArray.length > 0 &&
-      !processArray.some(([, { minimized }]) => !minimized);
-    const toggleLabel = allWindowsMinimized
-      ? "Show open windows"
-      : "Show the desktop";
-    const menuItems: MenuItem[] = [
-      {
-        action: () => toggleShowDesktop(processes, minimize),
-        label: onStartButton ? "Desktop" : toggleLabel,
-      },
-    ];
+  const { minimize, open } = useProcesses();
+  const processesRef = useProcessesRef();
+  const { fullscreen, toggleFullscreen } = useFullscreen();
 
-    if (onStartButton) {
-      menuItems.unshift(
-        {
-          action: () => open("Terminal"),
-          label: "Command Prompt",
-        },
-        MENU_SEPARATOR,
-        {
-          action: () => open("FileExplorer"),
-          label: "File Explorer",
-        },
-        {
-          action: () => open("Run"),
-          label: "Run",
-        },
-        MENU_SEPARATOR
-      );
-    } else {
-      menuItems.unshift(
-        {
-          action: toggleFullScreen,
-          label: document.fullscreenElement
-            ? "Exit full screen"
-            : "Enter full screen",
-        },
-        MENU_SEPARATOR
-      );
-    }
+  return useMemo(
+    () =>
+      contextMenu?.(() => {
+        const processArray = Object.entries(processesRef.current);
+        const allWindowsMinimized =
+          processArray.length > 0 &&
+          !processArray.some(([, { minimized }]) => !minimized);
+        const toggleLabel = allWindowsMinimized
+          ? "Show open windows"
+          : "Show the desktop";
+        const menuItems: MenuItem[] = [
+          {
+            action: () => toggleShowDesktop(processesRef.current, minimize),
+            label: onStartButton ? "Desktop" : toggleLabel,
+          },
+        ];
 
-    return menuItems;
-  }, [minimize, onStartButton, open, processes]);
+        if (onStartButton) {
+          menuItems.unshift(
+            {
+              action: () => open("Terminal"),
+              label: "Terminal",
+            },
+            MENU_SEPARATOR,
+            {
+              action: () => open("FileExplorer"),
+              label: "File Explorer",
+            },
+            {
+              action: () => open("Run"),
+              label: "Run",
+            },
+            MENU_SEPARATOR
+          );
+        } else {
+          menuItems.unshift(
+            {
+              action: () => toggleFullscreen(),
+              label: fullscreen ? "Exit full screen" : "Enter full screen",
+            },
+            MENU_SEPARATOR
+          );
+        }
 
-  return contextMenu?.(getItems);
+        return menuItems;
+      }),
+    [
+      contextMenu,
+      fullscreen,
+      minimize,
+      onStartButton,
+      open,
+      processesRef,
+      toggleFullscreen,
+    ]
+  );
 };
 
 export default useTaskbarContextMenu;

@@ -1,8 +1,10 @@
+import type { ContainerHookProps } from "components/apps/AppContainer";
 import { config, DEFAULT_SAVE_PATH } from "components/apps/TinyMCE/config";
 import {
   draggableEditor,
   setReadOnlyMode,
 } from "components/apps/TinyMCE/functions";
+import type { IRTFJS } from "components/apps/TinyMCE/types";
 import {
   getModifiedTime,
   getProcessByFileExtension,
@@ -15,16 +17,17 @@ import { useSession } from "contexts/session";
 import { basename, dirname, extname, relative } from "path";
 import { useCallback, useEffect, useState } from "react";
 import type { Editor, NotificationSpec } from "tinymce";
-import { haltEvent, loadFiles } from "utils/functions";
+import { DEFAULT_LOCALE } from "utils/constants";
+import { getExtension, haltEvent, loadFiles } from "utils/functions";
 
 type OptionSetter = <K, T>(name: K, value: T) => void;
 
-const useTinyMCE = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
-): void => {
+const useTinyMCE = ({
+  containerRef,
+  id,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const {
     open,
     processes: { [id]: { libs = [] } = {} } = {},
@@ -40,7 +43,7 @@ const useTinyMCE = (
       const modifiedDate = new Date(
         getModifiedTime(currentUrl, await stat(currentUrl))
       );
-      const date = new Intl.DateTimeFormat("en-US", {
+      const date = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
         dateStyle: "medium",
       }).format(modifiedDate);
 
@@ -56,7 +59,7 @@ const useTinyMCE = (
     if (iframe?.contentWindow) {
       [...iframe.contentWindow.document.links].forEach((link) =>
         link.addEventListener("click", (event) => {
-          const mceHref = link.dataset["mceHref"] || "";
+          const mceHref = link.dataset.mceHref || "";
           const isRelative =
             relative(
               mceHref.startsWith("/") ? mceHref : `/${mceHref}`,
@@ -66,7 +69,7 @@ const useTinyMCE = (
             haltEvent(event);
 
             const defaultProcess = getProcessByFileExtension(
-              extname(link.pathname).toLowerCase()
+              getExtension(link.pathname)
             );
 
             if (defaultProcess) open(defaultProcess, { url: link.pathname });
@@ -81,10 +84,24 @@ const useTinyMCE = (
 
       if (fileContents.length > 0) setReadOnlyMode(editor);
 
-      editor.setContent(fileContents.toString());
+      if (getExtension(url) === ".rtf") {
+        const { RTFJS } = (await import("rtf.js")) as unknown as IRTFJS;
+        const rtfDoc = new RTFJS.Document(fileContents);
+        const rtfHtml = await rtfDoc.render();
+
+        editor.setContent(
+          rtfHtml.map((domElement) => domElement.outerHTML).join("")
+        );
+      } else {
+        editor.setContent(fileContents.toString());
+      }
 
       linksToProcesses();
       updateTitle(url);
+
+      if (editor.iframeElement?.contentDocument) {
+        editor.iframeElement.contentDocument.documentElement.scrollTop = 0;
+      }
     }
   }, [editor, linksToProcesses, readFile, updateTitle, url]);
 
@@ -100,7 +117,13 @@ const useTinyMCE = (
         const saveUrl = url || DEFAULT_SAVE_PATH;
 
         try {
-          await writeFile(saveUrl, editor.getContent(), true);
+          await writeFile(
+            getExtension(saveUrl) === ".rtf"
+              ? saveUrl.replace(".rtf", ".whtml")
+              : saveUrl,
+            editor.getContent(),
+            true
+          );
           updateFolder(dirname(saveUrl), basename(saveUrl));
           updateTitle(saveUrl);
         } catch {
@@ -141,10 +164,14 @@ const useTinyMCE = (
                 iframe.contentWindow.addEventListener("drop", (event) => {
                   if (draggableEditor(activeEditor)) onDrop(event);
                 });
-                iframe.contentWindow.addEventListener("focus", () => {
-                  setForegroundId(id);
-                  containerRef.current?.closest("section")?.focus();
-                });
+                iframe.contentWindow.addEventListener("blur", () =>
+                  setForegroundId((currentForegroundId) =>
+                    currentForegroundId === id ? "" : currentForegroundId
+                  )
+                );
+                iframe.contentWindow.addEventListener("focus", () =>
+                  setForegroundId(id)
+                );
               }
 
               setEditor(activeEditor);

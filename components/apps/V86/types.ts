@@ -8,9 +8,19 @@ type EventListener = (event: string, callback: SizeCallback) => void;
 export type V86Starter = {
   add_listener: EventListener;
   destroy: () => void;
+  keyboard_set_status: (status: boolean) => void;
   lock_mouse: () => void;
   remove_listener: EventListener;
-  save_state: (callback: (error: Error, newState: ArrayBuffer) => void) => void;
+  save_state: () => Promise<ArrayBuffer>;
+  v86: {
+    cpu: {
+      devices: {
+        vga: {
+          graphical_mode: boolean;
+        };
+      };
+    };
+  };
 };
 
 export type V86Config = V86ImageConfig &

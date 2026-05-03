@@ -13,10 +13,10 @@ import { useFileSystem } from "contexts/fileSystem";
 import { resetStorage } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import { HOME, TASKBAR_HEIGHT } from "utils/constants";
-import { viewHeight } from "utils/functions";
+import { haltEvent, viewHeight } from "utils/functions";
 
 type SidebarGroupProps = {
   sidebarButtons: SidebarButtons;
@@ -40,6 +40,7 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
   const { setHaltSession } = useSession();
   const [collapsed, setCollapsed] = useState(true);
   const expandTimer = useRef<number>();
+  const sidebarRef = useRef<HTMLElement>(null);
   const clearTimer = (): void => {
     if (expandTimer.current) clearTimeout(expandTimer.current);
   };
@@ -119,11 +120,21 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
 
   return (
     <StyledSidebar
+      ref={sidebarRef}
       className={collapsed ? "collapsed" : undefined}
-      onClick={() => {
+      onClick={({ target }) => {
         clearTimer();
-        setCollapsed((collapsedState) => !collapsedState);
+
+        if (
+          target instanceof HTMLElement &&
+          (target === sidebarRef.current ||
+            (sidebarRef.current?.contains(target) &&
+              target.textContent === "START"))
+        ) {
+          setCollapsed((collapsedState) => !collapsedState);
+        }
       }}
+      onContextMenu={haltEvent}
       onMouseEnter={() => {
         expandTimer.current = window.setTimeout(() => setCollapsed(false), 700);
       }}
@@ -139,4 +150,4 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
   );
 };
 
-export default Sidebar;
+export default memo(Sidebar);

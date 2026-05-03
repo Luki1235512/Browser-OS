@@ -29,6 +29,7 @@ export type IconPosition = {
 export type IconPositions = Record<string, IconPosition>;
 
 export type SessionData = {
+  aiApi: string;
   clockSource: ClockSource;
   iconPositions: IconPositions;
   runHistory: string[];
@@ -40,13 +41,11 @@ export type SessionData = {
 };
 
 export type SessionContextState = SessionData & {
-  clockSource: ClockSource;
   foregroundId: string;
-  iconPositions: IconPositions;
   prependToStack: (id: string) => void;
   removeFromStack: (id: string) => void;
-  runHistory: string[];
   sessionLoaded: boolean;
+  setAiApi: React.Dispatch<React.SetStateAction<string>>;
   setClockSource: React.Dispatch<React.SetStateAction<ClockSource>>;
   setForegroundId: React.Dispatch<React.SetStateAction<string>>;
   setHaltSession: React.Dispatch<React.SetStateAction<boolean>>;
@@ -61,6 +60,5 @@ export type SessionContextState = SessionData & {
   setThemeName: React.Dispatch<React.SetStateAction<ThemeName>>;
   setWallpaper: (image: string, fit?: WallpaperFit) => void;
   setWindowStates: React.Dispatch<React.SetStateAction<WindowStates>>;
-  sortOrders: SortOrders;
   stackOrder: string[];
 };

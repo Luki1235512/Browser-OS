@@ -1,8 +1,8 @@
+import { minMaxSize } from "components/system/Window/functions";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useCallback } from "react";
 import { useTheme } from "styled-components";
-import { maxSize } from "utils/functions";
 
 type WindowSize = {
   updateWindowSize: (height: number, width: number) => void;
@@ -26,7 +26,7 @@ const useWindowSize = (id: string): WindowSize => {
         [id]: {
           ...currentWindowStates?.[id],
           maximized,
-          size: maxSize(
+          size: minMaxSize(
             {
               height: height + titleBar.height,
               width,

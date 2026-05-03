@@ -43,11 +43,20 @@ if (!commit) {
 const CODE_REPLACE_FUNCTIONS = [
   (html) => html.replace(/<noscript (.*)><\/noscript>/, ""),
   (html) => html.replace(/><\/path>/, "/>"),
-  (html) => html.replace(/<script (.*) nomodule=""><\/script>/, ""),
   (html) =>
     html.replace(
-      /<style data-styled="" data-styled-version=(.*)>/,
-      '<style data-styled="">'
+      /<script defer src=\/_next\/static\/chunks\/polyfills-[a-zA-Z0-9-_]+.js nomodule=""><\/script>/,
+      ""
+    ),
+  (html) =>
+    html.replace(
+      /<script defer src=\/_next\/static\/[a-zA-Z0-9-_]+\/_buildManifest.js><\/script>/,
+      ""
+    ),
+  (html) =>
+    html.replace(
+      /<script defer src=\/_next\/static\/[a-zA-Z0-9-_]+\/_ssgManifest.js><\/script>/,
+      ""
     ),
   (html) =>
     html.replace(
@@ -57,7 +66,7 @@ const CODE_REPLACE_FUNCTIONS = [
 ];
 
 readdirSync(OUT_PATH).forEach(async (entry) => {
-  if (extname(entry) === ".html") {
+  if (extname(entry).toLowerCase() === ".html") {
     const fullPath = join(OUT_PATH, entry);
     const html = readFileSync(fullPath);
     let minifiedHtml = await minify(html.toString(), HTML_MINIFIER_CONFIG);

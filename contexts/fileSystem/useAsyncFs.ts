@@ -1,15 +1,17 @@
 import type * as IBrowserFS from "browserfs";
 import type MountableFileSystem from "browserfs/dist/node/backend/MountableFileSystem";
-import type {
-  BFSCallback,
-  FileSystem,
-} from "browserfs/dist/node/core/file_system";
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
 import { resetStorage, supportsIndexedDB } from "contexts/fileSystem/functions";
+import { join } from "path";
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  ICON_CACHE,
+  ICON_CACHE_EXTENSION,
+  SESSION_FILE,
+} from "utils/constants";
 
 export type AsyncFS = {
   exists: (path: string) => Promise<boolean>;
@@ -28,22 +30,7 @@ export type AsyncFS = {
   ) => Promise<boolean>;
 };
 
-type IFileSystemAccess = {
-  FileSystem: {
-    FileSystemAccess: {
-      Create: (
-        opts: { handle: FileSystemDirectoryHandle },
-        cb: BFSCallback<FileSystem>
-      ) => void;
-    };
-  };
-};
-
-const {
-  BFSRequire,
-  configure,
-  FileSystem: { FileSystemAccess, IsoFS, ZipFS },
-} = BrowserFS as IFileSystemAccess & typeof IBrowserFS;
+const { BFSRequire, configure } = BrowserFS as typeof IBrowserFS;
 
 export type RootFileSystem = Omit<
   MountableFileSystem,
@@ -60,9 +47,6 @@ export type RootFileSystem = Omit<
 };
 
 type AsyncFSModule = AsyncFS & {
-  FileSystemAccess?: typeof FileSystemAccess;
-  IsoFS?: typeof IsoFS;
-  ZipFS?: typeof ZipFS;
   fs?: FSModule;
   rootFs?: RootFileSystem;
 };
@@ -100,7 +84,7 @@ const useAsyncFs = (): AsyncFSModule => {
         }),
       lstat: (path) =>
         new Promise((resolve, reject) => {
-          fs?.lstat(path, (error, stats = {} as Stats) =>
+          fs?.lstat(path, (error, stats = Object.create(null) as Stats) =>
             error ? reject(error) : resolve(stats)
           );
         }),
@@ -134,19 +118,22 @@ const useAsyncFs = (): AsyncFSModule => {
             if (!renameError) {
               resolve(true);
             } else if (renameError.code === "ENOTSUP") {
-              fs.lstat(oldPath, (_statsError, stats = {} as Stats) => {
-                if (stats.isDirectory()) {
-                  reject();
-                } else {
-                  fs.readFile(oldPath, (readError, data) =>
-                    fs.writeFile(newPath, data, (writeError) =>
-                      readError || writeError
-                        ? reject(readError || writeError)
-                        : resolve(false)
-                    )
-                  );
+              fs.lstat(
+                oldPath,
+                (_statsError, stats = Object.create(null) as Stats) => {
+                  if (stats.isDirectory()) {
+                    reject();
+                  } else {
+                    fs.readFile(oldPath, (readError, data) =>
+                      fs.writeFile(newPath, data, (writeError) =>
+                        readError || writeError
+                          ? reject(readError || writeError)
+                          : resolve(false)
+                      )
+                    );
+                  }
                 }
-              });
+              );
             } else if (renameError.code === "EISDIR") {
               rootFs?.umount(oldPath);
               asyncFs.rename(oldPath, newPath).then(resolve, reject);
@@ -161,7 +148,7 @@ const useAsyncFs = (): AsyncFSModule => {
         }),
       stat: (path) =>
         new Promise((resolve, reject) => {
-          fs?.stat(path, (error, stats = {} as Stats) =>
+          fs?.stat(path, (error, stats = Object.create(null) as Stats) =>
             error ? reject(error) : resolve(stats)
           );
         }),
@@ -181,10 +168,26 @@ const useAsyncFs = (): AsyncFSModule => {
                   resetStorage(rootFs).finally(() => window.location.reload());
                 }
 
-                return reject(error);
-              }
+                reject(error);
+              } else {
+                resolve(!error);
 
-              return resolve(!error);
+                try {
+                  if (path !== SESSION_FILE) {
+                    const cachedIconPath = join(
+                      ICON_CACHE,
+                      `${path}${ICON_CACHE_EXTENSION}`
+                    );
+
+                    fs?.exists(
+                      cachedIconPath,
+                      (exists) => exists && fs?.unlink(cachedIconPath)
+                    );
+                  }
+                } catch {
+                  // Ignore icon cache issues
+                }
+              }
             }
           );
         }),
@@ -197,13 +200,12 @@ const useAsyncFs = (): AsyncFSModule => {
       const queueFsCall =
         (name: string) =>
         (...args: unknown[]) => {
-          if (!fsRef.current) mockFsCallQueue.push([name, args]);
-          else {
+          if (fsRef.current) {
             // eslint-disable-next-line @typescript-eslint/ban-types
             (fsRef.current[name as keyof FSModule] as unknown as Function)(
               ...args
             );
-          }
+          } else mockFsCallQueue.push([name, args]);
         };
 
       setFs({
@@ -218,7 +220,9 @@ const useAsyncFs = (): AsyncFSModule => {
         unlink: queueFsCall("unlink"),
         writeFile: queueFsCall("writeFile"),
       } as Partial<FSModule> as FSModule);
-    } else if (!("getRootFS" in fs)) {
+    } else if ("getRootFS" in fs) {
+      runQueuedFsCalls(fs);
+    } else {
       const setupFs = (writeToIndexedDB: boolean): void =>
         configure(FileSystemConfig(!writeToIndexedDB), () => {
           const loadedFs = BFSRequire("fs");
@@ -229,19 +233,17 @@ const useAsyncFs = (): AsyncFSModule => {
         });
 
       supportsIndexedDB().then(setupFs);
-    } else {
-      runQueuedFsCalls(fs);
     }
   }, [fs]);
 
-  return {
-    ...asyncFs,
-    FileSystemAccess,
-    IsoFS,
-    ZipFS,
-    fs,
-    rootFs,
-  };
+  return useMemo(
+    () => ({
+      ...asyncFs,
+      fs,
+      rootFs,
+    }),
+    [asyncFs, fs, rootFs]
+  );
 };
 
 export default useAsyncFs;

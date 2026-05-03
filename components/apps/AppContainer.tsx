@@ -1,30 +1,37 @@
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import { useProcesses } from "contexts/process";
 import dynamic from "next/dynamic";
-import { useMemo, useRef, useState } from "react";
-import type { DefaultTheme, StyledComponent } from "styled-components";
+import { memo, useMemo, useRef, useState } from "react";
+import type { styled } from "styled-components";
 
 const StyledLoading = dynamic(
   () => import("components/system/Files/FileManager/StyledLoading")
 );
 
-type ContainerHook = (
-  id: string,
-  url: string,
-  container: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  loading: boolean
-) => void;
+export type ContainerHookProps = {
+  containerRef: React.MutableRefObject<HTMLDivElement | null>;
+  id: string;
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  url: string;
+};
 
-const AppContainer = (
-  id: string,
-  useHook: ContainerHook,
-  Component: StyledComponent<"div", DefaultTheme>,
-  children?: React.ReactNode,
-  siblings?: React.ReactNode
-): JSX.Element => {
+type ContainerHook = (props: ContainerHookProps) => void;
+
+type AppContainerProps = {
+  StyledComponent: ReturnType<typeof styled.div>;
+  id: string;
+  useHook: ContainerHook;
+};
+
+const AppContainer: FC<AppContainerProps> = ({
+  id,
+  useHook,
+  StyledComponent,
+  children,
+}): JSX.Element => {
   const {
-    processes: { [id]: { url: currentUrl = "" } = {} },
+    processes: { [id]: { url = "" } = {} },
   } = useProcesses();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(true);
@@ -36,17 +43,20 @@ const AppContainer = (
     [loading]
   );
 
-  useHook(id, currentUrl, containerRef, setLoading, loading);
+  useHook({ containerRef, id, loading, setLoading, url });
 
   return (
     <>
       {loading && <StyledLoading />}
-      <Component ref={containerRef} style={style} {...useFileDrop({ id })}>
+      <StyledComponent
+        ref={containerRef}
+        style={style}
+        {...useFileDrop({ id })}
+      >
         {children}
-      </Component>
-      {siblings}
+      </StyledComponent>
     </>
   );
 };
 
-export default AppContainer;
+export default memo(AppContainer);

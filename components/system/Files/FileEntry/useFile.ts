@@ -1,35 +1,78 @@
+import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
+import { useProcessesRef } from "hooks/useProcessesRef";
+import { basename, join } from "path";
 import { useCallback } from "react";
-import { FOLDER_BACK_ICON, PROCESS_DELIMITER } from "utils/constants";
+import {
+  DESKTOP_PATH,
+  FOLDER_BACK_ICON,
+  PROCESS_DELIMITER,
+} from "utils/constants";
 
-type UseFile = (pid: string, icon?: string) => void;
+type UseFile = (pid: string, icon?: string) => Promise<void>;
 
 const useFile = (url: string): UseFile => {
   const { setForegroundId } = useSession();
-  const { minimize, open, processes, url: setUrl } = useProcesses();
+  const { createPath, updateFolder } = useFileSystem();
+  const { minimize, open, url: setUrl } = useProcesses();
+  const processesRef = useProcessesRef();
 
   return useCallback(
-    (pid: string, icon?: string) => {
-      const { singleton, icon: processIcon } = processDirectory[pid] || {};
-      const activePid = Object.keys(processes).find((id) =>
-        id.startsWith(`${pid}${PROCESS_DELIMITER}`)
-      );
+    async (pid: string, icon?: string) => {
+      const {
+        preferProcessIcon,
+        singleton,
+        icon: processIcon,
+      } = processDirectory[pid] || {};
+      const activePid = singleton
+        ? Object.keys(processesRef.current).find((id) =>
+            id.startsWith(`${pid}${PROCESS_DELIMITER}`)
+          )
+        : "";
+      let runUrl = url;
 
-      if (singleton && activePid) {
-        setUrl(activePid, url);
-        if (processes[activePid].minimized) minimize(activePid);
+      if (url.startsWith("ipfs://")) {
+        const { getIpfsFileName, getIpfsResource } = await import("utils/ipfs");
+        const ipfsData = await getIpfsResource(url);
+
+        runUrl = join(
+          DESKTOP_PATH,
+          await createPath(
+            await getIpfsFileName(url, ipfsData),
+            DESKTOP_PATH,
+            ipfsData
+          )
+        );
+
+        updateFolder(DESKTOP_PATH, basename(runUrl));
+      }
+
+      if (activePid) {
+        setUrl(activePid, runUrl);
+        if (processesRef.current[activePid].minimized) minimize(activePid);
         setForegroundId(activePid);
       } else {
         open(
-          pid,
-          { url },
-          singleton || icon === FOLDER_BACK_ICON ? processIcon : icon
+          pid || "OpenWith",
+          { url: runUrl },
+          singleton || icon === FOLDER_BACK_ICON || preferProcessIcon
+            ? processIcon
+            : icon
         );
       }
     },
-    [minimize, open, processes, setForegroundId, setUrl, url]
+    [
+      createPath,
+      minimize,
+      open,
+      processesRef,
+      setForegroundId,
+      setUrl,
+      updateFolder,
+      url,
+    ]
   );
 };
 

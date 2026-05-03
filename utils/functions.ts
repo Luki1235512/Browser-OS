@@ -7,13 +7,15 @@ import type {
   SortOrders,
 } from "contexts/session/types";
 import type { Position } from "eruda";
+import type HtmlToImage from "html-to-image";
 import { basename, dirname, extname, join } from "path";
-import type { HTMLAttributes } from "react";
 import {
+  DEFAULT_LOCALE,
   HIGH_PRIORITY_REQUEST,
   MAX_RES_ICON_OVERRIDE,
   ONE_TIME_PASSIVE_EVENT,
   TASKBAR_HEIGHT,
+  TIMESTAMP_DATE_FORMAT,
 } from "utils/constants";
 
 export const GOOGLE_SEARCH_QUERY = "https://www.google.com/search?igu=1&q=";
@@ -21,8 +23,10 @@ export const GOOGLE_SEARCH_QUERY = "https://www.google.com/search?igu=1&q=";
 export const bufferToBlob = (buffer: Buffer, type?: string): Blob =>
   new Blob([buffer], type ? { type } : undefined);
 
-export const bufferToUrl = (buffer: Buffer): string =>
-  URL.createObjectURL(bufferToBlob(buffer));
+export const bufferToUrl = (buffer: Buffer, mimeType?: string): string =>
+  mimeType
+    ? `data:${mimeType};base64,${buffer.toString("base64")}`
+    : URL.createObjectURL(bufferToBlob(buffer));
 
 let dpi: number;
 
@@ -34,14 +38,14 @@ export const getDpi = (): number => {
   return dpi;
 };
 
-export const toggleFullScreen = async (): Promise<void> => {
-  try {
-    await (!document.fullscreenElement
-      ? document.documentElement.requestFullscreen()
-      : document.exitFullscreen());
-  } catch {
-    // Ignore failure to enter fullscreen
-  }
+export const getExtension = (url: string): string => extname(url).toLowerCase();
+
+export const sendMouseClick = (target: HTMLElement, count = 1): void => {
+  if (count === 0) return;
+
+  target.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+
+  sendMouseClick(target, count - 1);
 };
 
 export const toggleShowDesktop = (
@@ -100,7 +104,7 @@ export const imageToBufferUrl = (
   path: string,
   buffer: Buffer | string
 ): string =>
-  extname(path) === ".svg"
+  getExtension(path) === ".svg"
     ? `data:image/svg+xml;base64,${window.btoa(buffer.toString())}`
     : `data:image/png;base64,${buffer.toString("base64")}`;
 
@@ -112,12 +116,38 @@ export const blobToBase64 = (blob: Blob): Promise<string> =>
     fileReader.onloadend = () => resolve(fileReader.result as string);
   });
 
+type JxlDecodeResponse = { data: { imgData: ImageData } };
+
+export const decodeJxl = async (image: Buffer): Promise<ImageData> =>
+  new Promise((resolve) => {
+    const worker = new Worker("System/JXL.js/jxl_dec.js");
+
+    worker.postMessage({ image, jxlSrc: "image.jxl" });
+    worker.addEventListener("message", (message: JxlDecodeResponse) =>
+      resolve(message?.data?.imgData)
+    );
+  });
+
+export const imgDataToBuffer = (imageData: ImageData): Buffer => {
+  const canvas = document.createElement("canvas");
+
+  canvas.width = imageData.width;
+  canvas.height = imageData.height;
+  canvas.getContext("2d")?.putImageData(imageData, 0, 0);
+
+  return Buffer.from(
+    canvas?.toDataURL("image/png").replace("data:image/png;base64,", ""),
+    "base64"
+  );
+};
+
 export const cleanUpBufferUrl = (url: string): void => URL.revokeObjectURL(url);
 
 const loadScript = (
   src: string,
   defer?: boolean,
-  force?: boolean
+  force?: boolean,
+  asModule?: boolean
 ): Promise<Event> =>
   new Promise((resolve, reject) => {
     const loadedScripts = [...document.scripts];
@@ -140,12 +170,13 @@ const loadScript = (
 
     script.async = false;
     if (defer) script.defer = true;
+    if (asModule) script.type = "module";
     script.fetchPriority = "high";
     script.src = src;
     script.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
     script.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
 
-    document.head.appendChild(script);
+    document.head.append(script);
   });
 
 const loadStyle = (href: string): Promise<Event> =>
@@ -169,34 +200,46 @@ const loadStyle = (href: string): Promise<Event> =>
     link.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
     link.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
 
-    document.head.appendChild(link);
+    document.head.append(link);
   });
 
 export const loadFiles = async (
   files?: string[],
   defer?: boolean,
-  force?: boolean
+  force?: boolean,
+  asModule?: boolean
 ): Promise<void> =>
   !files || files.length === 0
     ? Promise.resolve()
     : files.reduce(async (_promise, file) => {
-        await (extname(file).toLowerCase() === ".css"
+        await (getExtension(file) === ".css"
           ? loadStyle(encodeURI(file))
-          : loadScript(encodeURI(file), defer, force));
+          : loadScript(encodeURI(file), defer, force, asModule));
       }, Promise.resolve());
+
+export const getHtmlToImage = async (): Promise<
+  typeof HtmlToImage | undefined
+> => {
+  await loadFiles(["/System/html-to-image/html-to-image.js"]);
+
+  const { htmlToImage } = window as unknown as Window & {
+    htmlToImage: typeof HtmlToImage;
+  };
+
+  return htmlToImage;
+};
 
 export const pxToNum = (value: number | string = 0): number =>
   typeof value === "number" ? value : Number.parseFloat(value);
 
-export const viewHeight = (): number =>
-  window.screen.height
-    ? Math.min(window.innerHeight, window.screen.height)
-    : window.innerHeight;
+export const viewHeight = (): number => window.innerHeight;
 
-export const viewWidth = (): number =>
-  window.screen.width
-    ? Math.min(window.innerWidth, window.screen.width)
-    : window.innerWidth;
+export const viewWidth = (): number => window.innerWidth;
+
+export const getWindowViewport = (): Position => ({
+  x: viewWidth(),
+  y: viewHeight() - TASKBAR_HEIGHT,
+});
 
 export const calcInitialPosition = (
   relativePosition: RelativePosition,
@@ -208,15 +251,17 @@ export const calcInitialPosition = (
     viewHeight() - (relativePosition.bottom || 0) - container.offsetHeight,
 });
 
-export const calcGridDropPosition = (
+const GRID_TEMPLATE_ROWS = "grid-template-rows";
+
+const calcGridDropPosition = (
   gridElement: HTMLElement | null,
-  { x = 0, y = 0, offsetX = 0, offsetY = 0 }: DragPosition
+  { x = 0, y = 0 }: DragPosition
 ): IconPosition => {
-  if (!gridElement) return {} as IconPosition;
+  if (!gridElement) return Object.create(null) as IconPosition;
 
   const gridComputedStyle = window.getComputedStyle(gridElement);
   const gridTemplateRows = gridComputedStyle
-    .getPropertyValue("grid-template-rows")
+    .getPropertyValue(GRID_TEMPLATE_ROWS)
     .split(" ");
   const gridTemplateColumns = gridComputedStyle
     .getPropertyValue("grid-template-columns")
@@ -233,11 +278,11 @@ export const calcGridDropPosition = (
 
   return {
     gridColumnStart: Math.min(
-      Math.ceil((x + offsetX) / (gridColumnWidth + gridColumnGap)),
+      Math.ceil(x / (gridColumnWidth + gridColumnGap)),
       gridTemplateColumns.length
     ),
     gridRowStart: Math.min(
-      Math.ceil((y + offsetY - paddingTop) / (gridRowHeight + gridRowGap)),
+      Math.ceil((y - paddingTop) / (gridRowHeight + gridRowGap)),
       gridTemplateRows.length
     ),
   };
@@ -251,110 +296,218 @@ export const updateIconPositionsIfEmpty = (
 ): IconPositions => {
   if (!gridElement) return iconPositions;
 
-  const [fileOrder] = sortOrders[url];
+  const [fileOrder = []] = sortOrders[url] || [];
   const newIconPositions: IconPositions = {};
   const gridComputedStyle = window.getComputedStyle(gridElement);
   const gridTemplateRowCount = gridComputedStyle
-    .getPropertyValue("grid-template-rows")
+    .getPropertyValue(GRID_TEMPLATE_ROWS)
     .split(" ").length;
 
   fileOrder.forEach((entry, index) => {
     const entryUrl = join(url, entry);
 
     if (!iconPositions[entryUrl]) {
-      const position = index + 1;
-      const gridColumnStart = Math.ceil(position / gridTemplateRowCount);
-      const gridRowStart =
-        position - gridTemplateRowCount * (gridColumnStart - 1);
+      const gridEntry = [...gridElement.children].find((element) =>
+        element.querySelector(`button[aria-label="${entry}"]`)
+      );
 
-      newIconPositions[entryUrl] = { gridColumnStart, gridRowStart };
+      if (gridEntry instanceof HTMLElement) {
+        const { x, y, height, width } = gridEntry.getBoundingClientRect();
+
+        newIconPositions[entryUrl] = calcGridDropPosition(gridElement, {
+          x: x - width,
+          y: y + height,
+        });
+      } else {
+        const position = index + 1;
+        const gridColumnStart = Math.ceil(position / gridTemplateRowCount);
+        const gridRowStart =
+          position - gridTemplateRowCount * (gridColumnStart - 1);
+
+        newIconPositions[entryUrl] = { gridColumnStart, gridRowStart };
+      }
     }
   });
 
   return Object.keys(newIconPositions).length > 0
-    ? newIconPositions
+    ? { ...newIconPositions, ...iconPositions }
     : iconPositions;
 };
 
-export const calcGridPositionOffset = (
+const calcGridPositionOffset = (
   url: string,
   targetUrl: string,
   currentIconPositions: IconPositions,
-  gridDropPosition: IconPosition
-): IconPosition => ({
-  gridColumnStart:
-    currentIconPositions[url].gridColumnStart +
-    (gridDropPosition.gridColumnStart -
-      currentIconPositions[targetUrl].gridColumnStart),
-  gridRowStart:
-    currentIconPositions[url].gridRowStart +
-    (gridDropPosition.gridRowStart -
-      currentIconPositions[targetUrl].gridRowStart),
-});
+  gridDropPosition: IconPosition,
+  [, ...draggedEntries]: string[],
+  gridElement: HTMLElement
+): IconPosition => {
+  if (currentIconPositions[url] && currentIconPositions[targetUrl]) {
+    return {
+      gridColumnStart:
+        currentIconPositions[url].gridColumnStart +
+        (gridDropPosition.gridColumnStart -
+          currentIconPositions[targetUrl].gridColumnStart),
+      gridRowStart:
+        currentIconPositions[url].gridRowStart +
+        (gridDropPosition.gridRowStart -
+          currentIconPositions[targetUrl].gridRowStart),
+    };
+  }
 
-export const isCanvasDrawn = (canvas?: HTMLCanvasElement | null): boolean =>
-  canvas instanceof HTMLCanvasElement &&
-  Boolean(
-    canvas
-      .getContext("2d")
-      ?.getImageData(0, 0, canvas.width, canvas.height)
-      .data.some((channel) => channel !== 0)
-  );
+  const gridComputedStyle = window.getComputedStyle(gridElement);
+  const gridTemplateRowCount = gridComputedStyle
+    .getPropertyValue(GRID_TEMPLATE_ROWS)
+    .split(" ").length;
+  const {
+    gridColumnStart: targetGridColumnStart,
+    gridRowStart: targetGridRowStart,
+  } = gridDropPosition;
+  const gridRowStart =
+    targetGridRowStart + draggedEntries.indexOf(basename(url)) + 1;
 
-export const maxSize = (size: Size, lockAspectRatio: boolean): Size => {
-  const desiredHeight = Number(size.height);
-  const desiredWidth = Number(size.width);
-  const [vh, vw] = [viewHeight(), viewWidth()];
-  const vhWithoutTaskbar = vh - TASKBAR_HEIGHT;
-  const height = Math.min(desiredHeight, vhWithoutTaskbar);
-  const width = Math.min(desiredWidth, vw);
-
-  if (!lockAspectRatio) return { height, width };
-
-  const isDesiredHeight = desiredHeight === height;
-  const isDesiredWidth = desiredWidth === width;
-
-  if (!isDesiredHeight && !isDesiredWidth) {
-    if (desiredHeight > desiredWidth) {
-      return {
-        height,
-        width: Math.round(width / (vhWithoutTaskbar / height)),
+  return gridRowStart > gridTemplateRowCount
+    ? {
+        gridColumnStart:
+          targetGridColumnStart +
+          Math.ceil(gridRowStart / gridTemplateRowCount) -
+          1,
+        gridRowStart:
+          gridRowStart % gridTemplateRowCount || gridTemplateRowCount,
+      }
+    : {
+        gridColumnStart: targetGridColumnStart,
+        gridRowStart,
       };
-    }
+};
 
-    return {
-      height: Math.round(height / (vw / width)),
-      width,
-    };
+export const updateIconPositions = (
+  directory: string,
+  gridElement: HTMLElement | null,
+  iconPositions: IconPositions,
+  sortOrders: SortOrders,
+  dragPosition: DragPosition,
+  draggedEntries: string[],
+  setIconPositions: React.Dispatch<React.SetStateAction<IconPositions>>
+): void => {
+  if (!gridElement) return;
+
+  const currentIconPositions = updateIconPositionsIfEmpty(
+    directory,
+    gridElement,
+    iconPositions,
+    sortOrders
+  );
+  const gridDropPosition = calcGridDropPosition(gridElement, dragPosition);
+
+  if (
+    draggedEntries.length > 0 &&
+    !Object.values(currentIconPositions).some(
+      ({ gridColumnStart, gridRowStart }) =>
+        gridColumnStart === gridDropPosition.gridColumnStart &&
+        gridRowStart === gridDropPosition.gridRowStart
+    )
+  ) {
+    const targetFile =
+      draggedEntries.find((entry) =>
+        entry.startsWith(document.activeElement?.textContent || "")
+      ) || draggedEntries[0];
+    const targetUrl = join(directory, targetFile);
+    const adjustDraggedEntries = [
+      targetFile,
+      ...draggedEntries.filter((entry) => entry !== targetFile),
+    ];
+    const newIconPositions = Object.fromEntries(
+      adjustDraggedEntries
+        .map<[string, IconPosition]>((entryFile) => {
+          const url = join(directory, entryFile);
+
+          return [
+            url,
+            url === targetUrl
+              ? gridDropPosition
+              : calcGridPositionOffset(
+                  url,
+                  targetUrl,
+                  currentIconPositions,
+                  gridDropPosition,
+                  adjustDraggedEntries,
+                  gridElement
+                ),
+          ];
+        })
+        .filter(
+          ([, { gridColumnStart, gridRowStart }]) =>
+            gridColumnStart >= 1 && gridRowStart >= 1
+        )
+    );
+
+    setIconPositions({
+      ...currentIconPositions,
+      ...Object.fromEntries(
+        Object.entries(newIconPositions).filter(
+          ([, { gridColumnStart, gridRowStart }]) =>
+            !Object.values(currentIconPositions).some(
+              ({
+                gridColumnStart: currentGridColumnStart,
+                gridRowStart: currentRowColumnStart,
+              }) =>
+                gridColumnStart === currentGridColumnStart &&
+                gridRowStart === currentRowColumnStart
+            )
+        )
+      ),
+    });
+  }
+};
+
+export const isCanvasDrawn = (canvas?: HTMLCanvasElement | null): boolean => {
+  if (!(canvas instanceof HTMLCanvasElement)) return false;
+
+  const { data: pixels = [] } =
+    canvas
+      .getContext("2d", { willReadFrequently: true })
+      ?.getImageData(0, 0, canvas.width, canvas.height) || {};
+
+  if (pixels.length === 0) return false;
+
+  const bwPixels: Record<number, number> = { 0: 0, 255: 0 };
+
+  for (const pixel of pixels) {
+    if (pixel !== 0 && pixel !== 255) return true;
+
+    bwPixels[pixel] += 1;
   }
 
-  if (!isDesiredHeight) {
-    return {
-      height,
-      width: Math.round(width / (desiredHeight / height)),
-    };
-  }
+  const isBlankCanvas =
+    bwPixels[0] === pixels.length ||
+    bwPixels[255] === pixels.length ||
+    (bwPixels[255] + bwPixels[0] === pixels.length &&
+      bwPixels[0] / 3 === bwPixels[255]);
 
-  if (!isDesiredWidth) {
-    return {
-      height: Math.round(height / (desiredWidth / width)),
-      width,
-    };
-  }
-
-  return { height, width };
+  return !isBlankCanvas;
 };
 
 const bytesInKB = 1024;
-const bytesInMB = 1022976; // 1024 * 999;
-const bytesInGB = 1047527424; // 1024 * 1024 * 999;
+const bytesInMB = 1022976; // 1024 * 999
+const bytesInGB = 1047527424; // 1024 * 1024 * 999
 const bytesInTB = 1072668082176; // 1024 * 1024 * 1024 * 999
 
-const formatNumber = (number: number): string =>
-  new Intl.NumberFormat("en-US", {
-    maximumSignificantDigits: number < 1 ? 2 : 3,
+const formatNumber = (number: number): string => {
+  const formattedNumber = new Intl.NumberFormat("en-US", {
+    maximumSignificantDigits: number < 1 ? 2 : 4,
     minimumSignificantDigits: number < 1 ? 2 : 3,
   }).format(Number(number.toFixed(4).slice(0, -2)));
+
+  const [integer, decimal] = formattedNumber.split(".");
+
+  if (integer.length === 3) return integer;
+  if (integer.length === 2 && decimal.length === 2) {
+    return `${integer}.${decimal[0]}`;
+  }
+
+  return formattedNumber;
+};
 
 export const getFormattedSize = (size = 0): string => {
   if (size === 1) return "1 byte";
@@ -378,7 +531,8 @@ export const getTZOffsetISOString = (): string => {
   ).toISOString();
 };
 
-export const getUrlOrSearch = (input: string): string => {
+export const getUrlOrSearch = async (input: string): Promise<string> => {
+  const isIpfs = input.startsWith("ipfs://");
   const hasHttpSchema =
     input.startsWith("http://") || input.startsWith("https://");
   const hasTld =
@@ -389,8 +543,14 @@ export const getUrlOrSearch = (input: string): string => {
 
   try {
     const { href } = new URL(
-      hasHttpSchema || !hasTld ? input : `https://${input}`
+      hasHttpSchema || !hasTld || isIpfs ? input : `https://${input}`
     );
+
+    if (isIpfs) {
+      const { getIpfsGatewayUrl } = await import("utils/ipfs");
+
+      return await getIpfsGatewayUrl(href);
+    }
 
     return href;
   } catch {
@@ -398,24 +558,50 @@ export const getUrlOrSearch = (input: string): string => {
   }
 };
 
-export const isFirefox = (): boolean =>
-  typeof window !== "undefined" && /firefox/i.test(window.navigator.userAgent);
+let IS_FIREFOX: boolean;
 
-export const isSafari = (): boolean =>
-  typeof window !== "undefined" &&
-  /^((?!chrome|android).)*safari/i.test(window.navigator.userAgent);
+export const isFirefox = (): boolean => {
+  if (typeof window === "undefined") return false;
+  if (IS_FIREFOX ?? false) return IS_FIREFOX;
+
+  IS_FIREFOX = /firefox/i.test(window.navigator.userAgent);
+
+  return IS_FIREFOX;
+};
+
+let IS_SAFARI: boolean;
+
+export const isSafari = (): boolean => {
+  if (typeof window === "undefined") return false;
+  if (IS_SAFARI ?? false) return IS_SAFARI;
+
+  IS_SAFARI = /^((?!chrome|android).)*safari/i.test(window.navigator.userAgent);
+
+  return IS_SAFARI;
+};
 
 export const haltEvent = (
-  event: Event | React.DragEvent | React.KeyboardEvent | React.MouseEvent
+  event:
+    | Event
+    | React.DragEvent
+    | React.FocusEvent
+    | React.KeyboardEvent
+    | React.MouseEvent
 ): void => {
-  event.preventDefault();
-  event.stopPropagation();
+  try {
+    if (event.cancelable) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  } catch {
+    // Ignore failured to halt event
+  }
 };
 
 export const createOffscreenCanvas = (
   containerElement: HTMLElement,
   devicePixelRatio = 1,
-  customSize: Size = {} as Size
+  customSize: Size = Object.create(null) as Size
 ): OffscreenCanvas => {
   const canvas = document.createElement("canvas");
   const height = Number(customSize?.height) || containerElement.offsetHeight;
@@ -427,7 +613,7 @@ export const createOffscreenCanvas = (
   canvas.height = Math.floor(height * devicePixelRatio);
   canvas.width = Math.floor(width * devicePixelRatio);
 
-  containerElement.appendChild(canvas);
+  containerElement.append(canvas);
 
   return canvas.transferControlToOffscreen();
 };
@@ -441,7 +627,7 @@ export const clsx = (classes: Record<string, boolean>): string =>
     .map(([className]) => className)
     .join(" ");
 
-export const label = (value: string): HTMLAttributes<HTMLElement> => ({
+export const label = (value: string): React.HTMLAttributes<HTMLElement> => ({
   "aria-label": value,
   title: value,
 });
@@ -480,12 +666,28 @@ export const preloadLibs = (libs: string[] = []): void => {
       "link"
     ) as HTMLElementWithPriority<HTMLLinkElement>;
 
-    link.as = extname(lib).toLowerCase() === ".css" ? "style" : "script";
     link.fetchPriority = "high";
     link.rel = "preload";
     link.href = lib;
 
-    document.head.appendChild(link);
+    switch (getExtension(lib)) {
+      case ".css":
+        link.as = "style";
+        break;
+      case ".htm":
+      case ".html":
+        link.rel = "prerender";
+        break;
+      case ".url":
+        link.as = "fetch";
+        link.crossOrigin = "anonymous";
+        break;
+      default:
+        link.as = "script";
+        break;
+    }
+
+    document.head.append(link);
   });
 };
 
@@ -507,3 +709,12 @@ export const jsonFetch = async (
 
   return json || {};
 };
+
+export const generatePrettyTimestamp = (): string =>
+  new Intl.DateTimeFormat(DEFAULT_LOCALE, TIMESTAMP_DATE_FORMAT)
+    .format(new Date())
+    .replace(/[/:]/g, "-")
+    .replace(",", "");
+
+export const isFileSystemMappingSupported = (): boolean =>
+  typeof FileSystemHandle === "function" && "showDirectoryPicker" in window;

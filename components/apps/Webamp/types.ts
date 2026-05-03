@@ -4,6 +4,7 @@ import type { Track } from "webamp";
 
 type ButterChurnPreset = {
   getPreset: () => Promise<unknown>;
+  name: string;
 };
 
 export type ButterChurnPresets = Record<string, ButterChurnPreset>;
@@ -12,6 +13,10 @@ export type ButterChurnWebampPreset = {
   name: string;
   preset: ButterChurnPreset;
 };
+
+export type SkinData = Record<string, unknown>;
+
+type EmitterEventData = SkinData;
 
 type CloseWindow = {
   type: "CLOSE_WINDOW";
@@ -44,6 +49,16 @@ type SelectPresetAtIndex = {
   type: "SELECT_PRESET_AT_INDEX";
 };
 
+type SetMilkdropDesktop = {
+  enabled: false;
+  type: "SET_MILKDROP_DESKTOP";
+};
+
+type SetSkinData = {
+  data: SkinData;
+  type: "SET_SKIN_DATA";
+};
+
 type SetFocusedWindow = {
   type: "SET_FOCUSED_WINDOW";
   window: string;
@@ -63,6 +78,15 @@ type UpdateWindowPositions = {
 };
 
 export type WebampCI = Webamp & {
+  _actionEmitter: {
+    on: (
+      event: string,
+      listener: (emitterEvent: {
+        data?: EmitterEventData;
+        type: string;
+      }) => void
+    ) => () => void;
+  };
   store: {
     dispatch: (
       command:
@@ -73,12 +97,18 @@ export type WebampCI = Webamp & {
         | PresetRequested
         | SelectPresetAtIndex
         | SetFocusedWindow
+        | SetMilkdropDesktop
+        | SetSkinData
         | UpdateTrackInfo
         | UpdateWindowPositions
     ) => void;
     getState: () => {
+      display?: {
+        closed: boolean;
+      };
       milkdrop?: {
         butterchurn?: unknown;
+        presetHistory?: number[];
         presets?: ButterChurnPreset[];
       };
       playlist?: {
@@ -104,9 +134,20 @@ export type WebampCI = Webamp & {
   };
 };
 
+export type WebampApiResponse = {
+  data: {
+    skins: {
+      nodes: {
+        download_url?: string;
+      }[];
+    };
+  };
+};
+
 declare global {
   interface Window {
     Webamp: typeof Webamp;
+    WebampGlobal: WebampCI;
     butterchurn: {
       default: unknown;
     };

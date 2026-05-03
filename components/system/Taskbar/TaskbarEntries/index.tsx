@@ -1,26 +1,29 @@
 import StyledTaskbarEntries from "components/system/Taskbar/TaskbarEntries/StyledTaskbarEntries";
-import { ProcessConsumer } from "contexts/process";
+import { useProcesses } from "contexts/process";
 import { AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
+import { memo } from "react";
 
 const TaskbarEntry = dynamic(
   () => import("components/system/Taskbar/TaskbarEntry")
 );
 
-const TaskbarEntries: FC = () => (
-  <StyledTaskbarEntries>
-    <ProcessConsumer>
-      {({ processes = {} }) => (
-        <AnimatePresence initial={false} presenceAffectsLayout={false}>
-          {Object.entries(processes)
-            .filter(([, { closing }]) => !closing)
-            .map(([id, { icon, title }]) => (
-              <TaskbarEntry key={id} icon={icon} id={id} title={title} />
-            ))}
-        </AnimatePresence>
-      )}
-    </ProcessConsumer>
-  </StyledTaskbarEntries>
-);
+const TaskbarEntries: FC = () => {
+  const { processes = {} } = useProcesses();
 
-export default TaskbarEntries;
+  return (
+    <StyledTaskbarEntries>
+      <AnimatePresence initial={false} presenceAffectsLayout={false}>
+        {Object.entries(processes)
+          .filter(
+            ([, { closing, hideTaskbarEntry }]) => !closing && !hideTaskbarEntry
+          )
+          .map(([id, { icon, title }]) => (
+            <TaskbarEntry key={id} icon={icon} id={id} title={title} />
+          ))}
+      </AnimatePresence>
+    </StyledTaskbarEntries>
+  );
+};
+
+export default memo(TaskbarEntries);

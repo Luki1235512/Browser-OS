@@ -1,3 +1,6 @@
+import { emulatorCores } from "components/apps/Emulator/config";
+import { EDITABLE_IMAGE_FILE_EXTENSIONS } from "utils/constants";
+
 type Extension = {
   command?: string;
   icon?: string;
@@ -23,9 +26,23 @@ const types = {
     process: ["V86"],
     type: "Disc Image File",
   },
+  Emulator: {
+    icon: "emulator",
+    process: ["Emulator"],
+    type: "Game ROM File",
+  },
+  Font: {
+    icon: "font",
+    process: ["OpenType"],
+    type: "Font File",
+  },
   FutureSplash: {
     process: ["Ruffle"],
     type: "FutureSplash File",
+  },
+  GraphicsEditor: {
+    process: ["Photos", "Paint"],
+    type: "Picture File",
   },
   HtmlDocument: {
     process: ["Browser", ...TEXT_EDITORS],
@@ -52,12 +69,7 @@ const types = {
   },
   Music: {
     icon: "audio",
-    process: ["Webamp"],
-  },
-  NintendoRom: {
-    icon: "rom",
-    process: ["Byuu"],
-    type: "Nintendo ROM File",
+    process: ["Webamp", "VideoPlayer"],
   },
   PdfDocument: {
     icon: "pdf",
@@ -70,23 +82,19 @@ const types = {
     process: ["Terminal", ...TEXT_EDITORS],
     type: "Python File",
   },
-  SegaGenesisRom: {
-    icon: "rom",
-    process: ["Byuu"],
-    type: "Sega Genesis ROM File",
-  },
   ShockwaveFlash: {
     process: ["Ruffle"],
     type: "Shockwave Flash File",
   },
-  SuperNintendoRom: {
-    icon: "rom",
-    process: ["Byuu"],
-    type: "Super Nintendo ROM File",
-  },
   SvgFile: {
     process: ["Photos", ...TEXT_EDITORS],
     type: "Scalable Vector Graphics File",
+  },
+  WasmFile: {
+    command: "wapm",
+    icon: "wapm",
+    process: ["Terminal"],
+    type: "WEbAssembly Module File",
   },
   WinampSkin: {
     icon: "audio",
@@ -105,10 +113,11 @@ const types = {
   },
 };
 
-const extensions = {
+const extensions: Record<string, Extension> = {
   ".asx": types.AudioPlaylist,
+  ".bin": types.DiscImage,
+  ".dsk": types.DiscImage,
   ".exe": types.Application,
-  ".gen": types.SegaGenesisRom,
   ".htm": types.HtmlDocument,
   ".html": types.HtmlDocument,
   ".img": types.DiscImage,
@@ -118,21 +127,38 @@ const extensions = {
   ".m3u8": types.MediaPlaylist,
   ".md": types.Markdown,
   ".mp3": types.Music,
-  ".nes": types.NintendoRom,
+  ".otf": types.Font,
   ".pdf": types.PdfDocument,
   ".pls": types.AudioPlaylist,
   ".py": types.PythonFile,
-  ".sfc": types.SuperNintendoRom,
-  ".smc": types.SuperNintendoRom,
-  ".smd": types.SegaGenesisRom,
+  ".rtf": types.WysiwygHtmlDocument,
   ".spl": types.FutureSplash,
   ".svg": types.SvgFile,
   ".swf": types.ShockwaveFlash,
+  ".ttf": types.Font,
+  ".wasm": types.WasmFile,
   ".whtml": types.WysiwygHtmlDocument,
+  ".woff": types.Font,
   ".wsz": types.WinampSkin,
   ".zip": types.ZipFile,
 };
 
-export type ExtensionType = keyof typeof extensions;
+const addType =
+  (type: Extension) =>
+  (extension: string): void => {
+    if (type.process) {
+      if (extensions[extension]) {
+        extensions[extension].process.push(...type.process);
+      } else {
+        extensions[extension] = type;
+      }
+    }
+  };
 
-export default extensions as Record<ExtensionType, Extension>;
+EDITABLE_IMAGE_FILE_EXTENSIONS.forEach(addType(types.GraphicsEditor));
+
+Object.values(emulatorCores).forEach(({ ext }) =>
+  ext.forEach(addType(types.Emulator))
+);
+
+export default extensions;

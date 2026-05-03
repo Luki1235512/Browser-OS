@@ -15,13 +15,11 @@ declare global {
 }
 
 const config = {
+  fullStdLib: false,
   indexURL: "/Program Files/Pyodide/",
 };
 
-const versionCommand = `
-import sys
-sys.version
-`;
+const versionCommand = "import sys\r\nsys.version\r\n";
 
 const captureStdOut =
   "import sys\r\nimport io\r\nsys.stdout = io.StringIO()\r\n";
@@ -40,9 +38,13 @@ export const runPython = async (
     const getVersion = code === "ver" || code === "version";
 
     try {
-      const result = await window.pyodide.runPythonAsync(
+      let result = await window.pyodide.runPythonAsync(
         getVersion ? versionCommand : captureStdOut + code
       );
+
+      if (!result) {
+        result = await window.pyodide.runPythonAsync("sys.stdout.getvalue()");
+      }
 
       if (result) localEcho?.println(result.toString());
     } catch (error) {

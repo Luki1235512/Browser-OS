@@ -1,23 +1,27 @@
 name: Tests
 
-on: push
+on:
+  push:
+    branches: [master, dev]
 
 jobs:
   tests:
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: "18.x"
-      - name: Install Modules
-        env:
-          NODE_OPTIONS: --openssl-legacy-provider
-        run: yarn install
-      - name: Run Build
-        env:
-          NODE_OPTIONS: --openssl-legacy-provider
-        run: yarn run build
-      - name: Run Tests
-        run: yarn test
+          node-version: 18
+      - name: Install Dependencies
+        run: NODE_OPTIONS='--openssl-legacy-provider' yarn
+      - name: Run Jest Unit Tests
+        run: NODE_OPTIONS='--openssl-legacy-provider' yarn test
+      - name: Build App
+        run: NODE_OPTIONS='--openssl-legacy-provider' yarn build
+      - name: Run App
+        run: NODE_OPTIONS='--openssl-legacy-provider' yarn start
+      - name: Install Playwright Browsers
+        run: yarn playwright install --with-deps
+      - name: Run Playwright E2E Tests
+        run: yarn e2e

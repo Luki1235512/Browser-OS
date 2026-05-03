@@ -1,7 +1,6 @@
 import StartButtonIcon from "components/system/Taskbar/StartButton/StartButtonIcon";
 import StyledStartButton from "components/system/Taskbar/StartButton/StyledStartButton";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
-import startMenuIcons from "public/.index/startMenuIcons.json";
 import { useState } from "react";
 import { ICON_PATH, USER_ICON_PATH } from "utils/constants";
 import { getDpi, imageSrc, imageSrcs, isSafari, label } from "utils/functions";
@@ -16,11 +15,14 @@ const StartButton: FC<StartButtonProps> = ({
   toggleStartMenu,
 }) => {
   const [preloaded, setPreloaded] = useState(false);
-  const preloadIcons = (): void => {
+  const preloadIcons = async (): Promise<void> => {
     const supportsImageSrcSet = !isSafari();
     const preloadedLinks = [
       ...document.querySelectorAll("link[rel=preload]"),
     ] as HTMLLinkElement[];
+    const { default: startMenuIcons } = await import(
+      "public/.index/startMenuIcons.json"
+    );
 
     startMenuIcons?.forEach((icon) => {
       const link = document.createElement(
@@ -52,7 +54,7 @@ const StartButton: FC<StartButtonProps> = ({
             (link.href && preloadedLink?.href?.endsWith(link.href))
         )
       ) {
-        document.head.appendChild(link);
+        document.head.append(link);
       }
     });
 
@@ -63,7 +65,7 @@ const StartButton: FC<StartButtonProps> = ({
     <StyledStartButton
       $active={startMenuVisible}
       onClick={() => toggleStartMenu()}
-      onMouseOver={!preloaded ? preloadIcons : undefined}
+      onMouseOver={preloaded ? undefined : preloadIcons}
       {...label("Start")}
       {...useTaskbarContextMenu(true)}
     >

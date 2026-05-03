@@ -5,7 +5,7 @@ import useWindowActions from "components/system/Window/Titlebar/useWindowActions
 import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useEffect, useRef, useState } from "react";
+import { memo, useLayoutEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import { FOCUSABLE_ELEMENT, HIGH_PRIORITY_ELEMENT } from "utils/constants";
 import { label, viewWidth } from "utils/functions";
@@ -31,7 +31,7 @@ const PeekWindow: FC<PeekWindowProps> = ({ id }) => {
     setForegroundId(id);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (image) {
       const { left = 0, right = 0 } =
         peekRef.current?.getBoundingClientRect() || {};
@@ -48,8 +48,9 @@ const PeekWindow: FC<PeekWindowProps> = ({ id }) => {
   return image ? (
     <StyledPeekWindow
       ref={peekRef}
+      $offsetX={offsetX}
+      className="peekWindow"
       onClick={onClick}
-      style={offsetX ? { transform: `translateX(${offsetX}px)` } : undefined}
       {...peekTransition}
       {...FOCUSABLE_ELEMENT}
     >
@@ -64,9 +65,8 @@ const PeekWindow: FC<PeekWindowProps> = ({ id }) => {
         <CloseIcon />
       </Button>
     </StyledPeekWindow>
-  ) : (
-    <></>
-  );
+  ) : // eslint-disable-next-line unicorn/no-null
+  null;
 };
 
-export default PeekWindow;
+export default memo(PeekWindow);

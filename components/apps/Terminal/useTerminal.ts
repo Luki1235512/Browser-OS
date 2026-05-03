@@ -1,3 +1,4 @@
+import type { ContainerHookProps } from "components/apps/AppContainer";
 import { config, PROMPT_CHARACTER } from "components/apps/Terminal/config";
 import { autoComplete } from "components/apps/Terminal/functions";
 import type {
@@ -6,15 +7,21 @@ import type {
   OnKeyEvent,
 } from "components/apps/Terminal/types";
 import useCommandInterpreter from "components/apps/Terminal/useCommandInterpreter";
-import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
 import useResizeObserver from "hooks/useResizeObserver";
 import { extname } from "path";
-import { useCallback, useEffect, useState } from "react";
-import { HOME, PACKAGE_DATA } from "utils/constants";
-import { haltEvent, isFirefox, loadFiles } from "utils/functions";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import { HOME, PACKAGE_DATA, PREVENT_SCROLL } from "utils/constants";
+import { getExtension, haltEvent, isFirefox, loadFiles } from "utils/functions";
 import type { IDisposable, Terminal } from "xterm";
 
 const { alias, author, license, version } = PACKAGE_DATA;
@@ -27,13 +34,13 @@ export const displayVersion = (): string => {
   return `${version}${buildId ? `-${buildId}` : ""}`;
 };
 
-const useTerminal = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  loading: boolean
-): void => {
+const useTerminal = ({
+  containerRef,
+  id,
+  loading,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const {
     url: setUrl,
     processes: { [id]: { closing = false, libs = [] } = {} },
@@ -42,20 +49,26 @@ const useTerminal = (
   const [terminal, setTerminal] = useState<Terminal>();
   const [fitAddon, setFitAddon] = useState<FitAddon>();
   const [localEcho, setLocalEcho] = useState<LocalEcho>();
+  const cd = useRef((!localEcho && url && !extname(url) ? url : "") || HOME);
   const [initialCommand, setInitialCommand] = useState("");
   const [prompted, setPrompted] = useState(false);
-  const processCommand = useCommandInterpreter(id, terminal, localEcho);
+  const processCommand = useCommandInterpreter(id, cd, terminal, localEcho);
   const autoFit = useCallback(() => fitAddon?.fit(), [fitAddon]);
+  const { foregroundId } = useSession();
 
   useEffect(() => {
     if (url) {
       if (localEcho) {
-        localEcho.handleCursorInsert(url);
+        localEcho.handleCursorInsert(url.includes(" ") ? `"${url}"` : url);
       } else {
-        const fileExtension = extname(url).toLowerCase() as ExtensionType;
+        const fileExtension = getExtension(url);
         const { command: extCommand = "" } = extensions[fileExtension] || {};
 
-        if (extCommand) setInitialCommand(`${extCommand} ${url}`);
+        if (extCommand) {
+          setInitialCommand(
+            `${extCommand} ${url.includes(" ") ? `"${url}"` : url}`
+          );
+        }
       }
 
       setUrl(id, "");
@@ -105,6 +118,13 @@ const useTerminal = (
             );
         }
       });
+      containerRef.current
+        ?.closest("section")
+        ?.addEventListener(
+          "focus",
+          () => terminal?.textarea?.focus(PREVENT_SCROLL),
+          { passive: true }
+        );
 
       setLoading(false);
 
@@ -139,9 +159,9 @@ const useTerminal = (
 
   useEffect(() => {
     if (localEcho && terminal && !prompted) {
-      const prompt = (cd = HOME): Promise<void> =>
+      const prompt = (): Promise<void> =>
         localEcho
-          .read(`\r\n${cd}${PROMPT_CHARACTER}`)
+          .read(`\r\n${cd.current}${PROMPT_CHARACTER}`)
           .then((command) => processCommand.current?.(command).then(prompt));
 
       localEcho.println(`${alias} [Version ${displayVersion()}]`);
@@ -149,7 +169,7 @@ const useTerminal = (
 
       if (initialCommand) {
         localEcho.println(
-          `\r\n${HOME}${PROMPT_CHARACTER}${initialCommand}\r\n`
+          `\r\n${cd.current}${PROMPT_CHARACTER}${initialCommand}\r\n`
         );
         localEcho.history.entries = [initialCommand];
         processCommand.current(initialCommand).then(prompt);
@@ -161,7 +181,7 @@ const useTerminal = (
       terminal.focus();
       autoFit();
 
-      readdir(HOME).then((files) => autoComplete(files, localEcho));
+      readdir(cd.current).then((files) => autoComplete(files, localEcho));
     }
   }, [
     autoFit,
@@ -172,6 +192,12 @@ const useTerminal = (
     readdir,
     terminal,
   ]);
+
+  useLayoutEffect(() => {
+    if (id === foregroundId && !loading) {
+      terminal?.textarea?.focus(PREVENT_SCROLL);
+    }
+  }, [foregroundId, id, loading, terminal]);
 
   useResizeObserver(containerRef.current, autoFit);
 };

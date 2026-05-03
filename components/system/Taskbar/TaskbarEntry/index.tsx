@@ -3,14 +3,12 @@ import useTaskbarTransition from "components/system/Taskbar/TaskbarEntry/useTask
 import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitlebarContextMenu";
 import useNextFocusable from "components/system/Window/useNextFocusable";
 import { useProcesses } from "contexts/process";
-import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
-import { useCallback, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { PROCESS_DELIMITER } from "utils/constants";
 import { label } from "utils/functions";
 
 const PeekWindow = dynamic(
@@ -32,9 +30,7 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
     minimize,
     processes: { [id]: process },
   } = useProcesses();
-  const { minimized, prependTaskbarTitle } = process || {};
-  const [pid] = id.split(PROCESS_DELIMITER);
-  const { title: defaultTitle } = processDirectory[pid];
+  const { minimized, progress } = process || {};
   const linkTaskbarEntry = useCallback(
     (taskbarEntry: HTMLButtonElement) =>
       taskbarEntry && linkElement(id, "taskbarEntry", taskbarEntry),
@@ -48,13 +44,11 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
 
     setForegroundId(isForeground ? nextFocusableId : id);
   };
-  const taskbarTitle = prependTaskbarTitle
-    ? `${title.replace(`${defaultTitle} - `, "")} - ${defaultTitle}`
-    : title;
 
   return (
     <StyledTaskbarEntry
       $foreground={isForeground}
+      $progress={progress}
       onClick={hidePeek}
       onMouseEnter={showPeek}
       onMouseLeave={hidePeek}
@@ -64,14 +58,14 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
       <AnimatePresence initial={false} presenceAffectsLayout={false}>
         {isPeekVisible && <PeekWindow id={id} />}
       </AnimatePresence>
-      <Button ref={linkTaskbarEntry} onClick={onClick} {...label(taskbarTitle)}>
+      <Button ref={linkTaskbarEntry} onClick={onClick} {...label(title)}>
         <figure>
-          <Icon $imgSize={16} alt={taskbarTitle} src={icon} />
-          <figcaption>{taskbarTitle}</figcaption>
+          <Icon alt={title} imgSize={16} src={icon} />
+          <figcaption>{title}</figcaption>
         </figure>
       </Button>
     </StyledTaskbarEntry>
   );
 };
 
-export default TaskbarEntry;
+export default memo(TaskbarEntry);

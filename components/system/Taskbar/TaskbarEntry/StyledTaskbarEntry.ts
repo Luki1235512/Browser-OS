@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 type StyledTaskbarEntryProps = {
   $foreground: boolean;
+  $progress?: number;
 };
 
 const StyledTaskbarEntry = styled(motion.li)<StyledTaskbarEntryProps>`
@@ -14,10 +15,22 @@ const StyledTaskbarEntry = styled(motion.li)<StyledTaskbarEntryProps>`
   width: ${({ theme }) => theme.sizes.taskbar.entry.maxWidth};
 
   &::before {
-    background-color: ${({ $foreground, theme }) =>
-      $foreground ? theme.colors.taskbar.foreground : ""};
-    border-bottom: ${({ theme }) => `
-        ${theme.sizes.taskbar.entry.borderSize} solid ${theme.colors.highlight}
+    background-color: ${({ $foreground, $progress, theme }) =>
+      $foreground
+        ? $progress && $progress > 0 && $progress < 100
+          ? theme.colors.taskbar.foregroundProgress
+          : theme.colors.taskbar.foreground
+        : ""};
+    background-image: ${({ $progress, theme }) =>
+      $progress && $progress > 0 && $progress < 100
+        ? `linear-gradient(to right, ${theme.colors.progressBackground} 0% ${$progress}%, transparent ${$progress}% 100%)`
+        : ""};
+    border-bottom: ${({ $progress, theme }) => `
+        ${theme.sizes.taskbar.entry.borderSize} solid ${
+          $progress && $progress > 0 && $progress < 100
+            ? theme.colors.progress
+            : theme.colors.highlight
+        }
       `};
     bottom: 0;
     content: "";
@@ -62,9 +75,7 @@ const StyledTaskbarEntry = styled(motion.li)<StyledTaskbarEntryProps>`
     figcaption {
       color: ${({ theme }) => theme.colors.text};
       font-size: ${({ theme }) => theme.sizes.taskbar.entry.fontSize};
-      letter-spacing: -0.1px;
-      margin-left: 4px;
-      margin-right: 9px;
+      margin: 0 4px;
       overflow-x: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;

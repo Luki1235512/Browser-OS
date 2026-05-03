@@ -7,24 +7,29 @@ import { basename, extname } from "path";
 import { useEffect, useState } from "react";
 import SEARCH_EXTENSIONS from "scripts/searchExtensions.json";
 import { HIGH_PRIORITY_REQUEST } from "utils/constants";
-import { loadFiles } from "utils/functions";
+import { getExtension, loadFiles } from "utils/functions";
 
 const FILE_INDEX = "/.index/search.lunr.json";
 
 export const SEARCH_LIBS = ["/System/lunr/lunr.min.js"];
 
-let baseIndex = {} as Index;
+let baseIndex = Object.create(null) as Index;
 
 const search = async (
   searchTerm: string,
   index?: Index
 ): Promise<Index.Result[]> => {
   if (!window.lunr) await loadFiles(SEARCH_LIBS);
-  if (!index && !baseIndex.search) {
+  if (!index && !baseIndex?.search) {
     const response = await fetch(FILE_INDEX, HIGH_PRIORITY_REQUEST);
-    const indexFile = JSON.parse(await response.text()) as Index;
 
-    baseIndex = window.lunr?.Index.load(indexFile);
+    try {
+      baseIndex = window.lunr?.Index.load(
+        JSON.parse(await response.text()) as Index
+      );
+    } catch {
+      // Failed to parse text data to JSON
+    }
   }
   const searchIndex = index ?? baseIndex;
   let results: Index.Result[] = [];
@@ -56,20 +61,20 @@ const buildDynamicIndex = async (
   const overlayedFileSystems = overlayFs?.getOverlayedFileSystems();
   const writable = overlayedFileSystems?.writable as IWritableFs;
   const filesToIndex = Object.keys(writable?._cache?.map ?? {}).filter(
-    (path) => !SEARCH_EXTENSIONS.ignore.includes(extname(path))
+    (path) => {
+      const ext = getExtension(path);
+
+      return Boolean(ext) && !SEARCH_EXTENSIONS.ignore.includes(ext);
+    }
   );
   const indexedFiles = await Promise.all(
-    filesToIndex.map(async (path) => {
-      const ext = extname(path);
-
-      return {
-        name: basename(path, ext),
-        path,
-        text: SEARCH_EXTENSIONS.index.includes(ext)
-          ? (await readFile(path)).toString()
-          : undefined,
-      };
-    })
+    filesToIndex.map(async (path) => ({
+      name: basename(path, extname(path)),
+      path,
+      text: SEARCH_EXTENSIONS.index.includes(getExtension(path))
+        ? (await readFile(path)).toString()
+        : undefined,
+    }))
   );
   const dynamicIndex = window.lunr?.(function buildIndex() {
     this.ref("path");

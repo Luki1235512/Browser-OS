@@ -15,7 +15,7 @@ type FS9PV3 = [
   number,
   number,
   number,
-  FS9PV3[] | string
+  FS9PV3[] | string,
 ];
 type FS9PV4 = [string, number, number, FS9PV4[] | string | undefined];
 type FS9P = {
@@ -28,6 +28,18 @@ type FileSystemHandles = Record<string, FileSystemDirectoryHandle>;
 
 const KEYVAL_STORE_NAME = "keyval";
 const KEYVAL_DB = `${KEYVAL_STORE_NAME}-store`;
+
+const KNOWN_IDB_DBS = [
+  "/classicube",
+  "/data/saves",
+  "ejs-bios",
+  "ejs-roms",
+  "ejs-romsdata",
+  "ejs-states",
+  "ejs-system",
+  "js-dos-cache (emulators-ui-saves)",
+  "keyval-store",
+];
 
 const IDX_MTIME = 2;
 const IDX_TARGET = 3;
@@ -105,19 +117,28 @@ export const fs9pV4ToV3 = (): FS9P =>
 
 export const supportsIndexedDB = (): Promise<boolean> =>
   new Promise((resolve) => {
-    const db = window.indexedDB.open("");
+    const db = window.indexedDB.open("browserfs");
 
     db.addEventListener("error", () => resolve(false), ONE_TIME_PASSIVE_EVENT);
     db.addEventListener(
       "success",
-      () => {
+      ({ target }) => {
         resolve(true);
 
         try {
           db.result.close();
-          window.indexedDB.deleteDatabase("");
         } catch {
-          // Ignore errors to close/delete the test database
+          // Ignore errors to close database
+        }
+
+        const { objectStoreNames } = (target as IDBOpenDBRequest)?.result || {};
+
+        if (objectStoreNames?.length === 0) {
+          try {
+            window.indexedDB.deleteDatabase("browserfs");
+          } catch {
+            // Ignore errors to delete database
+          }
         }
       },
       ONE_TIME_PASSIVE_EVENT
@@ -130,20 +151,23 @@ const getKeyValStore = (): ReturnType<typeof openDB> =>
   });
 
 export const getFileSystemHandles = async (): Promise<FileSystemHandles> => {
-  if (!(await supportsIndexedDB())) return {};
+  if (!(await supportsIndexedDB())) {
+    return Object.create(null) as FileSystemHandles;
+  }
 
   const db = await getKeyValStore();
 
   return (
     (await (<Promise<FileSystemHandles>>(
       db.get(KEYVAL_STORE_NAME, FS_HANDLES)
-    ))) || {}
+    ))) || (Object.create(null) as FileSystemHandles)
   );
 };
 
 export const addFileSystemHandle = async (
   directory: string,
-  handle: FileSystemDirectoryHandle
+  handle: FileSystemDirectoryHandle,
+  mappedName: string
 ): Promise<void> => {
   if (!(await supportsIndexedDB())) return;
 
@@ -154,7 +178,7 @@ export const addFileSystemHandle = async (
       KEYVAL_STORE_NAME,
       {
         ...(await getFileSystemHandles()),
-        [join(directory, handle.name)]: handle,
+        [join(directory, mappedName)]: handle,
       },
       FS_HANDLES
     );
@@ -198,6 +222,8 @@ export const requestPermission = async (
 
 export const resetStorage = (rootFs?: RootFileSystem): Promise<void> =>
   new Promise((resolve, reject) => {
+    setTimeout(reject, 750);
+
     window.localStorage.clear();
     window.sessionStorage.clear();
 
@@ -209,19 +235,27 @@ export const resetStorage = (rootFs?: RootFileSystem): Promise<void> =>
 
       readable?.empty();
 
-      if (writable?.getName() === "InMemory") {
+      if (writable?.getName() === "InMemory" || !writable?.empty) {
         resolve();
       } else {
-        writable?.empty((apiError) =>
-          apiError ? reject(apiError) : resolve()
-        );
+        writable.empty((apiError) => (apiError ? reject(apiError) : resolve()));
       }
     };
 
-    if (!window.indexedDB.databases) clearFs();
-    else {
-      import("idb").then(({ deleteDB }) =>
-        deleteDB(KEYVAL_DB).then(clearFs).catch(clearFs)
-      );
-    }
+    import("idb").then(({ deleteDB }) => {
+      if (window.indexedDB.databases) {
+        window.indexedDB
+          .databases()
+          .then((databases) =>
+            databases
+              .filter(({ name }) => name && name !== "browserfs")
+              .forEach(({ name }) => deleteDB(name as string))
+          )
+          .then(clearFs)
+          .catch(clearFs);
+      } else {
+        KNOWN_IDB_DBS.forEach((name) => deleteDB(name));
+        clearFs();
+      }
+    });
   });

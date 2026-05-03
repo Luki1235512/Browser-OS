@@ -13,10 +13,12 @@ const setProcessSettings =
   (currentProcesses: Processes): Processes => {
     const { ...newProcesses } = currentProcesses;
 
-    newProcesses[processId] = {
-      ...newProcesses[processId],
-      ...settings,
-    };
+    if (newProcesses[processId]) {
+      newProcesses[processId] = {
+        ...newProcesses[processId],
+        ...settings,
+      };
+    }
 
     return newProcesses;
   };
@@ -79,16 +81,16 @@ export const openProcess =
       return currentProcesses;
     }
 
-    return !processDirectory[processId]
-      ? currentProcesses
-      : {
+    return processDirectory[processId]
+      ? {
           ...currentProcesses,
           [id]: {
             ...processDirectory[processId],
             ...(typeof icon === "string" && { icon }),
             ...processArguments,
           },
-        };
+        }
+      : currentProcesses;
   };
 
 export const maximizeProcess =

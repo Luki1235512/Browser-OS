@@ -1,5 +1,6 @@
 import { Search } from "components/apps/FileExplorer/NavigationIcons";
 import StyledSearch from "components/apps/FileExplorer/StyledSearch";
+import { TEXT_EDITORS } from "components/system/Files/FileEntry/extensions";
 import {
   getIconByFileExtension,
   getProcessByFileExtension,
@@ -7,9 +8,9 @@ import {
 import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
-import { basename, extname } from "path";
-import { useEffect, useRef, useState } from "react";
-import { preloadLibs } from "utils/functions";
+import { basename } from "path";
+import { memo, useEffect, useRef, useState } from "react";
+import { getExtension, preloadLibs } from "utils/functions";
 import { SEARCH_LIBS, useSearch } from "utils/search";
 
 type SearchBarProps = {
@@ -20,6 +21,7 @@ const MAX_ENTRIES = 10;
 
 const SearchBar: FC<SearchBarProps> = ({ id }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const hasUsedSearch = useRef(false);
   const {
     open,
     processes: {
@@ -31,7 +33,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
   const { contextMenu } = useMenu();
 
   useEffect(() => {
-    if (searchBarRef.current) {
+    if (searchBarRef.current && hasUsedSearch.current) {
       const getItems = (): MenuItem[] =>
         [
           ...results.filter(({ ref: path }) => path.startsWith(url)),
@@ -40,7 +42,11 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
           .slice(0, MAX_ENTRIES - 1)
           .map(({ ref: path }) => ({
             action: () => {
-              open(getProcessByFileExtension(extname(path)), { url: path });
+              open(
+                getProcessByFileExtension(getExtension(path)) ||
+                  TEXT_EDITORS[0],
+                { url: path }
+              );
               setSearchTerm("");
 
               if (searchBarRef.current) {
@@ -48,7 +54,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
                 searchBarRef.current.blur();
               }
             },
-            icon: getIconByFileExtension(extname(path)),
+            icon: getIconByFileExtension(getExtension(path)),
             label: basename(path),
           }));
 
@@ -71,8 +77,12 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
       <Search />
       <input
         ref={searchBarRef}
+        aria-label="Search box"
         enterKeyHint="search"
-        onChange={({ target }) => setSearchTerm(target.value)}
+        onChange={({ target }) => {
+          hasUsedSearch.current = true;
+          setSearchTerm(target.value);
+        }}
         onFocus={() => preloadLibs(SEARCH_LIBS)}
         placeholder="Search"
         spellCheck={false}
@@ -82,4 +92,4 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
   );
 };
 
-export default SearchBar;
+export default memo(SearchBar);

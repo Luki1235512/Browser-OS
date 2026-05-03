@@ -38,6 +38,9 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
     window.VimWrapperModule?.init?.({
       VIMJS_ALLOW_EXIT: true,
       arguments: [`${prependPath}${saveUrl}`],
+      containerWindow: document
+        .querySelector("#vimjs-container")
+        ?.closest("section"),
       memoryInitializerPrefixURL: "/Program Files/Vim.js/",
       postRun: [
         () => {
@@ -58,9 +61,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
                   true
                 );
                 walkedPath += `/${nextPart}`;
-              } else if (!walkedPath) {
-                walkedPath = pathPart;
-              } else {
+              } else if (walkedPath) {
                 window.VimWrapperModule?.VimModule?.FS_createDataFile?.(
                   walkedPath,
                   pathPart,
@@ -68,6 +69,8 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
                   true,
                   true
                 );
+              } else {
+                walkedPath = pathPart;
               }
             }
           );

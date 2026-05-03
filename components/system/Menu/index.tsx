@@ -37,6 +37,7 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
     },
     [setMenu]
   );
+  const isSubMenu = Boolean(subMenu);
 
   useEffect(() => {
     if (items && !subMenu) {
@@ -77,6 +78,8 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
   }, [items, resetMenu, subMenu]);
 
   useEffect(() => {
+    if (!menuRef.current) return;
+
     const {
       height = 0,
       width = 0,
@@ -105,12 +108,12 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
     setOffset(
       adjustedOffsetX > 0 ? { ...newOffset, x: adjustedOffsetX } : newOffset
     );
-  }, [subMenu, x, y]);
+  }, [items, subMenu, x, y]);
 
   return items ? (
     <StyledMenu
       ref={menuRef}
-      $isSubMenu={Boolean(subMenu)}
+      $isSubMenu={isSubMenu}
       $x={x - offset.x}
       $y={y - offset.y}
       onBlurCapture={resetMenu}
@@ -123,15 +126,15 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
           <MenuItemEntry
             // eslint-disable-next-line react/no-array-index-key
             key={`${item.label || "item"}-${index}`}
+            isSubMenu={isSubMenu}
             resetMenu={resetMenu}
             {...item}
           />
         ))}
       </ol>
     </StyledMenu>
-  ) : (
-    <></>
-  );
+  ) : // eslint-disable-next-line unicorn/no-null
+  null;
 };
 
 export default Menu;

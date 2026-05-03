@@ -2,10 +2,10 @@ import StyledIconFileEntry from "components/system/Files/Views/Icon/StyledFileEn
 import StyledIconFileManager from "components/system/Files/Views/Icon/StyledFileManager";
 import StyledListFileEntry from "components/system/Files/Views/List/StyledFileEntry";
 import StyledListFileManager from "components/system/Files/Views/List/StyledFileManager";
-import type { DefaultTheme, StyledComponent } from "styled-components";
 import type { IconProps } from "styles/common/Icon";
 
 export type StyledFileEntryProps = {
+  $selecting?: boolean;
   $visible?: boolean;
 };
 
@@ -15,12 +15,10 @@ export type StyledFileManagerProps = {
 };
 
 type FileManagerView = {
-  StyledFileEntry: StyledComponent<"li", DefaultTheme, StyledFileEntryProps>;
-  StyledFileManager: StyledComponent<
-    "ol",
-    DefaultTheme,
-    StyledFileManagerProps
-  >;
+  StyledFileEntry: typeof StyledIconFileEntry | typeof StyledListFileEntry;
+  StyledFileManager:
+    | typeof StyledIconFileManager
+    | typeof StyledListFileManager;
 };
 
 export type FileManagerViewNames = "icon" | "list";
@@ -41,14 +39,14 @@ export const FileEntryIconSize: Record<
   IconProps
 > = {
   icon: {
-    $imgSize: 48,
+    imgSize: 48,
   },
   list: {
-    $displaySize: 24,
-    $imgSize: 48,
+    displaySize: 24,
+    imgSize: 48,
   },
   sub: {
-    $displaySize: 48,
-    $imgSize: 16,
+    displaySize: 48,
+    imgSize: 16,
   },
 };

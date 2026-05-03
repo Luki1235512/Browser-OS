@@ -1,4 +1,3 @@
-import type React from "react";
 import { useCallback, useRef, useState } from "react";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { isSafari } from "utils/functions";
@@ -31,7 +30,7 @@ export type ContextMenuCapture = {
   onTouchStart?: React.TouchEventHandler;
 };
 
-export type MenuContextState = {
+type MenuContextState = {
   contextMenu: (getItems: () => MenuItem[]) => ContextMenuCapture;
   menu: MenuState;
   setMenu: React.Dispatch<React.SetStateAction<MenuState>>;
@@ -51,10 +50,10 @@ const useMenuContextState = (): MenuContextState => {
         let y = 0;
 
         if (event) {
-          event.preventDefault();
+          if (event.cancelable) event.preventDefault();
 
           ({ pageX: x, pageY: y } =
-            "touches" in event ? event.touches.item(0) : event);
+            "touches" in event ? event.touches.item?.(0) || event : event);
         } else if (domRect) {
           const { height, x: inputX, y: inputY } = domRect;
 

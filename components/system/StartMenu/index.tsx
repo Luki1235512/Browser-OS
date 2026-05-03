@@ -4,7 +4,7 @@ import StyledStartMenu from "components/system/StartMenu/StyledStartMenu";
 import StyledStartMenuBackground from "components/system/StartMenu/StyledStartMenuBackground";
 import useStartMenuTransition from "components/system/StartMenu/useStartMenuTransition";
 import type { Variant } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import {
   DEFAULT_SCROLLBAR_WIDTH,
   FOCUSABLE_ELEMENT,
@@ -49,9 +49,9 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
   };
   const startMenuTransition = useStartMenuTransition();
   const { height } =
-    (startMenuTransition.variants?.["active"] as StyleVariant) ?? {};
+    (startMenuTransition.variants?.active as StyleVariant) ?? {};
 
-  useEffect(() => menuRef.current?.focus(PREVENT_SCROLL), []);
+  useLayoutEffect(() => menuRef.current?.focus(PREVENT_SCROLL), []);
 
   return (
     <StyledStartMenu
@@ -62,7 +62,7 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
       {...startMenuTransition}
       {...FOCUSABLE_ELEMENT}
     >
-      <StyledStartMenuBackground />
+      <StyledStartMenuBackground $height={height} />
       <Sidebar height={height} />
       <FileManager
         url={`${HOME}/Start Menu`}
@@ -70,7 +70,9 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
         hideLoading
         hideShortcutIcons
         loadIconsImmediately
+        preloadShortcuts
         readOnly
+        skipFsWatcher
         skipSorting
         useNewFolderIcon
       />

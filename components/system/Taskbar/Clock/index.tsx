@@ -4,9 +4,10 @@ import useClockContextMenu from "components/system/Taskbar/Clock/useClockContext
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BASE_CLOCK_WIDTH,
+  FOCUSABLE_ELEMENT,
   ONE_TIME_PASSIVE_EVENT,
   TASKBAR_HEIGHT,
 } from "utils/constants";
@@ -39,16 +40,12 @@ const easterEggOnClick: React.MouseEventHandler<HTMLElement> = async ({
     triggerEasterEggCountdown === EASTER_EGG_CLICK_COUNT &&
     target instanceof HTMLElement
   ) {
-    target.setAttribute("tabIndex", "-1");
-
-    ["blur", "mouseleave"].forEach((type) => {
-      target.removeEventListener(type, resetEasterEggCountdown);
-      target.addEventListener(
-        type,
-        resetEasterEggCountdown,
-        ONE_TIME_PASSIVE_EVENT
-      );
-    });
+    target.removeEventListener("mouseleave", resetEasterEggCountdown);
+    target.addEventListener(
+      "mouseleave",
+      resetEasterEggCountdown,
+      ONE_TIME_PASSIVE_EVENT
+    );
   }
 
   triggerEasterEggCountdown -= 1;
@@ -57,12 +54,19 @@ const easterEggOnClick: React.MouseEventHandler<HTMLElement> = async ({
     const { default: spawnSheep } = await import("utils/spawnSheep");
 
     spawnSheep();
+
     triggerEasterEggCountdown = EASTER_EGG_CLICK_COUNT;
   }
 };
 
-const Clock: FC = () => {
-  const [now, setNow] = useState<LocaleTimeDate>({} as LocaleTimeDate);
+type ClockProps = {
+  toggleCalendar: () => void;
+};
+
+const Clock: FC<ClockProps> = ({ toggleCalendar }) => {
+  const [now, setNow] = useState<LocaleTimeDate>(
+    Object.create(null) as LocaleTimeDate
+  );
   const { date, time } = now;
   const { clockSource } = useSession();
   const clockWorkerInit = useCallback(
@@ -76,24 +80,65 @@ const Clock: FC = () => {
       ),
     [clockSource]
   );
+  const offScreenClockCanvas = useRef<OffscreenCanvas>();
+  const supportsOffscreenCanvas = useMemo(
+    () => typeof window !== "undefined" && "OffscreenCanvas" in window,
+    []
+  );
   const updateTime = useCallback(
     ({ data, target: clockWorker }: MessageEvent<ClockWorkerResponse>) => {
       if (data === "source") {
         (clockWorker as Worker).postMessage(clockSource);
       } else {
-        setNow(data);
+        setNow((currentNow) =>
+          !offScreenClockCanvas.current || currentNow.date !== data.date
+            ? data
+            : currentNow
+        );
       }
     },
     [clockSource]
   );
-  const clockContextMenu = useClockContextMenu();
+  const clockContextMenu = useClockContextMenu(toggleCalendar);
   const currentWorker = useWorker<ClockWorkerResponse>(
     clockWorkerInit,
     updateTime
   );
-  const offScreenClockCanvas = useRef<OffscreenCanvas>();
-  const supportsOffscreenCanvas =
-    typeof window !== "undefined" && "OffscreenCanvas" in window;
+  const clockCallbackRef = useCallback(
+    (clockContainer: HTMLDivElement | null) => {
+      if (
+        !offScreenClockCanvas.current &&
+        currentWorker.current &&
+        clockContainer instanceof HTMLDivElement
+      ) {
+        [...clockContainer.children].forEach((element) => element.remove());
+
+        offScreenClockCanvas.current = createOffscreenCanvas(
+          clockContainer,
+          window.devicePixelRatio,
+          clockSize
+        );
+
+        currentWorker.current.postMessage(
+          {
+            canvas: offScreenClockCanvas.current,
+            devicePixelRatio: window.devicePixelRatio,
+          },
+          [offScreenClockCanvas.current]
+        );
+      }
+    },
+    // NOTE: Need `now` in the dependency array to ensure the clock is updated
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [currentWorker, now]
+  );
+  const onClockClick = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      easterEggOnClick(event);
+      toggleCalendar();
+    },
+    [toggleCalendar]
+  );
 
   useEffect(() => {
     offScreenClockCanvas.current = undefined;
@@ -120,43 +165,23 @@ const Clock: FC = () => {
     }
   }, [currentWorker, supportsOffscreenCanvas]);
 
-  if (!time) return <></>;
+  // eslint-disable-next-line unicorn/no-null
+  if (!time) return null;
 
   return (
     <StyledClock
-      ref={(clockContainer) => {
-        if (
-          supportsOffscreenCanvas &&
-          !offScreenClockCanvas.current &&
-          currentWorker.current &&
-          clockContainer instanceof HTMLDivElement
-        ) {
-          [...clockContainer.children].forEach((element) => element.remove());
-
-          offScreenClockCanvas.current = createOffscreenCanvas(
-            clockContainer,
-            window.devicePixelRatio,
-            clockSize
-          );
-
-          currentWorker.current.postMessage(
-            {
-              canvas: offScreenClockCanvas.current,
-              devicePixelRatio: window.devicePixelRatio,
-            },
-            [offScreenClockCanvas.current]
-          );
-        }
-      }}
-      aria-label={!supportsOffscreenCanvas ? "Clock" : undefined}
-      onClick={easterEggOnClick}
+      ref={supportsOffscreenCanvas ? clockCallbackRef : undefined}
+      aria-label="Clock"
+      onClick={onClockClick}
+      role="timer"
       title={date}
       suppressHydrationWarning
       {...clockContextMenu}
+      {...FOCUSABLE_ELEMENT}
     >
-      {!supportsOffscreenCanvas ? time : undefined}
+      {supportsOffscreenCanvas ? undefined : time}
     </StyledClock>
   );
 };
 
-export default Clock;
+export default memo(Clock);

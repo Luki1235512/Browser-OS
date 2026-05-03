@@ -1,7 +1,9 @@
 type BaseLoadOptions = {
   allowScriptAccess?: boolean;
+  autoplay?: "auto" | "off" | "on";
   backgroundColor?: string | null;
   letterbox?: "fullscreen" | "off" | "on";
+  unmuteOverlay?: "hidden";
 };
 
 type Config = {

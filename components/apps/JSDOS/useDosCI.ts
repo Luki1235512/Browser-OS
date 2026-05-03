@@ -8,10 +8,20 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import type { CommandInterface } from "emulators";
 import type { DosInstance } from "emulators-ui/dist/types/js-dos";
-import { basename, dirname, extname, join } from "path";
+import { basename, dirname, join } from "path";
 import { useCallback, useEffect, useState } from "react";
-import { SAVE_PATH, TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
-import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
+import {
+  ICON_CACHE,
+  ICON_CACHE_EXTENSION,
+  SAVE_PATH,
+  TRANSITIONS_IN_MILLISECONDS,
+} from "utils/constants";
+import {
+  bufferToUrl,
+  cleanUpBufferUrl,
+  getExtension,
+  imgDataToBuffer,
+} from "utils/functions";
 import { cleanUpGlobals } from "utils/globals";
 
 const addJsDosConfig = async (
@@ -50,7 +60,7 @@ const useDosCI = (
     Record<string, CommandInterface | undefined>
   >({});
   const closeBundle = useCallback(
-    async (bundleUrl: string, closeInstance = false) => {
+    async (bundleUrl: string, screenshot?: Buffer, closeInstance = false) => {
       const saveName = `${basename(bundleUrl)}${saveExtension}`;
 
       if (!(await exists(SAVE_PATH))) {
@@ -58,14 +68,31 @@ const useDosCI = (
         updateFolder(dirname(SAVE_PATH));
       }
 
+      const savePath = join(SAVE_PATH, saveName);
+
       if (
-        typeof dosCI[bundleUrl] !== "undefined" &&
+        dosCI[bundleUrl] !== undefined &&
         (await writeFile(
-          join(SAVE_PATH, saveName),
+          savePath,
           Buffer.from(await (dosCI[bundleUrl] as CommandInterface).persist()),
           true
         ))
       ) {
+        if (screenshot) {
+          const iconCacheRootPath = join(ICON_CACHE, SAVE_PATH);
+          const iconCachePath = join(
+            ICON_CACHE,
+            `${savePath}${ICON_CACHE_EXTENSION}`
+          );
+
+          if (!(await exists(iconCacheRootPath))) {
+            await mkdirRecursive(iconCacheRootPath);
+            updateFolder(dirname(SAVE_PATH));
+          }
+
+          await writeFile(iconCachePath, screenshot, true);
+        }
+
         if (closeInstance) dosInstance?.stop();
         updateFolder(SAVE_PATH, saveName);
       }
@@ -78,12 +105,12 @@ const useDosCI = (
     if (currentUrl) closeBundle(currentUrl);
 
     const urlBuffer = url ? await readFile(url) : Buffer.from("");
-    const extension = extname(url).toLowerCase();
+    const extension = getExtension(url);
     const { zipAsync } = await import("utils/zipFunctions");
     const zipBuffer =
-      extension !== ".exe"
-        ? urlBuffer
-        : Buffer.from(await zipAsync({ [basename(url)]: urlBuffer }));
+      extension === ".exe"
+        ? Buffer.from(await zipAsync({ [basename(url)]: urlBuffer }))
+        : urlBuffer;
     const bundleURL = bufferToUrl(
       extension === ".jsdos"
         ? zipBuffer
@@ -128,10 +155,19 @@ const useDosCI = (
 
     return () => {
       if (url && closing) {
-        window.setTimeout(
-          () => closeBundle(url, closing),
-          TRANSITIONS_IN_MILLISECONDS.WINDOW
-        );
+        const takeScreenshot = async (): Promise<Buffer | undefined> => {
+          const imageData = await dosCI[url]?.screenshot();
+
+          return imageData ? imgDataToBuffer(imageData) : undefined;
+        };
+        const scheduleSaveState = (screenshot?: Buffer): void => {
+          window.setTimeout(
+            () => closeBundle(url, screenshot, closing),
+            TRANSITIONS_IN_MILLISECONDS.WINDOW
+          );
+        };
+
+        takeScreenshot().then(scheduleSaveState).catch(scheduleSaveState);
       }
     };
   }, [closeBundle, closing, dosCI, dosInstance, loadBundle, process, url]);

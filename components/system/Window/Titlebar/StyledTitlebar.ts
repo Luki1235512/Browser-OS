@@ -25,7 +25,8 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
   top: 0;
   z-index: 2;
 
-  h1 {
+  > button {
+    align-items: center;
     color: ${({ $foreground, theme }) =>
       $foreground
         ? theme.colors.titleBar.text
@@ -51,7 +52,6 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
       }
 
       figcaption {
-        letter-spacing: -0.1px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

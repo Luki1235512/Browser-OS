@@ -12,13 +12,15 @@ import { FileManagerViews } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { requestPermission } from "contexts/fileSystem/functions";
 import dynamic from "next/dynamic";
-import { basename, extname, join } from "path";
-import { useEffect, useRef, useState } from "react";
+import { basename, join } from "path";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   FOCUSABLE_ELEMENT,
   MOUNTABLE_EXTENSIONS,
+  PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
+import { getExtension } from "utils/functions";
 
 const StatusBar = dynamic(
   () => import("components/system/Files/FileManager/StatusBar")
@@ -37,8 +39,10 @@ type FileManagerProps = {
   id?: string;
   isDesktop?: boolean;
   loadIconsImmediately?: boolean;
+  preloadShortcuts?: boolean;
   readOnly?: boolean;
   showStatusBar?: boolean;
+  skipFsWatcher?: boolean;
   skipSorting?: boolean;
   url: string;
   useNewFolderIcon?: boolean;
@@ -54,8 +58,10 @@ const FileManager: FC<FileManagerProps> = ({
   id,
   isDesktop,
   loadIconsImmediately,
+  preloadShortcuts,
   readOnly,
   showStatusBar,
+  skipFsWatcher,
   skipSorting,
   url,
   useNewFolderIcon,
@@ -68,14 +74,13 @@ const FileManager: FC<FileManagerProps> = ({
   const { focusedEntries, focusableEntry, ...focusFunctions } =
     useFocusableEntries(fileManagerRef);
   const { fileActions, files, folderActions, isLoading, updateFiles } =
-    useFolder(
-      url,
-      setRenaming,
-      focusFunctions,
+    useFolder(url, setRenaming, focusFunctions, {
       hideFolders,
       hideLoading,
-      skipSorting
-    );
+      preloadShortcuts,
+      skipFsWatcher,
+      skipSorting,
+    });
   const { mountFs, rootFs, stat } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
@@ -90,6 +95,7 @@ const FileManager: FC<FileManagerProps> = ({
   const fileDrop = useFileDrop({
     callback: folderActions.newPath,
     directory: url,
+    updatePositions: allowMovingDraggableEntries,
   });
   const folderContextMenu = useFolderContextMenu(url, folderActions, isDesktop);
   const loading = (!hideLoading && isLoading) || url !== currentUrl;
@@ -101,17 +107,22 @@ const FileManager: FC<FileManagerProps> = ({
     focusFunctions,
     folderActions,
     updateFiles,
+    fileManagerRef,
     id,
     view
   );
   const [permission, setPermission] = useState<PermissionState>("prompt");
   const requestingPermissions = useRef(false);
+  const onKeyDown = useMemo(
+    () => (renaming === "" ? keyShortcuts() : undefined),
+    [keyShortcuts, renaming]
+  );
 
   useEffect(() => {
     if (
       !requestingPermissions.current &&
       permission !== "granted" &&
-      rootFs?.mntMap[url]?.getName() === "FileSystemAccess"
+      rootFs?.mntMap[currentUrl]?.getName() === "FileSystemAccess"
     ) {
       requestingPermissions.current = true;
       requestPermission(currentUrl)
@@ -133,29 +144,27 @@ const FileManager: FC<FileManagerProps> = ({
           requestingPermissions.current = false;
         });
     }
-  }, [currentUrl, permission, rootFs?.mntMap, updateFiles, url]);
+  }, [currentUrl, permission, rootFs?.mntMap, updateFiles]);
 
   useEffect(() => {
-    const mountUrl = async (): Promise<void> => {
-      if (
-        MOUNTABLE_EXTENSIONS.has(extname(url).toLowerCase()) &&
-        !mounted &&
-        !(await stat(url)).isDirectory()
-      ) {
-        setMounted((currentlyMounted) => {
-          if (!currentlyMounted) {
-            mountFs(url)
-              .then(() => setTimeout(updateFiles, 100))
-              .catch(() => {
-                // Ignore race-condtion failures
-              });
-          }
-          return true;
-        });
-      }
-    };
+    if (!mounted && MOUNTABLE_EXTENSIONS.has(getExtension(url))) {
+      const mountUrl = async (): Promise<void> => {
+        if (!(await stat(url)).isDirectory()) {
+          setMounted((currentlyMounted) => {
+            if (!currentlyMounted) {
+              mountFs(url)
+                .then(() => setTimeout(updateFiles, 100))
+                .catch(() => {
+                  // Ignore race-condtion failures
+                });
+            }
+            return true;
+          });
+        }
+      };
 
-    mountUrl();
+      mountUrl();
+    }
   }, [mountFs, mounted, stat, updateFiles, url]);
 
   useEffect(() => {
@@ -167,7 +176,7 @@ const FileManager: FC<FileManagerProps> = ({
   }, [currentUrl, folderActions, url]);
 
   useEffect(() => {
-    if (!loading) fileManagerRef.current?.focus();
+    if (!loading) fileManagerRef.current?.focus(PREVENT_SCROLL);
   }, [loading]);
 
   return (
@@ -178,21 +187,22 @@ const FileManager: FC<FileManagerProps> = ({
         <StyledFileManager
           ref={fileManagerRef}
           $scrollable={!hideScrolling}
+          onKeyDown={onKeyDown}
           {...(!readOnly && {
             $selecting: isSelecting,
             ...fileDrop,
             ...folderContextMenu,
             ...selectionEvents,
           })}
-          {...(renaming === "" && { onKeyDown: keyShortcuts() })}
           {...FOCUSABLE_ELEMENT}
         >
           {isSelecting && <StyledSelection style={selectionStyling} />}
           {Object.keys(files).map((file) => (
             <StyledFileEntry
               key={file}
+              $selecting={isSelecting}
               $visible={!isLoading}
-              {...(renaming !== file && !readOnly && draggableEntry(url, file))}
+              {...(!readOnly && draggableEntry(url, file, renaming === file))}
               {...(renaming === "" && { onKeyDown: keyShortcuts(file) })}
               {...focusableEntry(file)}
             >
@@ -203,6 +213,7 @@ const FileManager: FC<FileManagerProps> = ({
                 focusFunctions={focusFunctions}
                 focusedEntries={focusedEntries}
                 hideShortcutIcon={hideShortcutIcons}
+                isHeading={isDesktop && files[file].systemShortcut}
                 isLoadingFileManager={isLoading}
                 loadIconImmediately={loadIconsImmediately}
                 name={basename(file, SHORTCUT_EXTENSION)}
@@ -223,6 +234,7 @@ const FileManager: FC<FileManagerProps> = ({
         <StatusBar
           count={loading ? 0 : Object.keys(files).length}
           directory={url}
+          fileDrop={fileDrop}
           selected={focusedEntries}
         />
       )}
@@ -230,4 +242,4 @@ const FileManager: FC<FileManagerProps> = ({
   );
 };
 
-export default FileManager;
+export default memo(FileManager);

@@ -13,11 +13,13 @@ const StyledTinyMceEditor = styled.div`
 
     &[aria-disabled="true"] {
       .tox-editor-header {
+        height: 39px;
+        overflow: hidden;
         padding: 0;
         position: relative;
 
         &::before {
-          background-color: rgba(255, 255, 255, 0.8);
+          background-color: rgba(255, 255, 255, 80%);
           content: "Click to switch to design mode.";
           cursor: pointer;
           display: flex;
@@ -25,7 +27,7 @@ const StyledTinyMceEditor = styled.div`
           place-content: center;
           place-items: center;
           position: absolute;
-          text-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
+          text-shadow: 0 0 25px rgba(0, 0, 0, 80%);
           width: 100%;
           z-index: 1;
         }

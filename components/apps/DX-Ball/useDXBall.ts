@@ -1,8 +1,12 @@
+import type { ContainerHookProps } from "components/apps/AppContainer";
+import { DX_BALL_GLOBALS, SAVE_PATH } from "components/apps/DX-Ball/constants";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename, dirname } from "path";
 import { useEffect, useRef } from "react";
+import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { loadFiles } from "utils/functions";
+import { cleanUpGlobals } from "utils/globals";
 
 declare global {
   interface Window {
@@ -13,14 +17,7 @@ declare global {
   }
 }
 
-const SAVE_PATH = "/Program Files/DX-Ball/dx-ball.sav";
-
-const useDXBall = (
-  id: string,
-  _url: string,
-  _containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
-): void => {
+const useDXBall = ({ id, setLoading }: ContainerHookProps): void => {
   const { readFile, writeFile, updateFolder } = useFileSystem();
   const {
     processes: { [id]: process },
@@ -43,7 +40,7 @@ const useDXBall = (
     if (libLoadingRef.current) {
       libLoadingRef.current = false;
 
-      loadFiles(libs).then(() => {
+      loadFiles(libs, undefined, true).then(() => {
         window.DXBall?.init((name, score) => {
           records.current = `${
             records.current ? `${records.current}\r` : ""
@@ -66,11 +63,20 @@ const useDXBall = (
         setLoading(false);
       });
     }
+  }, [libs, setLoading, updateFolder, writeFile]);
 
-    return () => {
-      if (!libLoadingRef.current && closing) window.DXBall.close();
-    };
-  }, [closing, libs, setLoading, updateFolder, writeFile]);
+  useEffect(
+    () => () => {
+      if (!libLoadingRef.current && closing) {
+        window.DXBall.close();
+        setTimeout(
+          () => cleanUpGlobals(DX_BALL_GLOBALS),
+          TRANSITIONS_IN_MILLISECONDS.WINDOW
+        );
+      }
+    },
+    [closing]
+  );
 };
 
 export default useDXBall;
