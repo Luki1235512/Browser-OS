@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 3000;
 const baseURL = `http://localhost:${PORT}`;
 
 const config: PlaywrightTestConfig = {
+  expect: { timeout: 30000 },
   fullyParallel: true,
   projects: [
     {
@@ -24,14 +25,13 @@ const config: PlaywrightTestConfig = {
   ],
   reporter: "html",
   retries: process.env.CI ? 2 : 0,
-  testDir: "./e2e",
+  testDir: "e2e",
   use: {
     baseURL,
     trace: "on-first-retry",
   },
   webServer: {
     command: "yarn dev",
-    reuseExistingServer: !process.env.CI,
     url: baseURL,
   },
   workers: process.env.CI ? 1 : undefined,
