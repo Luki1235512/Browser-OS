@@ -1,14 +1,12 @@
 import { expect, test } from "@playwright/test";
-
-const TASKBAR_ENTRIES_SELECTOR = "main>nav>ol>li";
-
-const TEST_APP = "FileExplorer";
-const TEST_APP_TITLE = /^My PC$/;
-const TEST_APP_ICON = /\/pc\.(webp|png)$/;
-
-const CLOCK_REGEX = /^(?:[01]\d|2[0-3])(?::[0-5]\d){2}$/;
-
-const OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
+import {
+  CLOCK_REGEX,
+  OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS,
+  TASKBAR_ENTRY_SELECTOR,
+  TEST_APP,
+  TEST_APP_ICON,
+  TEST_APP_TITLE,
+} from "e2e/constants";
 
 test.describe("taskbar", () => {
   test.describe("elements", () => {
@@ -16,6 +14,8 @@ test.describe("taskbar", () => {
 
     test("has start button", async ({ page }) => {
       await expect(page.getByLabel(/^Start$/)).toBeVisible();
+
+      // TODO: has context menu
     });
 
     test.describe("has clock", () => {
@@ -40,6 +40,9 @@ test.describe("taskbar", () => {
 
         await expect(page.getByLabel(/^Clock$/)).toContainText(CLOCK_REGEX);
       });
+
+      // TODO: has context menu
+      // TODO: has sheep
     });
 
     test("has calendar", async ({ page }) => {
@@ -53,7 +56,7 @@ test.describe("taskbar", () => {
     test.beforeEach(async ({ page }) => page.goto(`/?app=${TEST_APP}`));
 
     test("has entry", async ({ page }) => {
-      const entries = page.locator(TASKBAR_ENTRIES_SELECTOR);
+      const entries = page.locator(TASKBAR_ENTRY_SELECTOR);
 
       await expect(entries).toBeVisible();
 
@@ -61,6 +64,13 @@ test.describe("taskbar", () => {
 
       await expect(entry).toBeVisible();
       await expect(entry.locator("img")).toHaveAttribute("src", TEST_APP_ICON);
+
+      // TODO: has context menu
+      // TODO: can minimize & restore
+      // TODO: has peek
+      // TODO: has tooltip
     });
+
+    // TODO: has context menu
   });
 });
