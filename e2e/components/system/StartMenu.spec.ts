@@ -1,10 +1,16 @@
 import { expect, test } from "@playwright/test";
-import { START_MENU_SELECTOR } from "e2e/constants";
+import { DESKTOP_ELEMENT } from "e2e/constants";
+import {
+  clickStartButton,
+  loadApp,
+  startMenuIsHidden,
+  startMenuIsVisible,
+} from "e2e/functions";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("/");
+  await loadApp({ page });
 
-  await page.getByLabel(/^Start$/).click();
+  await clickStartButton({ page });
 });
 
 test.describe("has sidebar", () => {
@@ -25,19 +31,19 @@ test("has folders", async ({ page }) => {
 
 test.describe("can close", () => {
   test("via click", async ({ page }) => {
-    await expect(page.locator(START_MENU_SELECTOR)).toBeVisible();
+    await startMenuIsVisible({ page });
 
-    await page.getByLabel(/^Start$/).click();
+    await clickStartButton({ page });
 
-    await expect(page.locator(START_MENU_SELECTOR)).toBeHidden();
+    await startMenuIsHidden({ page });
   });
 
   test("via blur", async ({ page }) => {
-    await expect(page.locator(START_MENU_SELECTOR)).toBeVisible();
+    await startMenuIsVisible({ page });
 
-    page.locator("main").click();
+    await page.getByRole(DESKTOP_ELEMENT).click();
 
-    await expect(page.locator(START_MENU_SELECTOR)).toBeHidden();
+    await startMenuIsHidden({ page });
   });
 });
 
