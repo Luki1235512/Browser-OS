@@ -2,14 +2,18 @@ import type { Page, Response } from "@playwright/test";
 import { expect } from "@playwright/test";
 import {
   BACKGROUND_CANVAS_SELECTOR,
+  CALENDAR_LABEL,
+  CLOCK_LABEL,
+  CLOCK_REGEX,
   CONTEXT_MENU_SELECTOR,
-  DESKTOP_ELEMENT,
-  DESKTOP_FILE_ENTRY_SELECTOR,
-  FILE_EXPLORER_FILE_ENTRY_SELECTOR,
+  DESKTOP_ENTRIES_SELECTOR,
+  DESKTOP_SELECTOR,
+  FILE_EXPLORER_ENTRIES_SELECTOR,
+  RIGHT_CLICK,
   SHEEP_SELECTOR,
-  START_BUTTON_LABEL,
+  START_BUTTON_SELECTOR,
   START_MENU_SELECTOR,
-  TASKBAR_ENTRY_SELECTOR,
+  TASKBAR_ENTRIES_SELECTOR,
   TASKBAR_SELECTOR,
   WINDOW_SELECTOR,
   WINDOW_TITLEBAR_SELECTOR,
@@ -19,69 +23,68 @@ type TestProps = {
   page: Page;
 };
 
-export const waitForAnimation = async (
-  selector: string,
-  { page }: TestProps
-): Promise<Animation[]> =>
+export const disableOffscreenCanvas = (): void => {
+  delete (window as Partial<Window & typeof globalThis>).OffscreenCanvas;
+};
+
+// action
+export const loadApp = async ({ page }: TestProps): Promise<Response | null> =>
+  page.goto("/");
+
+// locator->first->action
+export const clickFirstDesktopEntry = async ({
+  page,
+}: TestProps): Promise<void> =>
+  page.locator(DESKTOP_ENTRIES_SELECTOR).first().click();
+
+// locator->action
+export const clickDesktop = async (
+  { page }: TestProps,
+  right = false
+): Promise<void> =>
+  page.locator(DESKTOP_SELECTOR).click(right ? RIGHT_CLICK : undefined);
+
+export const clickStartButton = async ({ page }: TestProps): Promise<void> =>
+  page.locator(START_BUTTON_SELECTOR).click();
+
+export const focusOnWindow = async ({ page }: TestProps): Promise<void> =>
+  page.locator(WINDOW_SELECTOR).focus();
+
+// locator->getByLabel->action
+export const clickClock = async (
+  { page }: TestProps,
+  clickCount = 1
+): Promise<void> =>
+  page.locator(TASKBAR_SELECTOR).getByLabel(CLOCK_LABEL).click({ clickCount });
+
+export const clickCloseWindow = async ({ page }: TestProps): Promise<void> =>
   page
-    .locator(selector)
-    .evaluate((element) =>
-      Promise.all(
-        element.getAnimations().map((animation) => animation.finished)
-      )
-    );
+    .locator(WINDOW_TITLEBAR_SELECTOR)
+    .getByLabel(/^Close$/)
+    .click();
 
-export const canvasBackgroundIsHidden = async ({
-  page,
-}: TestProps): Promise<void> =>
-  expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeHidden();
+export const clickMaximizeWindow = async ({ page }: TestProps): Promise<void> =>
+  page
+    .locator(WINDOW_TITLEBAR_SELECTOR)
+    .getByLabel(/^Maximize$/)
+    .click();
 
-export const canvasBackgroundIsVisible = async ({
-  page,
-}: TestProps): Promise<void> =>
-  expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeVisible();
+export const clickMinimizeWindow = async ({ page }: TestProps): Promise<void> =>
+  page
+    .locator(WINDOW_TITLEBAR_SELECTOR)
+    .getByLabel(/^Minimize$/)
+    .click();
 
-export const contextMenuIsVisible = async ({
-  page,
-}: TestProps): Promise<void> =>
-  expect(page.locator(CONTEXT_MENU_SELECTOR)).toBeVisible();
-
-export const desktopIsVisible = async ({ page }: TestProps): Promise<void> =>
-  expect(page.getByRole(DESKTOP_ELEMENT)).toBeVisible();
-
-export const desktopEntryIsHidden = async (
-  entry: RegExp,
-  { page }: TestProps
-): Promise<void> => {
-  await expect
-    .poll(() => page.locator(DESKTOP_FILE_ENTRY_SELECTOR).count())
-    .toBeGreaterThan(0);
-  await expect(page.getByLabel(entry)).toBeHidden();
-};
-
-export const desktopEntryIsVisible = async (
-  entry: RegExp,
-  { page }: TestProps
-): Promise<void> => {
-  await expect
-    .poll(() => page.locator(DESKTOP_FILE_ENTRY_SELECTOR).count())
-    .toBeGreaterThan(1);
-  await expect(page.getByLabel(entry)).toBeVisible();
-};
-
-export const desktopFileEntriesAreVisible = async ({
-  page,
-}: TestProps): Promise<void> => {
-  const desktopFileEntry = page.locator(DESKTOP_FILE_ENTRY_SELECTOR);
-
-  await expect.poll(() => desktopFileEntry.count()).toBeGreaterThan(0);
-  await expect.poll(() => desktopFileEntry.first().isVisible()).toBeTruthy();
-};
-
-export const taskbarEntryIsVisible = async ({
-  page,
-}: TestProps): Promise<void> =>
-  expect(page.locator(TASKBAR_ENTRY_SELECTOR)).toBeVisible();
+// expect->waitForFunction (Q: Could these be a poll/eval?)
+export const backgroundIsUrl = async ({ page }: TestProps): Promise<void> =>
+  expect(
+    await page.waitForFunction(() =>
+      window
+        .getComputedStyle(document.documentElement)
+        .getPropertyValue("background-image")
+        .match(/^url\(.*?\)$/)
+    )
+  ).toBeTruthy();
 
 export const windowIsMaximized = async ({ page }: TestProps): Promise<void> =>
   expect(
@@ -98,98 +101,184 @@ export const windowIsMaximized = async ({ page }: TestProps): Promise<void> =>
     )
   ).toBeTruthy();
 
+// expect->locator
+export const canvasBackgroundIsHidden = async ({
+  page,
+}: TestProps): Promise<void> =>
+  expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeHidden();
+
+export const canvasBackgroundIsVisible = async ({
+  page,
+}: TestProps): Promise<void> =>
+  expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeVisible();
+
+export const contextMenuIsVisible = async ({
+  page,
+}: TestProps): Promise<void> =>
+  expect(page.locator(CONTEXT_MENU_SELECTOR)).toBeVisible();
+
+export const desktopIsVisible = async ({ page }: TestProps): Promise<void> =>
+  expect(page.locator(DESKTOP_SELECTOR)).toBeVisible();
+
 export const sheepIsVisible = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(SHEEP_SELECTOR)).toBeVisible();
 
 export const startButtonIsVisible = async ({
   page,
 }: TestProps): Promise<void> =>
-  expect(page.getByLabel(START_BUTTON_LABEL)).toBeVisible();
+  expect(page.locator(START_BUTTON_SELECTOR)).toBeVisible();
 
 export const startMenuIsHidden = async ({ page }: TestProps): Promise<void> =>
-  expect(page.getByLabel(START_MENU_SELECTOR)).toBeHidden();
+  expect(page.locator(START_MENU_SELECTOR)).toBeHidden();
 
 export const startMenuIsVisible = async ({ page }: TestProps): Promise<void> =>
-  expect(page.getByLabel(START_MENU_SELECTOR)).toBeVisible();
+  expect(page.locator(START_MENU_SELECTOR)).toBeVisible();
+
+export const taskbarIsVisible = async ({ page }: TestProps): Promise<void> =>
+  expect(page.locator(TASKBAR_SELECTOR)).toBeVisible();
 
 export const windowIsHidden = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(WINDOW_SELECTOR)).toBeHidden();
 
-export const windowIsOpaque = async ({ page }: TestProps): Promise<void> =>
-  expect(page.locator(WINDOW_SELECTOR)).toHaveCSS("opacity", "1");
+export const windowIsVisible = async ({ page }: TestProps): Promise<void> =>
+  expect(page.locator(WINDOW_SELECTOR)).toBeVisible();
 
 export const windowIsTransparent = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(WINDOW_SELECTOR)).toHaveCSS("opacity", "0");
 
-export const windowIsVisible = async ({ page }: TestProps): Promise<void> =>
-  expect.poll(() => page.locator(WINDOW_SELECTOR).isVisible()).toBeTruthy();
+export const windowIsOpaque = async ({ page }: TestProps): Promise<void> =>
+  expect(page.locator(WINDOW_SELECTOR)).toHaveCSS("opacity", "1");
 
 export const windowTitlebarIsVisible = async ({
   page,
 }: TestProps): Promise<void> =>
   expect(page.locator(WINDOW_TITLEBAR_SELECTOR)).toBeVisible();
 
-export const windowTitlebarEqualsText = async (
+// expect->locator->getBy
+export const calendarIsVisible = async ({ page }: TestProps): Promise<void> =>
+  expect(
+    page.locator(DESKTOP_SELECTOR).getByLabel(CALENDAR_LABEL)
+  ).toBeVisible();
+
+export const clockIsVisible = async ({ page }: TestProps): Promise<void> =>
+  expect(page.locator(TASKBAR_SELECTOR).getByLabel(CLOCK_LABEL)).toBeVisible();
+
+export const desktopEntryIsHidden = async (
+  label: RegExp,
+  { page }: TestProps
+): Promise<void> =>
+  expect(page.locator(DESKTOP_ENTRIES_SELECTOR).getByLabel(label)).toBeHidden();
+
+export const desktopEntryIsVisible = async (
+  label: RegExp,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page.locator(DESKTOP_ENTRIES_SELECTOR).getByLabel(label)
+  ).toBeVisible();
+
+export const fileExplorerEntryIsHidden = async (
+  label: RegExp,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).getByLabel(label)
+  ).toBeHidden();
+
+export const fileExplorerEntryIsVisible = async (
+  label: RegExp,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).getByLabel(label)
+  ).toBeVisible();
+
+export const taskbarEntryIsVisible = async (
+  label: RegExp,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label)
+  ).toBeVisible();
+
+export const taskbarEntryHasTooltip = async (
+  label: RegExp,
+  title: RegExp,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label)
+  ).toHaveAttribute("title", title);
+
+export const windowTitlebarTextIsVisible = async (
   text: string,
   { page }: TestProps
 ): Promise<void> =>
-  expect
-    .poll(() => page.locator(WINDOW_TITLEBAR_SELECTOR).textContent())
-    .toEqual(text);
+  expect(page.locator(WINDOW_TITLEBAR_SELECTOR).getByText(text)).toBeVisible();
 
-export const fileExplorerFileIsHidden = async (
-  file: RegExp,
+// expect->locator->getBy->getBy
+export const clockTextIsHidden = async ({ page }: TestProps): Promise<void> =>
+  expect(
+    page
+      .locator(TASKBAR_SELECTOR)
+      .getByLabel(CLOCK_LABEL)
+      .getByText(CLOCK_REGEX)
+  ).toBeHidden();
+
+export const clockTextIsVisible = async ({ page }: TestProps): Promise<void> =>
+  expect(
+    page
+      .locator(TASKBAR_SELECTOR)
+      .getByLabel(CLOCK_LABEL)
+      .getByText(CLOCK_REGEX)
+  ).toBeVisible();
+
+// expect->locator->getBy->locator
+export const clockCanvasIsHidden = async ({ page }: TestProps): Promise<void> =>
+  expect(
+    page.locator(TASKBAR_SELECTOR).getByLabel(CLOCK_LABEL).locator("canvas")
+  ).toBeHidden();
+
+export const clockCanvasIsVisible = async ({
+  page,
+}: TestProps): Promise<void> =>
+  expect(
+    page.locator(TASKBAR_SELECTOR).getByLabel(CLOCK_LABEL).locator("canvas")
+  ).toBeVisible();
+
+export const taskbarEntryHasIcon = async (
+  label: RegExp,
+  src: RegExp,
   { page }: TestProps
 ): Promise<void> =>
-  expect(page.locator(WINDOW_SELECTOR).getByLabel(file)).toBeHidden();
+  expect(
+    page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label).locator("img")
+  ).toHaveAttribute("src", src);
+
+// expect->poll_count->locator_first
+export const desktopFileEntriesAreVisible = async ({
+  page,
+}: TestProps): Promise<void> => {
+  const desktopEntries = page.locator(DESKTOP_ENTRIES_SELECTOR);
+
+  await expect.poll(async () => desktopEntries.count()).toBeGreaterThan(0);
+  await expect(desktopEntries.first()).toBeVisible();
+};
 
 export const fileExplorerFileEntriesAreVisible = async ({
   page,
 }: TestProps): Promise<void> => {
-  await page.waitForSelector(FILE_EXPLORER_FILE_ENTRY_SELECTOR);
+  const fileExplorerEntries = page.locator(FILE_EXPLORER_ENTRIES_SELECTOR);
 
-  const fileExplorerFileEntry = page.locator(FILE_EXPLORER_FILE_ENTRY_SELECTOR);
-
-  await expect.poll(() => fileExplorerFileEntry.count()).toBeGreaterThan(0);
-  await expect
-    .poll(() => fileExplorerFileEntry.first().isVisible())
-    .toBeTruthy();
+  await expect.poll(async () => fileExplorerEntries.count()).toBeGreaterThan(0);
+  await expect(fileExplorerEntries.first()).toBeVisible();
 };
 
-export const fileExplorerFileIsVisible = async (
-  file: RegExp,
-  { page }: TestProps
-): Promise<void> =>
-  expect
-    .poll(() => page.locator(WINDOW_SELECTOR).getByLabel(file).isVisible())
-    .toBeTruthy();
-
-export const clickFirstDesktopFileEntry = async ({
+export const taskbarEntriesAreVisible = async ({
   page,
-}: TestProps): Promise<void> =>
-  page.locator(DESKTOP_FILE_ENTRY_SELECTOR).first().click();
+}: TestProps): Promise<void> => {
+  const taskbarEntries = page.locator(TASKBAR_ENTRIES_SELECTOR);
 
-export const focusOnWindow = async ({ page }: TestProps): Promise<void> =>
-  page.locator(WINDOW_SELECTOR).focus();
-
-export const clickStartButton = async ({ page }: TestProps): Promise<void> =>
-  page.getByLabel(START_BUTTON_LABEL).click();
-
-export const backgroundIsUrl = async ({ page }: TestProps): Promise<void> =>
-  expect(
-    await page.waitForFunction(
-      ([selectorProperty, selectorValue]) =>
-        window
-          .getComputedStyle(document.documentElement)
-          .getPropertyValue(selectorProperty)
-          .match(selectorValue),
-      ["background-image", /^url\(.*?\)$/] as [string, RegExp]
-    )
-  ).toBeTruthy();
-
-export const loadApp = async ({ page }: TestProps): Promise<Response | null> =>
-  page.goto("/");
-
-export const disableOffscreenCanvas = (): void => {
-  delete (window as Partial<Window & typeof globalThis>).OffscreenCanvas;
+  await expect.poll(async () => taskbarEntries.count()).toBeGreaterThan(0);
+  await expect(taskbarEntries.first()).toBeVisible();
 };
