@@ -1,29 +1,33 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
+import test, { expect } from "@playwright/test";
+import type { IsShown } from "e2e/constants";
 import {
   ACCESSIBILITY_EXCEPTION_IDS,
-  CONTEXT_MENU_SELECTOR,
   DESKTOP_MENU_ITEMS,
   DESKTOP_SELECTOR,
-  EXACT,
   NEW_FILE_LABEL,
   NEW_FILE_LABEL_TEXT,
   NEW_FOLDER_LABEL,
   SELECTION_SELECTOR,
-  TASKBAR_ENTRIES_SELECTOR,
 } from "e2e/constants";
 import {
   backgroundIsUrl,
   canvasBackgroundIsHidden,
   canvasBackgroundIsVisible,
+  clickContextMenuEntry,
   clickDesktop,
+  contextMenuEntryIsHidden,
+  contextMenuEntryIsVisible,
   contextMenuIsVisible,
+  desktopEntriesAreVisible,
   desktopEntryIsHidden,
   desktopEntryIsVisible,
-  desktopFileEntriesAreVisible,
   desktopIsVisible,
   loadApp,
+  pressDesktopKeys,
   taskbarEntriesAreVisible,
+  taskbarEntryIsVisible,
 } from "e2e/functions";
 
 test.beforeEach(loadApp);
@@ -40,7 +44,7 @@ test("pass accessibility scan", async ({ page }) =>
 
 test("has background", canvasBackgroundIsVisible);
 
-test("has file entry", desktopFileEntriesAreVisible);
+test("has file entry", desktopEntriesAreVisible);
 
 // TODO: has grid (move file on grid)
 
@@ -59,8 +63,6 @@ test.describe("has selection", () => {
     });
     await page.mouse.move(x + SELECTION_OFFSET, y + SELECTION_OFFSET);
 
-    await page.waitForSelector(SELECTION_SELECTOR);
-
     const selection = page.locator(SELECTION_SELECTOR);
 
     await expect(selection).toBeVisible();
@@ -76,53 +78,63 @@ test.describe("has selection", () => {
   // TODO: file entry (single/multi)
 });
 
+const taskbarEntriesOpened = async (
+  label: RegExp,
+  page: Page
+): Promise<void> => {
+  await taskbarEntriesAreVisible({ page });
+  await taskbarEntryIsVisible(label, { page });
+};
+
 test.describe("has context menu", () => {
   test.beforeEach(async ({ page }) => clickDesktop({ page }, true));
   test.beforeEach(contextMenuIsVisible);
 
   test("with items", async ({ browserName, page }) => {
-    const items = page.locator(CONTEXT_MENU_SELECTOR);
     const MENU_ITEMS = Object.entries(DESKTOP_MENU_ITEMS).map(
-      ([label, shown]) => [
-        label,
-        typeof shown === "boolean" ? shown : shown(browserName),
-      ]
+      ([label, shown]) =>
+        [label, typeof shown === "boolean" ? shown : shown(browserName)] as [
+          string,
+          IsShown,
+        ]
     );
 
     for (const [label, shown] of MENU_ITEMS) {
       // eslint-disable-next-line no-await-in-loop
-      await expect(items.getByLabel(label as string, EXACT))[
-        shown ? "toBeVisible" : "toBeHidden"
-      ]();
+      await (shown
+        ? contextMenuEntryIsVisible(label, { page })
+        : contextMenuEntryIsHidden(label, { page }));
     }
   });
 
   test.describe("with file functions", () => {
-    test.beforeEach(desktopFileEntriesAreVisible);
+    test.beforeEach(desktopEntriesAreVisible);
 
     test("can create folder", async ({ page }) => {
       await desktopEntryIsHidden(NEW_FOLDER_LABEL, { page });
 
-      await page.getByLabel(/^New$/).click();
-      await page.getByLabel(/^Folder$/).click();
+      await clickContextMenuEntry(/^New$/, { page });
+      await clickContextMenuEntry(/^Folder$/, { page });
 
       await desktopEntryIsVisible(NEW_FOLDER_LABEL, { page });
 
       await page.reload();
 
+      await desktopEntriesAreVisible({ page });
       await desktopEntryIsVisible(NEW_FOLDER_LABEL, { page });
     });
 
     test("can create file", async ({ page }) => {
       await desktopEntryIsHidden(NEW_FILE_LABEL, { page });
 
-      await page.getByLabel(/^New$/).click();
-      await page.getByLabel(/^Text Document$/).click();
+      await clickContextMenuEntry(/^New$/, { page });
+      await clickContextMenuEntry(/^Text Document$/, { page });
 
       await desktopEntryIsVisible(NEW_FILE_LABEL, { page });
 
       await page.reload();
 
+      await desktopEntriesAreVisible({ page });
       await desktopEntryIsVisible(NEW_FILE_LABEL, { page });
     });
 
@@ -131,7 +143,7 @@ test.describe("has context menu", () => {
 
       const uploadPromise = page.waitForEvent("filechooser");
 
-      await page.getByLabel(/^Add file\(s\)$/).click();
+      await clickContextMenuEntry(/^Add file\(s\)$/, { page });
 
       await (
         await uploadPromise
@@ -148,70 +160,44 @@ test.describe("has context menu", () => {
   test("can change background", async ({ page }) => {
     await canvasBackgroundIsVisible({ page });
 
-    await page.getByLabel(/^Background$/).click();
-    await page.getByLabel(/^Picture Slideshow$/).click();
+    await clickContextMenuEntry(/^Background$/, { page });
+    await clickContextMenuEntry(/^Picture Slideshow$/, { page });
 
     await canvasBackgroundIsHidden({ page });
     await backgroundIsUrl({ page });
 
     await page.reload();
 
+    await desktopIsVisible({ page });
     await canvasBackgroundIsHidden({ page });
     await backgroundIsUrl({ page });
   });
 
   test("can inspect", async ({ page }) => {
-    await page.getByLabel(/^Inspect$/).click();
-
-    await taskbarEntriesAreVisible({ page });
-
-    await expect(
-      page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(/^DevTools$/)
-    ).toBeVisible();
+    await clickContextMenuEntry(/^Inspect$/, { page });
+    await taskbarEntriesOpened(/^DevTools$/, page);
   });
 
   test("can view page source", async ({ page }) => {
-    await page.getByLabel(/^View page source$/).click();
-
-    await taskbarEntriesAreVisible({ page });
-
-    await expect(
-      page
-        .locator(TASKBAR_ENTRIES_SELECTOR)
-        .getByLabel(/^index.html - Monaco Editor$/)
-    ).toBeVisible();
+    await clickContextMenuEntry(/^View page source$/, { page });
+    await taskbarEntriesOpened(/^index.html - Monaco Editor$/, page);
   });
 
   test("can open terminal", async ({ page }) => {
-    await page.getByLabel(/^Open Terminal here$/).click();
-
-    await taskbarEntriesAreVisible({ page });
-
-    await expect(
-      page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(/^Terminal$/)
-    ).toBeVisible();
+    await clickContextMenuEntry(/^Open Terminal here$/, { page });
+    await taskbarEntriesOpened(/^Terminal$/, page);
   });
 });
 
 test.describe("has keyboard shortcuts", () => {
   test("ctrl + shift + r (open run dialog)", async ({ page }) => {
-    await page.locator(DESKTOP_SELECTOR).press("Control+Shift+KeyR");
-
-    await taskbarEntriesAreVisible({ page });
-
-    await expect(
-      page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(/^Run$/)
-    ).toBeVisible();
+    await pressDesktopKeys("Control+Shift+KeyR", { page });
+    await taskbarEntriesOpened(/^Run$/, page);
   });
 
   test("ctrl + shift + e (open file explorer)", async ({ page }) => {
-    await page.locator(DESKTOP_SELECTOR).press("Control+Shift+KeyE");
-
-    await taskbarEntriesAreVisible({ page });
-
-    await expect(
-      page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(/^File Explorer$/)
-    ).toBeVisible();
+    await pressDesktopKeys("Control+Shift+KeyE", { page });
+    await taskbarEntriesOpened(/^My PC$/, page);
   });
 
   // TODO: Ctrl+Shift+D

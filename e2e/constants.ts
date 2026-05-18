@@ -1,14 +1,20 @@
 import type { Locator } from "@playwright/test";
 
-type MenuItems = Record<string, boolean | ((browserName: string) => boolean)>;
+export type IsShown = boolean | ((browserName: string) => boolean);
+
+type MenuItems = Record<string, IsShown>;
 
 type LocatorClickProps = Parameters<Locator["click"]>[0];
 type LocatorWaitForProps = Parameters<Locator["waitFor"]>[0];
 
-export const RIGHT_CLICK = { button: "right" } as LocatorClickProps;
 export const EXACT = { exact: true };
-export const VISIBLE = { state: "visible" } as LocatorWaitForProps;
 export const FORCE = { force: true };
+export const POLLING_OPTIONS = {
+  intervals: [250, 500, 1000],
+  timeout: 15000,
+};
+export const RIGHT_CLICK = { button: "right" } as LocatorClickProps;
+export const VISIBLE = { state: "visible" } as LocatorWaitForProps;
 
 const APP_CONTAINER_SELECTOR = "div";
 const VIEWPORT_SELECTOR = "div";
@@ -25,14 +31,19 @@ export const TASKBAR_SELECTOR = `${DESKTOP_SELECTOR}>nav:not([style])`;
 export const TASKBAR_ENTRIES_SELECTOR = `${TASKBAR_SELECTOR}>ol>li`;
 export const START_BUTTON_SELECTOR = `${TASKBAR_SELECTOR}>button`;
 export const START_MENU_SELECTOR = `${DESKTOP_SELECTOR}>nav[style]`;
+export const START_MENU_SIDEBAR_SELECTOR = `${START_MENU_SELECTOR}>nav`;
 export const WINDOW_SELECTOR = `${DESKTOP_SELECTOR}>${WINDOW_DRAG_SELECTOR}>section`;
 export const WINDOW_TITLEBAR_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>header`;
 export const WINDOW_TITLEBAR_ICON_SELECTOR = `${WINDOW_TITLEBAR_SELECTOR}>button>figure>picture`;
+export const FILE_EXPLORER_NAV_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>nav`;
+export const FILE_EXPLORER_STATUS_BAR_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>footer`;
 export const FILE_EXPLORER_ENTRIES_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>ol>li`;
 export const SHEEP_SELECTOR = `${DESKTOP_SELECTOR}>div>img[src^=data]`;
 
 export const CALENDAR_LABEL = /^Calendar$/;
 export const CLOCK_LABEL = /^Clock$/;
+export const FILE_EXPLORER_ADDRESS_BAR_LABEL = /^Address$/;
+export const FILE_EXPLORER_SEARCH_BOX_LABEL = /^Search box$/;
 export const START_BUTTON_LABEL = /^Start$/;
 
 export const ACCESSIBILITY_EXCEPTION_IDS = [
@@ -84,8 +95,6 @@ export const DESKTOP_MENU_ITEMS: MenuItems = {
   "View page source": true,
 };
 
-// TODO: Can this all be regex, why any text? Check for ^...$
-// TODO: Use TEXT/LABEL naming
 // TODO: Randomize test data
 export const TEST_APP_CONTAINER_APP = "Marked";
 export const TEST_APP_CONTAINER_APP_TITLE = (file: string | null): string =>

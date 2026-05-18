@@ -2,10 +2,8 @@ import { expect, test } from "@playwright/test";
 import {
   BASE_APP_FAVICON,
   BASE_APP_TITLE,
-  CONTEXT_MENU_SELECTOR,
-  FAVICON_SELECTOR,
+  FILE_EXPLORER_STATUS_BAR_SELECTOR,
   FILE_MENU_ITEMS,
-  RIGHT_CLICK,
   TEST_APP_ICON,
   TEST_APP_TITLE,
   TEST_APP_TITLE_TEXT,
@@ -14,139 +12,73 @@ import {
   TEST_ROOT_FILE_TOOLTIP,
   TEST_SEARCH,
   TEST_SEARCH_RESULT,
-  WINDOW_SELECTOR,
 } from "e2e/constants";
 import {
+  clickContextMenuEntry,
+  clickFileExplorerAddressBar,
+  clickFileExplorerEntry,
   clickFirstDesktopEntry,
+  contextMenuEntryIsVisible,
   contextMenuIsVisible,
-  desktopFileEntriesAreVisible,
-  desktopIsVisible,
+  desktopEntriesAreVisible,
+  fileExplorerAddressBarHasValue,
+  fileExplorerEntriesAreVisible,
+  fileExplorerEntryHasTooltip,
   fileExplorerEntryIsHidden,
-  fileExplorerEntryIsVisible,
-  fileExplorerFileEntriesAreVisible,
+  fileExplorerSearchBoxIsVisible,
   focusOnWindow,
-  windowIsVisible,
+  pageHasIcon,
+  pageHasTitle,
+  typeInFileExplorerSearchBox,
+  windowsAreVisible,
 } from "e2e/functions";
 
-test.beforeEach(async ({ page }) => {
-  await page.goto("/?app=FileExplorer");
-
-  await desktopIsVisible({ page });
-  await desktopFileEntriesAreVisible({ page });
-  await windowIsVisible({ page });
-  await fileExplorerFileEntriesAreVisible({ page });
-  await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
-});
+test.beforeEach(async ({ page }) => page.goto("/?app=FileExplorer"));
+test.beforeEach(windowsAreVisible);
 
 test("has address bar", async ({ page }) => {
-  await focusOnWindow({ page });
+  await fileExplorerAddressBarHasValue(TEST_APP_TITLE, { page });
+  await clickFileExplorerAddressBar({ page });
+  await fileExplorerAddressBarHasValue("/", { page });
 
-  const addressBar = page.locator(WINDOW_SELECTOR).getByLabel(/^Address$/);
-
-  await expect(addressBar).toHaveValue(TEST_APP_TITLE);
-
-  await addressBar.click();
-
-  await expect(addressBar).toHaveValue("/");
-
-  await addressBar.click(RIGHT_CLICK);
-
+  await clickFileExplorerAddressBar({ page }, true);
   await contextMenuIsVisible({ page });
+  await contextMenuEntryIsVisible(/^Copy address$/, { page });
 
-  await expect(
-    page.locator(CONTEXT_MENU_SELECTOR).getByLabel(/^Copy address$/)
-  ).toBeVisible();
+  // TODO: Test clipboard on clicking copy
+  // TODO: Test title after clicking copy changes back to My PC
 });
 
 test("has search box", async ({ page }) => {
-  await page
-    .locator(WINDOW_SELECTOR)
-    .getByLabel(/^Search box$/)
-    .type(TEST_SEARCH, {
-      delay: 50,
-    });
-
+  await fileExplorerSearchBoxIsVisible({ page });
+  await typeInFileExplorerSearchBox(TEST_SEARCH, { page });
   await contextMenuIsVisible({ page });
-
-  await expect(
-    page.locator(CONTEXT_MENU_SELECTOR).getByLabel(TEST_SEARCH_RESULT)
-  ).toBeVisible();
+  await contextMenuEntryIsVisible(TEST_SEARCH_RESULT, { page });
 });
 
-test("has status bar", async ({ page }) => {
-  const windowElement = page.locator(WINDOW_SELECTOR);
-
-  await windowElement.getByLabel(TEST_ROOT_FILE).click();
-
-  await expect(windowElement.getByLabel(/^Total item count$/)).toContainText(
-    /^\d items$/
+test.describe("has file(s)", () => {
+  test.beforeEach(fileExplorerEntriesAreVisible);
+  test.beforeEach(async ({ page }) =>
+    clickFileExplorerEntry(TEST_ROOT_FILE, { page })
   );
-  await expect(
-    windowElement.getByLabel(/^Selected item count and size$/)
-  ).toContainText(/^1 item selected|\d{3} bytes$/);
-});
 
-test("changes title", async ({ page }) => {
-  const titleWithApp = `${TEST_APP_TITLE_TEXT} - ${BASE_APP_TITLE}`;
-  const isUsingAppTitle = async (): Promise<void> =>
-    expect(page).toHaveTitle(titleWithApp);
-
-  await isUsingAppTitle();
-  await desktopFileEntriesAreVisible({ page });
-  await clickFirstDesktopEntry({ page });
-
-  await expect.poll(() => page.title()).toEqual(BASE_APP_TITLE);
-
-  await focusOnWindow({ page });
-
-  await isUsingAppTitle();
-});
-
-test("changes icon", async ({ page }) => {
-  const favIcon = page.locator(FAVICON_SELECTOR);
-  const isUsingAppIcon = async (): Promise<void> =>
-    expect(page.locator(FAVICON_SELECTOR)).toHaveAttribute(
-      "href",
-      TEST_APP_ICON
-    );
-
-  await isUsingAppIcon();
-  await desktopFileEntriesAreVisible({ page });
-  await clickFirstDesktopEntry({ page });
-
-  await expect
-    .poll(() => favIcon.getAttribute("href"))
-    .toMatch(BASE_APP_FAVICON);
-
-  await focusOnWindow({ page });
-
-  await isUsingAppIcon();
-});
-
-test.describe("has file", () => {
   test.describe("has context menu", () => {
     test.beforeEach(async ({ page }) => {
-      page
-        .locator(WINDOW_SELECTOR)
-        .getByLabel(TEST_ROOT_FILE)
-        .click(RIGHT_CLICK);
-
+      await clickFileExplorerEntry(TEST_ROOT_FILE, { page }, true);
       await contextMenuIsVisible({ page });
     });
 
     test("with items", async ({ page }) => {
-      const menu = page.locator(CONTEXT_MENU_SELECTOR);
-
       for (const label of FILE_MENU_ITEMS) {
         // eslint-disable-next-line no-await-in-loop
-        await expect(menu.getByLabel(label)).toBeVisible();
+        await contextMenuEntryIsVisible(label, { page });
       }
     });
 
     test("can download", async ({ page }) => {
       const downloadPromise = page.waitForEvent("download");
 
-      await page.getByLabel(/^Download$/).click();
+      await clickContextMenuEntry(/^Download$/, { page });
 
       const download = await downloadPromise;
 
@@ -155,14 +87,14 @@ test.describe("has file", () => {
     });
 
     test("can delete", async ({ page }) => {
-      await page.getByLabel(/^Delete$/).click();
+      await clickContextMenuEntry(/^Delete$/, { page });
 
       await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
 
       await page.reload();
 
-      await windowIsVisible({ page });
-
+      await windowsAreVisible({ page });
+      await fileExplorerEntriesAreVisible({ page });
       await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
     });
 
@@ -171,24 +103,48 @@ test.describe("has file", () => {
     // TODO: can create shortcut (expect prepended name & icon)
   });
 
+  test("has status bar", async ({ page }) => {
+    const statusBar = page.locator(FILE_EXPLORER_STATUS_BAR_SELECTOR);
+    const entryInfo = statusBar.getByLabel(/^Total item count$/);
+    const selectedInfo = statusBar.getByLabel(/^Selected item count and size$/);
+
+    await expect(entryInfo).toContainText(/^\d items$/);
+    await expect(selectedInfo).toContainText(/^1 item selected|\d{3} bytes$/);
+  });
+
   test("with tooltip", async ({ page, request }) => {
-    const testFile = page.locator(WINDOW_SELECTOR).getByLabel(TEST_ROOT_FILE);
-
-    // Q: Why both?
-    await testFile.hover();
-    await testFile.click();
-
-    const statsRequest = await request.head(TEST_ROOT_FILE_TEXT);
-
-    await expect(statsRequest).toBeOK();
-
-    await expect
-      .poll(() => testFile.getAttribute("title"))
-      .toMatch(TEST_ROOT_FILE_TOOLTIP);
+    await expect(await request.head(TEST_ROOT_FILE_TEXT)).toBeOK();
+    await fileExplorerEntryHasTooltip(TEST_ROOT_FILE, TEST_ROOT_FILE_TOOLTIP, {
+      page,
+    });
   });
 
   // TODO: can drag (to Desktop)
   // TODO: can drop (from Desktop)
+});
+
+test("changes title", async ({ page }) => {
+  const focusedAppPageTitle = `${TEST_APP_TITLE_TEXT} - ${BASE_APP_TITLE}`;
+
+  await pageHasTitle(focusedAppPageTitle, { page });
+
+  await desktopEntriesAreVisible({ page });
+  await clickFirstDesktopEntry({ page });
+  await pageHasTitle(BASE_APP_TITLE, { page });
+
+  await focusOnWindow({ page });
+  await pageHasTitle(focusedAppPageTitle, { page });
+});
+
+test("changes icon", async ({ page }) => {
+  await pageHasIcon(TEST_APP_ICON, { page });
+
+  await desktopEntriesAreVisible({ page });
+  await clickFirstDesktopEntry({ page });
+  await pageHasIcon(BASE_APP_FAVICON, { page });
+
+  await focusOnWindow({ page });
+  await pageHasIcon(TEST_APP_ICON, { page });
 });
 
 // TODO: has context menu (FOLDER_MENU_ITEMS)
