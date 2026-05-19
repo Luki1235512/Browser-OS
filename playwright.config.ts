@@ -22,10 +22,12 @@ const config: PlaywrightTestConfig = {
     //   use: { ...devices["Desktop Safari"] },
     // },
   ],
-  reporter: process.env.CI ? "dot" : [["html", { open: "always" }]],
+  reporter: "html",
   testDir: "e2e",
   use: {
     baseURL,
+    trace: "retain-on-failure",
+    video: "retain-on-failure",
   },
   webServer: {
     command: process.env.CI ? "yarn start" : "yarn dev",

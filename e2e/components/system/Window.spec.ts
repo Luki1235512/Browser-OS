@@ -8,6 +8,7 @@ import {
   clickCloseWindow,
   clickMaximizeWindow,
   clickMinimizeWindow,
+  disableWallpaper,
   doubleClickWindowTitlebar,
   doubleClickWindowTitlebarIcon,
   dragWindowToDesktop,
@@ -21,9 +22,8 @@ import {
   windowTitlebarTextIsVisible,
 } from "e2e/functions";
 
+test.beforeEach(disableWallpaper);
 test.beforeEach(loadTestApp);
-
-// TODO: Check if window animation is indeed happening, and wait for it
 test.beforeEach(windowsAreVisible);
 test.beforeEach(windowTitlebarIsVisible);
 

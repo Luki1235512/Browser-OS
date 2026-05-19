@@ -17,15 +17,15 @@ import {
   clickContextMenuEntry,
   clickFileExplorerAddressBar,
   clickFileExplorerEntry,
+  clickFileExplorerSearchBox,
   clickFirstDesktopEntry,
   contextMenuEntryIsVisible,
   contextMenuIsVisible,
-  desktopEntriesAreVisible,
+  disableWallpaper,
   fileExplorerAddressBarHasValue,
   fileExplorerEntriesAreVisible,
   fileExplorerEntryHasTooltip,
   fileExplorerEntryIsHidden,
-  fileExplorerSearchBoxIsVisible,
   focusOnWindow,
   pageHasIcon,
   pageHasTitle,
@@ -33,12 +33,14 @@ import {
   windowsAreVisible,
 } from "e2e/functions";
 
+test.beforeEach(disableWallpaper);
 test.beforeEach(async ({ page }) => page.goto("/?app=FileExplorer"));
 test.beforeEach(windowsAreVisible);
+test.beforeEach(fileExplorerEntriesAreVisible);
 
 test("has address bar", async ({ page }) => {
   await fileExplorerAddressBarHasValue(TEST_APP_TITLE, { page });
-  await clickFileExplorerAddressBar({ page });
+  await clickFileExplorerAddressBar({ page }, false, 2);
   await fileExplorerAddressBarHasValue("/", { page });
 
   await clickFileExplorerAddressBar({ page }, true);
@@ -46,18 +48,19 @@ test("has address bar", async ({ page }) => {
   await contextMenuEntryIsVisible(/^Copy address$/, { page });
 
   // TODO: Test clipboard on clicking copy
+  // TODO: Test context menu is gone
   // TODO: Test title after clicking copy changes back to My PC
 });
 
 test("has search box", async ({ page }) => {
-  await fileExplorerSearchBoxIsVisible({ page });
+  await clickFileExplorerSearchBox({ page });
   await typeInFileExplorerSearchBox(TEST_SEARCH, { page });
+
   await contextMenuIsVisible({ page });
   await contextMenuEntryIsVisible(TEST_SEARCH_RESULT, { page });
 });
 
 test.describe("has file(s)", () => {
-  test.beforeEach(fileExplorerEntriesAreVisible);
   test.beforeEach(async ({ page }) =>
     clickFileExplorerEntry(TEST_ROOT_FILE, { page })
   );
@@ -128,7 +131,6 @@ test("changes title", async ({ page }) => {
 
   await pageHasTitle(focusedAppPageTitle, { page });
 
-  await desktopEntriesAreVisible({ page });
   await clickFirstDesktopEntry({ page });
   await pageHasTitle(BASE_APP_TITLE, { page });
 
@@ -139,7 +141,6 @@ test("changes title", async ({ page }) => {
 test("changes icon", async ({ page }) => {
   await pageHasIcon(TEST_APP_ICON, { page });
 
-  await desktopEntriesAreVisible({ page });
   await clickFirstDesktopEntry({ page });
   await pageHasIcon(BASE_APP_FAVICON, { page });
 

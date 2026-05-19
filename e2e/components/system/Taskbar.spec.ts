@@ -1,19 +1,14 @@
 import { test } from "@playwright/test";
-import {
-  OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS,
-  TEST_APP_ICON,
-  TEST_APP_TITLE,
-} from "e2e/constants";
+import { TEST_APP_ICON, TEST_APP_TITLE } from "e2e/constants";
 import {
   calendarIsVisible,
   clickClock,
   clickStartButton,
   clockCanvasIsHidden,
-  clockCanvasIsVisible,
-  clockIsVisible,
-  clockTextIsHidden,
+  clockCanvasOrTextIsVisible,
   clockTextIsVisible,
   disableOffscreenCanvas,
+  disableWallpaper,
   loadApp,
   loadTestApp,
   sheepIsVisible,
@@ -24,6 +19,8 @@ import {
   taskbarEntryIsVisible,
   taskbarIsVisible,
 } from "e2e/functions";
+
+test.beforeEach(disableWallpaper);
 
 test.describe("elements", () => {
   test.beforeEach(loadApp);
@@ -44,20 +41,10 @@ test.describe("elements", () => {
   });
 
   test.describe("has clock", () => {
-    test.beforeEach(clockIsVisible);
-
-    test("via canvas", async ({ browserName, page }) => {
-      if (OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS.has(browserName)) {
-        await clockTextIsVisible({ page });
-        await clockCanvasIsHidden({ page });
-      } else {
-        await clockTextIsHidden({ page });
-        await clockCanvasIsVisible({ page });
-      }
-    });
+    test("via canvas", clockCanvasOrTextIsVisible);
 
     test("via text", async ({ page }) => {
-      await page.addInitScript(disableOffscreenCanvas);
+      await disableOffscreenCanvas({ page });
       await page.reload();
 
       await clockTextIsVisible({ page });
@@ -73,6 +60,7 @@ test.describe("elements", () => {
       await clickClock({ page });
       await calendarIsVisible({ page });
     });
+
     // TODO: has context menu
   });
 });

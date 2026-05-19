@@ -2,6 +2,7 @@ import { test } from "@playwright/test";
 import {
   clickDesktop,
   clickStartButton,
+  disableWallpaper,
   loadApp,
   startMenuEntryIsVisible,
   startMenuIsHidden,
@@ -9,6 +10,7 @@ import {
   startMenuSidebarEntryIsVisible,
 } from "e2e/functions";
 
+test.beforeEach(disableWallpaper);
 test.beforeEach(loadApp);
 test.beforeEach(clickStartButton);
 test.beforeEach(startMenuIsVisible);
@@ -29,6 +31,8 @@ test("has folders", async ({ page }) => {
   // TODO: w/read-only context menu
 });
 
+// TODO: has files, w/read-only context menu
+
 test.describe("can close", () => {
   test("via button", async ({ page }) => {
     await clickStartButton({ page });
@@ -40,5 +44,3 @@ test.describe("can close", () => {
     await startMenuIsHidden({ page });
   });
 });
-
-// TODO: has files, w/read-only context menu
