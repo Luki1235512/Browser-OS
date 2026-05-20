@@ -1,4 +1,5 @@
 import { test } from "@playwright/test";
+import { BASE_APP_FAVICON_TEXT } from "e2e/constants";
 import {
   backgroundIsUrl,
   canvasBackgroundIsHidden,
@@ -6,17 +7,22 @@ import {
   clickContextMenuEntry,
   clickDesktop,
   contextMenuIsVisible,
+  desktopEntriesAreVisible,
   desktopIsVisible,
   loadApp,
 } from "e2e/functions";
 
 test.beforeEach(loadApp);
-test.beforeEach(desktopIsVisible);
+test.beforeEach(desktopEntriesAreVisible);
 
 test("has background", canvasBackgroundIsVisible);
 
-test("can change background", async ({ page }) => {
+test("can change background", async ({ context, page }) => {
   await canvasBackgroundIsVisible({ page });
+
+  await context.route("/Users/Public/Pictures/slideshow.json", (route) =>
+    route.fulfill({ body: JSON.stringify([BASE_APP_FAVICON_TEXT]) })
+  );
 
   await clickDesktop({ page }, true);
   await contextMenuIsVisible({ page });
@@ -32,3 +38,5 @@ test("can change background", async ({ page }) => {
   await canvasBackgroundIsHidden({ page });
   await backgroundIsUrl({ page });
 });
+
+// TODO: can set backgound (image/video)

@@ -2,7 +2,7 @@ import type { Locator } from "@playwright/test";
 
 export type IsShown = boolean | ((browserName: string) => boolean);
 
-type MenuItems = Record<string, IsShown>;
+export type MenuItems = Record<string, IsShown>;
 
 type LocatorClickProps = Parameters<Locator["click"]>[0];
 type LocatorWaitForProps = Parameters<Locator["waitFor"]>[0];
@@ -30,10 +30,12 @@ export const START_MENU_SELECTOR = `${DESKTOP_SELECTOR}>nav[style]`;
 export const START_MENU_SIDEBAR_SELECTOR = `${START_MENU_SELECTOR}>nav`;
 export const WINDOW_SELECTOR = `${DESKTOP_SELECTOR}>${WINDOW_DRAG_SELECTOR}>section`;
 export const WINDOW_TITLEBAR_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>header`;
-export const WINDOW_TITLEBAR_ICON_SELECTOR = `${WINDOW_TITLEBAR_SELECTOR}>button>figure>picture`;
+export const ICON_SELECTOR = "figure>picture";
+export const WINDOW_TITLEBAR_ICON_SELECTOR = `${WINDOW_TITLEBAR_SELECTOR}>button>${ICON_SELECTOR}`;
 export const FILE_EXPLORER_NAV_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>nav`;
 export const FILE_EXPLORER_STATUS_BAR_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>footer`;
-export const FILE_EXPLORER_ENTRIES_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>ol>li`;
+export const FILE_EXPLORER_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>ol`;
+export const FILE_EXPLORER_ENTRIES_SELECTOR = `${FILE_EXPLORER_SELECTOR}>li`;
 export const SHEEP_SELECTOR = `${DESKTOP_SELECTOR}>div>img[src^=data]`;
 
 export const CALENDAR_LABEL = /^Calendar$/;
@@ -55,8 +57,7 @@ export const DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS = new Set([
 export const OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
 export const SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
 
-// TODO: Fix this, doesn't fail in BrowserStack
-export const FILE_DRAG_TESTING_FAILS_BROWSERS = new Set(["webkit"]);
+export const FILE_DRAG_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
 
 export const FILE_MENU_ITEMS = [
   /^Open$/,
@@ -91,7 +92,6 @@ export const DESKTOP_MENU_ITEMS: MenuItems = {
   "View page source": true,
 };
 
-// TODO: Randomize test data
 export const TEST_APP_CONTAINER_APP = "Marked";
 export const TEST_APP_CONTAINER_APP_TITLE = (file: string | null): string =>
   `${file || ""}.url - ${TEST_APP_CONTAINER_APP}`;
@@ -117,3 +117,4 @@ export const CLOCK_REGEX = /^(?:[01]\d|2[0-3])(?::[0-5]\d){2}$/;
 
 export const BASE_APP_TITLE = "cuteOS";
 export const BASE_APP_FAVICON = /^\/favicon.ico$/;
+export const BASE_APP_FAVICON_TEXT = "/favicon.ico";

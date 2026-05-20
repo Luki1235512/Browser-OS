@@ -4,6 +4,7 @@ import {
   BASE_APP_TITLE,
   FILE_EXPLORER_STATUS_BAR_SELECTOR,
   FILE_MENU_ITEMS,
+  FOLDER_MENU_ITEMS,
   TEST_APP_ICON,
   TEST_APP_TITLE,
   TEST_APP_TITLE_TEXT,
@@ -15,20 +16,26 @@ import {
 } from "e2e/constants";
 import {
   clickContextMenuEntry,
+  clickFileExplorer,
   clickFileExplorerAddressBar,
   clickFileExplorerEntry,
   clickFileExplorerSearchBox,
   clickFirstDesktopEntry,
+  contextMenuEntryIsHidden,
   contextMenuEntryIsVisible,
   contextMenuIsVisible,
   disableWallpaper,
   fileExplorerAddressBarHasValue,
   fileExplorerEntriesAreVisible,
+  fileExplorerEntryHasShortcutIcon,
   fileExplorerEntryHasTooltip,
   fileExplorerEntryIsHidden,
+  fileExplorerEntryIsVisible,
+  filterMenuItems,
   focusOnWindow,
   pageHasIcon,
   pageHasTitle,
+  taskbarEntryIsOpen,
   typeInFileExplorerSearchBox,
   windowsAreVisible,
 } from "e2e/functions";
@@ -61,10 +68,6 @@ test("has search box", async ({ page }) => {
 });
 
 test.describe("has file(s)", () => {
-  test.beforeEach(async ({ page }) =>
-    clickFileExplorerEntry(TEST_ROOT_FILE, { page })
-  );
-
   test.describe("has context menu", () => {
     test.beforeEach(async ({ page }) => {
       await clickFileExplorerEntry(TEST_ROOT_FILE, { page }, true);
@@ -101,12 +104,34 @@ test.describe("has file(s)", () => {
       await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
     });
 
+    test("can create shortcut", async ({ page }) => {
+      const shortcutFile = `${TEST_ROOT_FILE_TEXT} - Shortcut`;
+
+      await fileExplorerEntryIsHidden(shortcutFile, { page });
+
+      await clickContextMenuEntry(/^Create shortcut$/, { page });
+
+      await fileExplorerEntryIsVisible(shortcutFile, { page });
+      await fileExplorerEntryHasShortcutIcon(shortcutFile, { page });
+
+      await page.reload();
+
+      await windowsAreVisible({ page });
+      await fileExplorerEntriesAreVisible({ page });
+      await fileExplorerEntryIsVisible(shortcutFile, { page });
+    });
+
+    test("has properties", async ({ page }) => {
+      await clickContextMenuEntry(/^Properties$/, { page });
+      await taskbarEntryIsOpen(`${TEST_ROOT_FILE_TEXT} Properties`, page);
+    });
+
     // TODO: can cut/copy->paste (to Desktop)
-    // TODO: can set backgound (image/video)
-    // TODO: can create shortcut (expect prepended name & icon)
   });
 
   test("has status bar", async ({ page }) => {
+    clickFileExplorerEntry(TEST_ROOT_FILE, { page });
+
     const statusBar = page.locator(FILE_EXPLORER_STATUS_BAR_SELECTOR);
     const entryInfo = statusBar.getByLabel(/^Total item count$/);
     const selectedInfo = statusBar.getByLabel(/^Selected item count and size$/);
@@ -115,8 +140,12 @@ test.describe("has file(s)", () => {
     await expect(selectedInfo).toContainText(/^1 item selected|\d{3} bytes$/);
   });
 
-  test("with tooltip", async ({ page, request }) => {
-    await expect(await request.head(TEST_ROOT_FILE_TEXT)).toBeOK();
+  test("with tooltip", async ({ page }) => {
+    const responsePromise = page.waitForResponse(TEST_ROOT_FILE_TEXT);
+
+    clickFileExplorerEntry(TEST_ROOT_FILE, { page });
+
+    expect((await responsePromise).ok()).toBeTruthy();
     await fileExplorerEntryHasTooltip(TEST_ROOT_FILE, TEST_ROOT_FILE_TOOLTIP, {
       page,
     });
@@ -148,6 +177,24 @@ test("changes icon", async ({ page }) => {
   await pageHasIcon(TEST_APP_ICON, { page });
 });
 
-// TODO: has context menu (FOLDER_MENU_ITEMS)
+test.describe("has context menu", () => {
+  test.beforeEach(async ({ page }) => {
+    await clickFileExplorer({ page }, true);
+    await contextMenuIsVisible({ page });
+  });
+
+  test("with items", async ({ browserName, page }) => {
+    for (const [label, shown] of filterMenuItems(
+      FOLDER_MENU_ITEMS,
+      browserName
+    )) {
+      // eslint-disable-next-line no-await-in-loop
+      await (shown
+        ? contextMenuEntryIsVisible(label, { page })
+        : contextMenuEntryIsHidden(label, { page }));
+    }
+  });
+});
+
 // TODO: has back, forward, recent & up
 // TODO: has keyboard shortcuts (Paste, Ctrl: C, X, V)
