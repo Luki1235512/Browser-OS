@@ -1,4 +1,4 @@
-import type { Locator } from "@playwright/test";
+import type { Locator, Route } from "@playwright/test";
 
 export type IsShown = boolean | ((browserName: string) => boolean);
 
@@ -6,6 +6,7 @@ export type MenuItems = Record<string, IsShown>;
 
 type LocatorClickProps = Parameters<Locator["click"]>[0];
 type LocatorWaitForProps = Parameters<Locator["waitFor"]>[0];
+type RouteOptions = Parameters<Route["fulfill"]>[0];
 
 export const EXACT = { exact: true };
 export const FORCE = { force: true };
@@ -56,6 +57,7 @@ export const DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS = new Set([
 ]);
 export const OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
 export const SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
+export const WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set(["firefox"]);
 
 export const FILE_DRAG_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
 
@@ -118,3 +120,8 @@ export const CLOCK_REGEX = /^(?:[01]\d|2[0-3])(?::[0-5]\d){2}$/;
 export const BASE_APP_TITLE = "cuteOS";
 export const BASE_APP_FAVICON = /^\/favicon.ico$/;
 export const BASE_APP_FAVICON_TEXT = "/favicon.ico";
+
+export const SLIDESHOW_RESPONSE: Record<string, RouteOptions> = {
+  GET: { body: JSON.stringify([BASE_APP_FAVICON_TEXT]) },
+  HEAD: { contentType: "application/json", status: 200 },
+};
