@@ -26,6 +26,7 @@ import {
   clickFirstDesktopEntry,
   contextMenuEntryIsHidden,
   contextMenuEntryIsVisible,
+  contextMenuHasCount,
   contextMenuIsHidden,
   contextMenuIsVisible,
   desktopEntryIsVisible,
@@ -80,6 +81,8 @@ test.describe("has file(s)", () => {
     });
 
     test("with items", async ({ page }) => {
+      await contextMenuHasCount(FILE_MENU_ITEMS.length, { page });
+
       for (const label of FILE_MENU_ITEMS) {
         // eslint-disable-next-line no-await-in-loop
         await contextMenuEntryIsVisible(label, { page });
@@ -121,6 +124,8 @@ test.describe("has file(s)", () => {
       await contextMenuIsVisible({ page });
       await clickContextMenuEntry(/^Paste$/, { page });
 
+      // TODO: copy dialog shows
+
       await desktopEntryIsVisible(TEST_ROOT_FILE, { page });
       await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
     });
@@ -139,7 +144,7 @@ test.describe("has file(s)", () => {
 
     // TODO: can rename
     // TODO: can add to archive
-    // TODO: Open & Open with
+    // TODO: open & open with (double click, context, enter)
 
     test("can create shortcut", async ({ page }) => {
       const shortcutFile = `${TEST_ROOT_FILE_TEXT} - Shortcut`;
@@ -219,10 +224,12 @@ test.describe("has context menu", () => {
   });
 
   test("with items", async ({ browserName, page }) => {
-    for (const [label, shown] of filterMenuItems(
-      FOLDER_MENU_ITEMS,
-      browserName
-    )) {
+    const MENU_ITEMS = filterMenuItems(FOLDER_MENU_ITEMS, browserName);
+    const shownCount = MENU_ITEMS.filter(([, shown]) => shown).length;
+
+    await contextMenuHasCount(shownCount, { page });
+
+    for (const [label, shown] of MENU_ITEMS) {
       // eslint-disable-next-line no-await-in-loop
       await (shown
         ? contextMenuEntryIsVisible(label, { page })
@@ -232,4 +239,4 @@ test.describe("has context menu", () => {
 });
 
 // TODO: has back, forward, recent & up
-// TODO: has keyboard shortcuts (Paste, Ctrl: C, X, V)
+// TODO: has keyboard shortcuts (Arrows, Paste, Ctrl: C, X, V)
