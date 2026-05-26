@@ -21,7 +21,6 @@ import {
   RIGHT_CLICK,
   SELECTION_SELECTOR,
   SHEEP_SELECTOR,
-  SLIDESHOW_RESPONSE,
   START_BUTTON_SELECTOR,
   START_MENU_SELECTOR,
   START_MENU_SIDEBAR_SELECTOR,
@@ -29,6 +28,7 @@ import {
   TASKBAR_SELECTOR,
   TEST_APP,
   TEST_APP_CONTAINER_APP,
+  UNKNOWN_ICON_PATH,
   WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS,
   WINDOW_SELECTOR,
   WINDOW_TITLEBAR_ICON_SELECTOR,
@@ -79,17 +79,31 @@ export const loadContainerTestApp = async ({
 
 export const mockPictureSlideshowRequest = async ({
   page,
-}: TestProps): Promise<void> =>
-  page.route("**/slideshow.json", (route) =>
-    route.fulfill(SLIDESHOW_RESPONSE[route.request().method()])
+}: TestProps): Promise<() => Promise<void>> => {
+  let requested = false;
+
+  await page.route("/Users/Public/Pictures/slideshow.json", (route) =>
+    route.fulfill({ body: JSON.stringify([UNKNOWN_ICON_PATH]) })
   );
+  await page.route(UNKNOWN_ICON_PATH, () => {
+    requested = true;
+  });
+
+  return () => expect(() => expect(requested).toBeTruthy()).toPass();
+};
 
 // locator->action
 export const clickDesktop = async (
   { page }: TestProps,
-  right = false
+  right = false,
+  x = 0,
+  y = 0,
+  offset = 0
 ): Promise<void> =>
-  page.locator(DESKTOP_SELECTOR).click(right ? RIGHT_CLICK : undefined);
+  page.locator(DESKTOP_SELECTOR).click({
+    button: right ? "right" : undefined,
+    ...(x && y ? { position: { x: x + offset, y: y + offset } } : {}),
+  });
 
 export const clickStartButton = async ({ page }: TestProps): Promise<void> =>
   page.locator(START_BUTTON_SELECTOR).click();
@@ -194,13 +208,13 @@ export const clickFileExplorer = async (
   page.locator(FILE_EXPLORER_SELECTOR).click(right ? RIGHT_CLICK : undefined);
 
 export const clickFileExplorerEntry = async (
-  label: RegExp,
+  label: RegExp | string,
   { page }: TestProps,
   right = false
 ): Promise<void> =>
   page
     .locator(FILE_EXPLORER_ENTRIES_SELECTOR)
-    .getByLabel(label)
+    .getByLabel(label, EXACT)
     .click(right ? RIGHT_CLICK : undefined);
 
 export const clickMaximizeWindow = async ({ page }: TestProps): Promise<void> =>
@@ -327,11 +341,6 @@ export const windowIsTransparent = async ({ page }: TestProps): Promise<void> =>
 
 export const windowIsOpaque = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(WINDOW_SELECTOR)).toHaveCSS("opacity", "1");
-
-export const windowTitlebarIsVisible = async ({
-  page,
-}: TestProps): Promise<void> =>
-  expect(page.locator(WINDOW_TITLEBAR_SELECTOR)).toBeVisible();
 
 // expect->locator->getBy
 export const calendarIsVisible = async ({ page }: TestProps): Promise<void> =>
@@ -539,10 +548,22 @@ export const clockCanvasMaybeIsVisible = async ({
   }
 };
 
-export const taskbarEntryIsOpen = async (
+export const loadAppWithCanvas = async ({
+  headless,
+  browserName,
+  page,
+}: TestProps): Promise<void> => {
+  await loadApp({ page });
+  await backgroundCanvasMaybeIsVisible({ browserName, headless, page });
+};
+
+export const appIsOpen = async (
   label: RegExp | string,
   page: Page
 ): Promise<void> => {
   await taskbarEntriesAreVisible({ page });
   await taskbarEntryIsVisible(label, { page });
+
+  await windowsAreVisible({ page });
+  await windowTitlebarTextIsVisible(label, { page });
 };

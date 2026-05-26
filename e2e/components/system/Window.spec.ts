@@ -20,14 +20,12 @@ import {
   windowIsOpaque,
   windowIsTransparent,
   windowsAreVisible,
-  windowTitlebarIsVisible,
   windowTitlebarTextIsVisible,
 } from "e2e/functions";
 
 test.beforeEach(disableWallpaper);
 test.beforeEach(loadTestApp);
 test.beforeEach(windowsAreVisible);
-test.beforeEach(windowTitlebarIsVisible);
 test.beforeEach(windowAnimationIsFinished);
 
 test("has title", async ({ page }) =>
