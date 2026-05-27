@@ -106,17 +106,20 @@ export const clickDesktop = async (
     ...(x && y ? { position: { x: x + offset, y: y + offset } } : {}),
   });
 
-export const clickStartButton = async ({ page }: TestProps): Promise<void> =>
-  page.locator(START_BUTTON_SELECTOR).click();
+export const clickStartButton = async (
+  { page }: TestProps,
+  right = false
+): Promise<void> =>
+  page.locator(START_BUTTON_SELECTOR).click(right ? RIGHT_CLICK : undefined);
 
 export const clickStartMenuEntry = async (
-  label: RegExp,
+  label: RegExp | string,
   { page }: TestProps,
   right = false
 ): Promise<void> =>
   page
     .locator(START_MENU_SELECTOR)
-    .getByLabel(label)
+    .getByLabel(label, EXACT)
     .click(right ? RIGHT_CLICK : undefined);
 
 export const doubleClickWindowTitlebar = async ({
@@ -175,9 +178,13 @@ export const dragFirstDesktopEntryToWindow = async ({
 // locator->getByLabel->action
 export const clickClock = async (
   { page }: TestProps,
-  clickCount = 1
+  clickCount = 1,
+  right = false
 ): Promise<void> =>
-  page.locator(TASKBAR_SELECTOR).getByLabel(CLOCK_LABEL).click({ clickCount });
+  page
+    .locator(TASKBAR_SELECTOR)
+    .getByLabel(CLOCK_LABEL)
+    .click({ button: right ? "right" : undefined, clickCount });
 
 export const clickCloseWindow = async ({ page }: TestProps): Promise<void> =>
   page
@@ -199,10 +206,7 @@ export const clickFileExplorerAddressBar = async (
   page
     .locator(FILE_EXPLORER_NAV_SELECTOR)
     .getByLabel(FILE_EXPLORER_ADDRESS_BAR_LABEL)
-    .click({
-      button: right ? "right" : undefined,
-      clickCount,
-    });
+    .click({ button: right ? "right" : undefined, clickCount });
 
 export const clickFileExplorerSearchBox = async ({
   page,
@@ -443,7 +447,7 @@ export const taskbarEntryIsVisible = async (
 ): Promise<void> => entryIsVisible(TASKBAR_ENTRIES_SELECTOR, label, page);
 
 export const startMenuEntryIsVisible = async (
-  label: RegExp,
+  label: RegExp | string,
   { page }: TestProps
 ): Promise<void> => entryIsVisible(START_MENU_SELECTOR, label, page);
 

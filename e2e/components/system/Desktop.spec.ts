@@ -33,10 +33,11 @@ test.beforeEach(desktopIsVisible);
 
 test("has file entry", desktopEntriesAreVisible);
 
-// TODO: has grid (move file on grid)
+// P0: has grid (move file on grid)
+// P0: arrow keys
 
 test.describe("has selection", () => {
-  test("with effect", async ({ page }) => {
+  test("has effect", async ({ page }) => {
     const { width = 0, height = 0 } =
       (await page.locator(DESKTOP_SELECTOR).boundingBox()) || {};
 
@@ -58,14 +59,14 @@ test.describe("has selection", () => {
     expect(boundingBox?.y).toEqual(y);
   });
 
-  // TODO: file entry (single/multi)
+  // P0: file entry (single/multi)
 });
 
 test.describe("has context menu", () => {
   test.beforeEach(async ({ page }) => clickDesktop({ page }, true));
   test.beforeEach(contextMenuIsVisible);
 
-  test("with items", async ({ browserName, page }) => {
+  test("has items", async ({ browserName, page }) => {
     const MENU_ITEMS = filterMenuItems(DESKTOP_MENU_ITEMS, browserName);
     const shownCount = MENU_ITEMS.filter(([, shown]) => shown).length;
 
@@ -79,7 +80,7 @@ test.describe("has context menu", () => {
     }
   });
 
-  test.describe("with file functions", () => {
+  test.describe("has file functions", () => {
     test.beforeEach(desktopEntriesAreVisible);
 
     test("can create folder", async ({ page }) => {
@@ -129,7 +130,7 @@ test.describe("has context menu", () => {
     });
   });
 
-  test("can inspect", async ({ page }) => {
+  test("can inspect page", async ({ page }) => {
     await clickContextMenuEntry(/^Inspect$/, { page });
     await appIsOpen(/^DevTools$/, page);
   });
@@ -146,17 +147,26 @@ test.describe("has context menu", () => {
 });
 
 test.describe("has keyboard shortcuts", () => {
-  test("ctrl + shift + r (open run dialog)", async ({ page }) => {
+  test("can open run dialog (ctrl + shift + r)", async ({ page }) => {
     await pressDesktopKeys("Control+Shift+KeyR", { page });
     await appIsOpen(/^Run$/, page);
   });
 
-  test("ctrl + shift + e (open file explorer)", async ({ page }) => {
+  test("can open file explorer (ctrl + shift + e)", async ({ page }) => {
     await pressDesktopKeys("Control+Shift+KeyE", { page });
     await appIsOpen(/^My PC$/, page);
   });
 
-  // TODO: Ctrl+Shift+D
-  // TODO: Ctrl: ESCAPE, F10, F12
-  // TODO: F11 (Fullscreen), Arrows
+  test("can open terminal (shift + f10)", async ({ page }) => {
+    await pressDesktopKeys("Shift+F10", { page });
+    await appIsOpen(/^Terminal$/, page);
+  });
+
+  test("can inspect page (shift + f12)", async ({ page }) => {
+    await pressDesktopKeys("Shift+F12", { page });
+    await appIsOpen(/^DevTools$/, page);
+  });
+
+  // P1: Control+Shift+D
+  // P2: F11 (Fullscreen)
 });

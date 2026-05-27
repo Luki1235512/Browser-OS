@@ -59,13 +59,15 @@ test("has address bar", async ({ page }) => {
   await contextMenuIsVisible({ page });
   await clickContextMenuEntry(/^Copy address$/, { page });
 
-  // TODO: Test clipboard on clicking copy
+  // P2: Test clipboard on clicking copy
 
   await contextMenuIsHidden({ page });
   await fileExplorerAddressBarHasValue(TEST_APP_TITLE, { page });
+
+  // P0: Test changing address
 });
 
-test("has search box", async ({ page }) => {
+test("can search", async ({ page }) => {
   await clickFileExplorerSearchBox({ page });
   await typeInFileExplorerSearchBox(TEST_SEARCH, { page });
 
@@ -80,7 +82,7 @@ test.describe("has file(s)", () => {
       await contextMenuIsVisible({ page });
     });
 
-    test("with items", async ({ page }) => {
+    test("has items", async ({ page }) => {
       await contextMenuHasCount(FILE_MENU_ITEMS.length, { page });
 
       for (const label of FILE_MENU_ITEMS) {
@@ -124,7 +126,7 @@ test.describe("has file(s)", () => {
       await contextMenuIsVisible({ page });
       await clickContextMenuEntry(/^Paste$/, { page });
 
-      // TODO: copy dialog shows
+      // P0: copy dialog shows
 
       await desktopEntryIsVisible(TEST_ROOT_FILE, { page });
       await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
@@ -142,9 +144,9 @@ test.describe("has file(s)", () => {
       await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
     });
 
-    // TODO: can rename
-    // TODO: can add to archive
-    // TODO: open & open with (double click, context, enter)
+    // P0: can rename
+    // P1: can add to archive
+    // P0: open & open with (double click, context, enter)
 
     test("can create shortcut", async ({ page }) => {
       const shortcutFile = `${TEST_ROOT_FILE_TEXT} - Shortcut`;
@@ -178,9 +180,11 @@ test.describe("has file(s)", () => {
 
     await expect(entryInfo).toContainText(/^\d items$/);
     await expect(selectedInfo).toContainText(/^1 item selected|\d{3} bytes$/);
+
+    // P0: multi select
   });
 
-  test("with tooltip", async ({ page }) => {
+  test("has tooltip", async ({ page }) => {
     const responsePromise = page.waitForResponse(TEST_ROOT_FILE_TEXT);
 
     clickFileExplorerEntry(TEST_ROOT_FILE, { page });
@@ -191,11 +195,11 @@ test.describe("has file(s)", () => {
     });
   });
 
-  // TODO: can drag (to Desktop)
-  // TODO: can drop (from Desktop)
+  // P0: can drag (to Desktop)
+  // P0: can drop (from Desktop)
 });
 
-test("changes title", async ({ page }) => {
+test("can change page title", async ({ page }) => {
   const focusedAppPageTitle = `${TEST_APP_TITLE_TEXT} - ${BASE_APP_TITLE}`;
 
   await pageHasTitle(focusedAppPageTitle, { page });
@@ -207,7 +211,7 @@ test("changes title", async ({ page }) => {
   await pageHasTitle(focusedAppPageTitle, { page });
 });
 
-test("changes icon", async ({ page }) => {
+test("can change page icon", async ({ page }) => {
   await pageHasIcon(TEST_APP_ICON, { page });
 
   await clickFirstDesktopEntry({ page });
@@ -223,7 +227,7 @@ test.describe("has context menu", () => {
     await contextMenuIsVisible({ page });
   });
 
-  test("with items", async ({ browserName, page }) => {
+  test("has items", async ({ browserName, page }) => {
     const MENU_ITEMS = filterMenuItems(FOLDER_MENU_ITEMS, browserName);
     const shownCount = MENU_ITEMS.filter(([, shown]) => shown).length;
 
@@ -238,5 +242,6 @@ test.describe("has context menu", () => {
   });
 });
 
-// TODO: has back, forward, recent & up
-// TODO: has keyboard shortcuts (Arrows, Paste, Ctrl: C, X, V)
+// P0: has back, forward, recent & up
+// P0: has keyboard shortcuts (Arrows, Paste, Ctrl: C, X, V, Backspace)
+// P0: has properties
