@@ -12,6 +12,7 @@ import {
   doubleClickWindowTitlebar,
   doubleClickWindowTitlebarIcon,
   dragWindowToDesktop,
+  fileExplorerEntriesAreVisible,
   loadTestApp,
   pressDesktopKeys,
   triggerFullscreenDetection,
@@ -28,6 +29,7 @@ test.beforeEach(disableWallpaper);
 test.beforeEach(loadTestApp);
 test.beforeEach(windowsAreVisible);
 test.beforeEach(windowAnimationIsFinished);
+test.beforeEach(fileExplorerEntriesAreVisible);
 
 test("has title", async ({ page }) =>
   windowTitlebarTextIsVisible(TEST_APP_TITLE_TEXT, { page }));
@@ -115,6 +117,5 @@ test("can resize", async ({ page }) => {
 });
 
 // TEST: has context menu
-// TEST: has keyboard shortcuts (Ctrl+Shift+Arrows)
-// TEST: focus/blur
-// TEST: foreground/background
+// TEST: has keyboard shortcuts (Ctrl+Shift+Up/Down)
+// TEST: focus/blur | foreground/background focus
