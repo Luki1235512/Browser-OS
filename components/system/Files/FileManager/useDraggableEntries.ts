@@ -9,6 +9,7 @@ import {
   haltEvent,
   updateIconPositions,
 } from "utils/functions";
+import { getMimeType } from "../FileEntry/functions";
 
 type DraggableEntryProps = {
   draggable: boolean;
@@ -103,16 +104,28 @@ const useDraggableEntries = (
       }
 
       focusEntry(file);
+
+      const singleFile = focusedEntries.length <= 1;
+
       event.nativeEvent.dataTransfer?.setData(
         "application/json",
         JSON.stringify(
-          focusedEntries.length <= 1
+          singleFile
             ? [join(entryUrl, file)]
             : focusedEntries.map((entryFile) => join(entryUrl, entryFile))
         )
       );
 
-      if (focusedEntries.length > 1 && dragImageRef.current) {
+      if (singleFile) {
+        event.nativeEvent.dataTransfer?.setData(
+          "DownloadURL",
+          `${getMimeType(file) || "application/octet-stream"}:${file}:${
+            window.location.href
+          }${join(entryUrl, file)}`
+        );
+      }
+
+      if (!singleFile && dragImageRef.current) {
         const iconPositionKeys = Object.keys(iconPositions);
 
         if (
