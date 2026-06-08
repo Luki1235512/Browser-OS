@@ -1,7 +1,8 @@
+import { m as motion } from "framer-motion";
 import styled from "styled-components";
 import { TASKBAR_HEIGHT } from "utils/constants";
 
-const StyledCalendar = styled.section`
+const StyledCalendar = styled(motion.section)`
   backdrop-filter: ${({ theme }) => `blur(${theme.sizes.taskbar.blur})`};
   background-color: ${({ theme }) => theme.colors.taskbar.background};
   border: ${({ theme }) => `1px solid ${theme.colors.taskbar.peekBorder}`};
@@ -24,6 +25,7 @@ const StyledCalendar = styled.section`
       text-align: center;
       width: 46px;
 
+      &.prev,
       &.next {
         color: rgb(125, 125, 125);
       }
