@@ -74,6 +74,7 @@ const getPublicDirectoryIcons = (directory) => [
           }
         }
       }
+
       return icons;
     }, [])
   ),
