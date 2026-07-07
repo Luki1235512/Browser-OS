@@ -167,9 +167,9 @@ const useFolderContextMenu = (
       }),
     };
 
-    currentMediaStream = await navigator.mediaDevices.getDisplayMedia(
-      displayMediaOptions
-    );
+    // prettier-ignore
+    currentMediaStream =
+      await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
 
     const [currentVideoTrack] = currentMediaStream.getVideoTracks();
     const { height, width } = currentVideoTrack.getSettings();
