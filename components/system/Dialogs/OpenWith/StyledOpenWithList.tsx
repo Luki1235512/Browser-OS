@@ -1,13 +1,18 @@
 import styled from "styled-components";
 
-const StyledOpenWithList = styled.ul`
+type StyledOpenWithListProps = {
+  $hideBorder?: boolean;
+};
+
+const StyledOpenWithList = styled.ul<StyledOpenWithListProps>`
   border-top: 1px solid transparent;
   padding-bottom: 9px;
   position: relative;
   width: 100%;
 
   &::before {
-    border-top: 1px solid rgb(230, 180, 220);
+    border-top: ${({ $hideBorder }) =>
+      `1px solid ${$hideBorder ? "transparent" : "rgb(230, 180, 220)"}`};
     content: "";
     height: 1px;
     left: 17px;
