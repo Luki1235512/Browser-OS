@@ -224,6 +224,7 @@ yarn dev
 ##### Production
 
 ```
+yarn install
 yarn build
 yarn start
 ```
