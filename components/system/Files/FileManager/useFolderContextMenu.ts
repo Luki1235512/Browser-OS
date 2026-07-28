@@ -209,7 +209,7 @@ const useFolderContextMenu = (
         if (
           supportsWebm &&
           !isFirefoxOrSafari &&
-          currentMediaRecorder?.state === "inactive"
+          (!currentMediaRecorder || currentMediaRecorder.state === "inactive")
         ) {
           const { default: fixWebmDuration } = await import(
             "fix-webm-duration"
