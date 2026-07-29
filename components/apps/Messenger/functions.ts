@@ -46,7 +46,6 @@ export const processMessages = (
   const messageIds = new Set(messages.map(({ id }) => id));
   const newMessages = events
     .filter(({ id }) => !messageIds.has(id))
-    /* eslint-disable camelcase */
     .map(({ content, created_at, id, pubkey, tags }) => ({
       content,
       created_at,
@@ -57,7 +56,6 @@ export const processMessages = (
           : pubkey,
       sent: pubkey === publicKey,
     }));
-  /* eslint-enable camelcase */
 
   return newMessages.length > 0 ? [...messages, ...newMessages] : messages;
 };
