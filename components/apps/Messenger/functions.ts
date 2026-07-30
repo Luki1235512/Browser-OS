@@ -1,12 +1,21 @@
-import { nip19, nip04, generatePrivateKey, getPublicKey } from "nostr-tools";
+import {
+  nip19,
+  nip04,
+  generatePrivateKey,
+  getPublicKey,
+  getEventHash,
+  getSignature,
+} from "nostr-tools";
 import type { Event } from "nostr-tools";
 import type { Messages, NostrEvents } from "components/apps/Messenger/types";
 import {
   BASE_RW_RELAYS,
-  DM_EVENTS,
+  DM_KIND,
   PRIVATE_KEY_IDB_NAME,
   PUBLIC_KEY_IDB_NAME,
 } from "components/apps/Messenger/constants";
+import { MILLISECONDS_IN_SECOND } from "utils/constants";
+import { dateToUnix } from "nostr-react";
 
 export const getRelayUrls = async (): Promise<string[]> =>
   window.nostr?.getRelays
@@ -38,6 +47,12 @@ export const maybeGetExistingPublicKey = async (): Promise<string> =>
   localStorage.getItem(PUBLIC_KEY_IDB_NAME) ||
   "";
 
+export const getKeyFromTags = (tags: string[][] = []): string => {
+  const [, key = ""] = tags.find(([tag]) => tag === "p") || [];
+
+  return key;
+};
+
 export const processMessages = (
   events: Event[],
   messages: Messages,
@@ -50,10 +65,7 @@ export const processMessages = (
       content,
       created_at,
       id,
-      pubkey:
-        pubkey === publicKey
-          ? tags?.find(([tag]) => tag === "p")?.[1] || ""
-          : pubkey,
+      pubkey: pubkey === publicKey ? getKeyFromTags(tags) || "" : pubkey,
       sent: pubkey === publicKey,
     }));
 
@@ -75,11 +87,26 @@ export const decryptMessage = async (
   return "";
 };
 
+export const encryptMessage = async (
+  content: string,
+  pubkey: string
+): Promise<string> => {
+  try {
+    return await (window.nostr?.nip04
+      ? window.nostr.nip04.encrypt(pubkey, content)
+      : nip04.encrypt(toHexKey(getPrivateKey()), pubkey, content));
+  } catch {
+    // Ignore failure to encrypt
+  }
+
+  return "";
+};
+
 export const getReceivedMessages = (publicKey?: string): NostrEvents => ({
   enabled: !!publicKey,
   filter: {
     "#p": publicKey ? [publicKey] : [],
-    ...DM_EVENTS,
+    kinds: [DM_KIND],
   },
 });
 
@@ -87,7 +114,7 @@ export const getSentMessages = (publicKey?: string): NostrEvents => ({
   enabled: !!publicKey,
   filter: {
     authors: publicKey ? [publicKey] : [],
-    ...DM_EVENTS,
+    kinds: [DM_KIND],
   },
 });
 
@@ -106,8 +133,45 @@ export const getPublicHexKey = (existingPublicKey?: string): string => {
 export const descCreatedAt = (a: Event, b: Event): number =>
   b.created_at - a.created_at;
 
-export const getKeyFromTags = (tags: string[][] = []): string => {
-  const [, key = ""] = tags.find(([tag]) => tag === "p") || [];
+export const shortTimeStamp = (timestamp: number): string => {
+  const now = Date.now();
+  const time = new Date(timestamp * MILLISECONDS_IN_SECOND).getTime();
+  const diff = now - time;
+  const seconds = Math.floor(diff / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  const weeks = Math.floor(days / 7);
 
-  return key;
+  if (weeks > 0) return `${weeks}w`;
+  if (days > 0) return `${days}d`;
+  if (hours > 0) return `${hours}h`;
+  if (minutes > 0) return `${minutes}m`;
+  if (seconds < 10) return "now";
+
+  return `${seconds}s`;
+};
+
+export const createMessageEvent = async (
+  message: string,
+  publicKey: string,
+  recipientPublicKey: string
+): Promise<Event> => {
+  let event = {
+    content: await encryptMessage(message, recipientPublicKey),
+    created_at: dateToUnix(),
+    kind: DM_KIND,
+    pubkey: publicKey,
+    tags: [["p", recipientPublicKey]],
+  } as Event;
+
+  event.id = getEventHash(event);
+
+  if (window.nostr?.signEvent) {
+    event = await window.nostr.signEvent(event);
+  } else {
+    event.sig = getSignature(event, toHexKey(getPrivateKey()));
+  }
+
+  return event;
 };
