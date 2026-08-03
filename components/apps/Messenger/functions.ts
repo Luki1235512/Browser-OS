@@ -7,7 +7,7 @@ import {
   getSignature,
 } from "nostr-tools";
 import type { Event } from "nostr-tools";
-import type { Messages, NostrEvents } from "components/apps/Messenger/types";
+import type { NostrEvents } from "components/apps/Messenger/types";
 import {
   BASE_RW_RELAYS,
   DM_KIND,
@@ -17,17 +17,23 @@ import {
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
 import { dateToUnix } from "nostr-react";
 
-export const getRelayUrls = async (): Promise<string[]> =>
-  window.nostr?.getRelays
-    ? [
-        ...new Set([
-          ...BASE_RW_RELAYS,
-          ...Object.entries(await window.nostr.getRelays())
-            .filter(([, { read, write }]) => read && write)
-            .map(([url]) => url),
-        ]),
-      ]
-    : BASE_RW_RELAYS;
+export const getRelayUrls = async (
+  publicKey: string,
+  wellKnownRelays: Record<string, string[]>
+): Promise<string[]> => {
+  const relays = wellKnownRelays[publicKey] || BASE_RW_RELAYS;
+
+  if (window.nostr?.getRelays) {
+    return [
+      ...new Set([
+        ...relays,
+        ...Object.entries(await window.nostr.getRelays()).map(([url]) => url),
+      ]),
+    ];
+  }
+
+  return relays;
+};
 
 export const toHexKey = (key: string): string => {
   if (key.startsWith("npub") || key.startsWith("nsec")) {
@@ -51,25 +57,6 @@ export const getKeyFromTags = (tags: string[][] = []): string => {
   const [, key = ""] = tags.find(([tag]) => tag === "p") || [];
 
   return key;
-};
-
-export const processMessages = (
-  events: Event[],
-  messages: Messages,
-  publicKey: string
-): Messages => {
-  const messageIds = new Set(messages.map(({ id }) => id));
-  const newMessages = events
-    .filter(({ id }) => !messageIds.has(id))
-    .map(({ content, created_at, id, pubkey, tags }) => ({
-      content,
-      created_at,
-      id,
-      pubkey: pubkey === publicKey ? getKeyFromTags(tags) || "" : pubkey,
-      sent: pubkey === publicKey,
-    }));
-
-  return newMessages.length > 0 ? [...messages, ...newMessages] : messages;
 };
 
 export const decryptMessage = async (
@@ -129,6 +116,9 @@ export const getPublicHexKey = (existingPublicKey?: string): string => {
 
   return toHexKey(newPublicKey);
 };
+
+export const ascCreatedAt = (a: Event, b: Event): number =>
+  a.created_at - b.created_at;
 
 export const descCreatedAt = (a: Event, b: Event): number =>
   b.created_at - a.created_at;
