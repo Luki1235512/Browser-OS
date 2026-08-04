@@ -8,61 +8,61 @@ import {
   toHexKey,
   getPublicHexKey,
   maybeGetExistingPublicKey,
+  dataToProfile,
 } from "components/apps/Messenger/functions";
-import { nip19 } from "nostr-tools";
 import type { NIP05Result } from "nostr-tools/lib/nip05";
 import type {
   NostrProfile,
   NostrContacts,
 } from "components/apps/Messenger/types";
+import { useProcesses } from "contexts/process";
+import directory from "contexts/process/directory";
+import { NOTIFICATION_SOUND } from "components/apps/Messenger/constants";
+import { MILLISECONDS_IN_MINUTE } from "utils/constants";
 
-type ProfileData = Metadata & { npub?: string };
+const cachedNostrProfiles: Record<string, NostrProfile | undefined> = {};
 
-const dataToProfile = (publicKey: string, data?: ProfileData): NostrProfile => {
-  const {
-    about,
-    banner,
-    display_name,
-    name,
-    npub,
-    picture,
-    username,
-    website,
-  } = data || {};
-
-  return {
-    about,
-    banner,
-    picture,
-    userName:
-      display_name ||
-      name ||
-      username ||
-      (npub || nip19.npubEncode(publicKey)).slice(0, 12),
-    website,
-  };
-};
+const PROFILE_CACHE_TIMEOUT_MINUTES = 60;
 
 export const useNostrProfile = (publicKey: string): NostrProfile => {
-  const [profile, setProfile] = useState<ProfileData>({} as ProfileData);
+  const cachedProfile = useMemo(
+    () => cachedNostrProfiles[publicKey],
+    [publicKey]
+  );
+  const [profile, setProfile] = useState<NostrProfile>({} as NostrProfile);
   const { onEvent } = useNostrEvents({
+    enabled: !cachedProfile,
     filter: {
       authors: [publicKey],
       kinds: [0],
     },
   });
 
+  useEffect(
+    () => setProfile(cachedProfile || dataToProfile(publicKey)),
+    [cachedProfile, publicKey]
+  );
+
   onEvent(({ content }) => {
     try {
       const metadata = JSON.parse(content) as Metadata;
 
-      if (metadata) setProfile(metadata);
+      if (metadata) {
+        const data = dataToProfile(publicKey, metadata);
+
+        setProfile(data);
+
+        cachedNostrProfiles[publicKey] = data;
+        window.setTimeout(() => {
+          cachedNostrProfiles[publicKey] = undefined;
+        }, MILLISECONDS_IN_MINUTE * PROFILE_CACHE_TIMEOUT_MINUTES);
+      }
     } catch {
       // Ignore errors parsing profile data
     }
   });
 
-  return dataToProfile(publicKey, profile);
+  return cachedProfile || profile;
 };
 
 export const useNip05 = (): NIP05Result => {
@@ -95,7 +95,9 @@ export const useNip05 = (): NIP05Result => {
 
 export const useNostrContacts = (
   publicKey: string,
-  wellKnownNames: Record<string, string>
+  wellKnownNames: Record<string, string>,
+  loginTime: number,
+  seenEventIds: string[]
 ): NostrContacts => {
   const globalContacts = useMemo(
     () => Object.values(wellKnownNames).map((key) => toHexKey(key)),
@@ -132,8 +134,18 @@ export const useNostrContacts = (
       ),
     [contactKeys, events]
   );
+  const unreadEvents = useMemo(
+    () =>
+      events.filter(
+        ({ created_at, id, pubkey }) =>
+          pubkey !== publicKey &&
+          created_at > loginTime &&
+          !seenEventIds.includes(id)
+      ),
+    [events, loginTime, publicKey, seenEventIds]
+  );
 
-  return { contactKeys, events, lastEvents };
+  return { contactKeys, events, lastEvents, unreadEvents };
 };
 
 export const usePublicKey = (): string => {
@@ -144,4 +156,24 @@ export const usePublicKey = (): string => {
   }, []);
 
   return publicKey;
+};
+
+export const useUnreadStatus = (id: string, unreadCount: number): void => {
+  const [currentUnreadCount, setCurrentUnreadCount] = useState(unreadCount);
+  const { title } = useProcesses();
+
+  useEffect(() => {
+    title(
+      id,
+      `${directory[id]?.title}${unreadCount > 0 ? ` (${unreadCount})` : ""}`
+    );
+  }, [id, title, unreadCount]);
+
+  useEffect(() => {
+    if (unreadCount > currentUnreadCount) {
+      new Audio(NOTIFICATION_SOUND).play();
+    }
+
+    setCurrentUnreadCount(unreadCount);
+  }, [currentUnreadCount, unreadCount]);
 };

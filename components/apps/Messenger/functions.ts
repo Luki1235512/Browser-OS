@@ -7,7 +7,11 @@ import {
   getSignature,
 } from "nostr-tools";
 import type { Event } from "nostr-tools";
-import type { NostrEvents } from "components/apps/Messenger/types";
+import type {
+  NostrEvents,
+  NostrProfile,
+  ProfileData,
+} from "components/apps/Messenger/types";
 import {
   BASE_RW_RELAYS,
   DM_KIND,
@@ -59,14 +63,23 @@ export const getKeyFromTags = (tags: string[][] = []): string => {
   return key;
 };
 
+const decryptedContent: Record<string, string> = {};
+
 export const decryptMessage = async (
+  id: string,
   content: string,
   pubkey: string
 ): Promise<string> => {
+  if (decryptedContent[id]) return decryptedContent[id];
+
   try {
-    return await (window.nostr?.nip04
+    const message = await (window.nostr?.nip04
       ? window.nostr.nip04.decrypt(pubkey, content)
       : nip04.decrypt(toHexKey(getPrivateKey()), pubkey, content));
+
+    decryptedContent[id] = message;
+
+    return message;
   } catch {
     // Ignore failure to decrypt
   }
@@ -164,4 +177,32 @@ export const createMessageEvent = async (
   }
 
   return event;
+};
+
+export const dataToProfile = (
+  publicKey: string,
+  data?: ProfileData
+): NostrProfile => {
+  const {
+    about,
+    banner,
+    display_name,
+    name,
+    npub,
+    picture,
+    username,
+    website,
+  } = data || {};
+
+  return {
+    about,
+    banner,
+    picture,
+    userName:
+      display_name ||
+      name ||
+      username ||
+      (npub || nip19.npubEncode(publicKey)).slice(0, 12),
+    website,
+  };
 };

@@ -14,7 +14,7 @@ type ContactProps = {
   onClick: () => void;
   pubkey: string;
   publicKey: string;
-  recipientPublicKey: string;
+  unreadEvent: boolean;
 };
 
 const Contact: FC<ContactProps> = ({
@@ -22,18 +22,24 @@ const Contact: FC<ContactProps> = ({
   onClick,
   pubkey,
   publicKey,
-  recipientPublicKey,
+  unreadEvent,
 }) => {
-  const { content = "", created_at = 0, pubkey: eventPubkey } = lastEvent || {};
+  const {
+    content = "",
+    created_at = 0,
+    id,
+    pubkey: eventPubkey,
+  } = lastEvent || {};
   const [decryptedContent, setDecryptedContent] = useState("");
   const [timeStamp, setTimeStamp] = useState("");
   const { picture, userName } = useNostrProfile(pubkey);
+  const unreadClass = unreadEvent ? "unread" : undefined;
 
   useEffect(() => {
     if (content) {
-      decryptMessage(content, pubkey).then(setDecryptedContent);
+      decryptMessage(id, content, pubkey).then(setDecryptedContent);
     }
-  }, [content, pubkey]);
+  }, [content, id, pubkey]);
 
   useEffect(() => {
     let interval = 0;
@@ -51,14 +57,14 @@ const Contact: FC<ContactProps> = ({
   }, [created_at, lastEvent]);
 
   return (
-    <li className={recipientPublicKey === pubkey ? "selected" : undefined}>
+    <li className={unreadClass}>
       <Button onClick={onClick}>
         <figure>
           {picture ? <img alt={userName} src={picture} /> : <Avatar />}
           <figcaption>
             <span>{userName}</span>
             <div>
-              <div>
+              <div className={unreadClass}>
                 {eventPubkey === publicKey ? "You: " : ""}
                 {decryptedContent || content}
               </div>
