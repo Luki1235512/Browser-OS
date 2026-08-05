@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   decryptMessage,
   shortTimeStamp,
 } from "components/apps/Messenger/functions";
 import { MILLISECONDS_IN_MINUTE } from "utils/constants";
-import { type Event } from "nostr-tools";
+import { nip19, type Event } from "nostr-tools";
 import { useNostrProfile } from "components/apps/Messenger/hooks";
-import { Avatar } from "components/apps/Messenger/Icons";
 import Button from "styles/common/Button";
+import { useMenu } from "contexts/menu";
+import Profile from "components/apps/Messenger/Profile";
 
 type ContactProps = {
   lastEvent: Event;
@@ -34,6 +35,18 @@ const Contact: FC<ContactProps> = ({
   const [timeStamp, setTimeStamp] = useState("");
   const { picture, userName } = useNostrProfile(pubkey);
   const unreadClass = unreadEvent ? "unread" : undefined;
+  const { contextMenu } = useMenu();
+  const { onContextMenuCapture } = useMemo(
+    () =>
+      contextMenu?.(() => [
+        {
+          action: () =>
+            navigator.clipboard?.writeText(nip19.npubEncode(pubkey)),
+          label: "Copy npub address",
+        },
+      ]),
+    [contextMenu, pubkey]
+  );
 
   useEffect(() => {
     if (content) {
@@ -57,22 +70,18 @@ const Contact: FC<ContactProps> = ({
   }, [created_at, lastEvent]);
 
   return (
-    <li className={unreadClass}>
+    <li className={unreadClass} onContextMenuCapture={onContextMenuCapture}>
       <Button onClick={onClick}>
-        <figure>
-          {picture ? <img alt={userName} src={picture} /> : <Avatar />}
-          <figcaption>
-            <span>{userName}</span>
-            <div>
-              <div className={unreadClass}>
-                {eventPubkey === publicKey ? "You: " : ""}
-                {decryptedContent || content}
-              </div>
-              {timeStamp ? "·" : ""}
-              <div>{timeStamp}</div>
+        <Profile picture={picture} userName={userName}>
+          <div>
+            <div className={unreadClass}>
+              {eventPubkey === publicKey ? "You: " : ""}
+              {decryptedContent || content}
             </div>
-          </figcaption>
-        </figure>
+            {timeStamp ? "·" : ""}
+            <div>{timeStamp}</div>
+          </div>
+        </Profile>
       </Button>
     </li>
   );
