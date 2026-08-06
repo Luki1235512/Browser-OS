@@ -13,6 +13,7 @@ import type {
   ProfileData,
 } from "components/apps/Messenger/types";
 import {
+  BASE_NIP05_URL,
   BASE_RW_RELAYS,
   DM_KIND,
   PRIVATE_KEY_IDB_NAME,
@@ -21,6 +22,7 @@ import {
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
 import { dateToUnix } from "nostr-react";
 import type { ProfilePointer } from "nostr-tools/lib/nip19";
+import type { NIP05Result } from "nostr-tools/lib/nip05";
 
 export const getRelayUrls = async (
   publicKey: string,
@@ -32,7 +34,9 @@ export const getRelayUrls = async (
     return [
       ...new Set([
         ...relays,
-        ...Object.entries(await window.nostr.getRelays()).map(([url]) => url),
+        ...Object.entries(await window.nostr.getRelays()).map(([url]) =>
+          url.endsWith("/") ? url.slice(0, -1) : url
+        ),
       ]),
     ];
   }
@@ -74,8 +78,10 @@ export const decryptMessage = async (
   id: string,
   content: string,
   pubkey: string
-): Promise<string> => {
+): Promise<string | false> => {
   if (decryptedContent[id]) return decryptedContent[id];
+
+  decryptedContent[id] = content;
 
   try {
     const message = await (window.nostr?.nip04
@@ -86,13 +92,13 @@ export const decryptMessage = async (
 
     return message;
   } catch {
-    // Ignore failure to decrypt
-  }
+    decryptedContent[id] = "";
 
-  return "";
+    return false;
+  }
 };
 
-export const encryptMessage = async (
+const encryptMessage = async (
   content: string,
   pubkey: string
 ): Promise<string> => {
@@ -101,7 +107,7 @@ export const encryptMessage = async (
       ? window.nostr.nip04.encrypt(pubkey, content)
       : nip04.encrypt(toHexKey(getPrivateKey()), pubkey, content));
   } catch {
-    // Ignore failure to encrypt
+    // Ignore failure to decrypt
   }
 
   return "";
@@ -193,6 +199,7 @@ export const dataToProfile = (
     banner,
     display_name,
     name,
+    nip05,
     npub,
     picture,
     username,
@@ -202,6 +209,7 @@ export const dataToProfile = (
   return {
     about,
     banner,
+    nip05,
     picture,
     userName:
       display_name ||
@@ -238,3 +246,63 @@ export const getPublicHexFromNostrAddress = (key: string): string => {
     return "";
   }
 };
+
+const verifiedNip05Addresses: Record<string, string> = {};
+
+export const verifyNip05 = async (
+  nip05address?: string,
+  pubkey?: string
+): Promise<boolean> => {
+  try {
+    if (!nip05address || !pubkey) return false;
+
+    const [userName, domain] = nip05address.split("@");
+
+    if (verifiedNip05Addresses[pubkey] === domain) return true;
+
+    const nostrJson = await fetch(`https://${domain}${BASE_NIP05_URL}`);
+
+    if (nostrJson.ok) {
+      const { names = {} } = ((await nostrJson.json()) as NIP05Result) || {};
+      let verified = false;
+
+      if (userName === "_") {
+        const [userKey, ...otherKeys] = Object.values(names);
+        const keyValue = otherKeys.length === 0 ? userKey : names[userName];
+
+        verified = keyValue === pubkey;
+      } else if (names[userName]) {
+        verified = names[userName] === pubkey;
+      }
+
+      if (verified) {
+        verifiedNip05Addresses[pubkey] = domain;
+      }
+
+      return verified;
+    }
+  } catch {
+    // Ignore error parsing nip05
+  }
+
+  return false;
+};
+
+export const getWebSocketStatusIcon = (status?: number): string => {
+  switch (status) {
+    case WebSocket.prototype.CONNECTING:
+      return "🟡";
+    case WebSocket.prototype.OPEN:
+      return "🟢";
+    case WebSocket.prototype.CLOSING:
+      return "🟠";
+    default:
+      return "🔴";
+  }
+};
+
+export const convertImageLinksToHtml = (content: string): string =>
+  content.replace(
+    /https?:\/\/\S+\.(?:png|jpg|jpeg|gif|webp)/gi,
+    (match) => `<img src="${match}" />`
+  );
