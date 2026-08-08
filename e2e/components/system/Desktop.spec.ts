@@ -1,4 +1,4 @@
-import test, { expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import {
   DESKTOP_MENU_ITEMS,
   DESKTOP_SELECTOR,
@@ -27,7 +27,6 @@ import {
 } from "e2e/functions";
 
 test.beforeEach(disableWallpaper);
-
 test.beforeEach(loadApp);
 test.beforeEach(desktopIsVisible);
 

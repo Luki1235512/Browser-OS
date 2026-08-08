@@ -1,6 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
-import test, { expect } from "@playwright/test";
-import { ACCESSIBILITY_EXCEPTION_IDS } from "./constants";
+import { expect, test } from "@playwright/test";
+import { ACCESSIBILITY_EXCEPTION_IDS } from "e2e/constants";
 import {
   backgroundCanvasMaybeIsVisible,
   captureConsoleLogs,
@@ -9,7 +9,7 @@ import {
   loadApp,
   startButtonIsVisible,
   taskbarIsVisible,
-} from "./functions";
+} from "e2e/functions";
 
 test.beforeEach(captureConsoleLogs);
 test.beforeEach(loadApp);

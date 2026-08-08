@@ -10,8 +10,8 @@ import {
   disableWallpaper,
   dragFirstDesktopEntryToWindow,
   loadContainerTestApp,
-  windowsAreVisible,
   windowTitlebarTextIsVisible,
+  windowsAreVisible,
 } from "e2e/functions";
 
 test.beforeEach(disableWallpaper);

@@ -1,15 +1,15 @@
 import { join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Position } from "react-rnd";
-import { useSession } from "contexts/session";
+import { getMimeType } from "components/system/Files/FileEntry/functions";
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
+import { useSession } from "contexts/session";
 import { MILLISECONDS_IN_SECOND, UNKNOWN_ICON } from "utils/constants";
 import {
   getHtmlToImage,
   haltEvent,
   updateIconPositions,
 } from "utils/functions";
-import { getMimeType } from "../FileEntry/functions";
 
 type DraggableEntryProps = {
   draggable: boolean;

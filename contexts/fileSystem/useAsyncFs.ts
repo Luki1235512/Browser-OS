@@ -4,12 +4,11 @@ import type MountableFileSystem from "browserfs/dist/node/backend/MountableFileS
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import Stats, { FileType } from "browserfs/dist/node/core/node_fs_stats";
 import { useEffect, useMemo, useRef, useState } from "react";
-
 import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
 import {
+  UNKNOWN_STATE_CODES,
   resetStorage,
   supportsIndexedDB,
-  UNKNOWN_STATE_CODES,
 } from "contexts/fileSystem/functions";
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import {

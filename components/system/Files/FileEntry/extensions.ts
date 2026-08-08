@@ -94,7 +94,7 @@ const types = {
     command: "wapm",
     icon: "wapm",
     process: ["Terminal"],
-    type: "WEbAssembly Module File",
+    type: "WebAssembly Module File",
   },
   WinampSkin: {
     icon: "audio",

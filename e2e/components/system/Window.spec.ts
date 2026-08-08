@@ -21,8 +21,8 @@ import {
   windowIsMaximized,
   windowIsOpaque,
   windowIsTransparent,
-  windowsAreVisible,
   windowTitlebarTextIsVisible,
+  windowsAreVisible,
 } from "e2e/functions";
 
 test.beforeEach(disableWallpaper);

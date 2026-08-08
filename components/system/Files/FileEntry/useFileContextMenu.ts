@@ -202,7 +202,7 @@ const useFileContextMenu = (
                 const showMapOpfs =
                   typeof navigator.storage?.getDirectory === "function" &&
                   !isFirefox() &&
-                  !isSafari;
+                  !isSafari();
 
                 menuItems.unshift(
                   ...(showMapDirectory

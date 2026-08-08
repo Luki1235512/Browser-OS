@@ -57,8 +57,8 @@ import {
   pressFileExplorerEntryKeys,
   typeInFileExplorerAddressBar,
   typeInFileExplorerSearchBox,
-  windowsAreVisible,
   windowTitlebarTextIsVisible,
+  windowsAreVisible,
 } from "e2e/functions";
 
 test.beforeEach(disableWallpaper);
