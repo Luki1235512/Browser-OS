@@ -7,12 +7,58 @@ const StyledChatLog = styled.ol`
   overflow-x: auto;
 
   li {
-    border-radius: 18px;
+    border-radius: 15px;
     color: #fff;
     list-style: none;
     margin: 12px;
     padding: 12px;
     position: relative;
+
+    &.sent {
+      background-color: #0084ff;
+      margin-left: 65px;
+    }
+
+    &.received {
+      background-color: #3e4042;
+      margin-left: 40px;
+      margin-right: 50px;
+    }
+
+    &[data-timestamp] {
+      margin-top: 50px;
+
+      &:nth-child(2) {
+        margin-top: 30px;
+      }
+
+      &::before {
+        color: #8b8d92;
+        content: attr(data-timestamp);
+        font-size: 11px;
+        font-weight: 700;
+        left: 0;
+        position: absolute;
+        text-align: center;
+        top: -28px;
+        width: 100%;
+      }
+
+      &.sent {
+        &::before {
+          margin-left: -65px;
+          width: calc(100% + 65px);
+        }
+      }
+
+      &.received {
+        &::before {
+          margin-left: -40px;
+          margin-right: -50px;
+          width: calc(100% + 90px);
+        }
+      }
+    }
 
     div {
       overflow: hidden;
@@ -45,17 +91,6 @@ const StyledChatLog = styled.ol`
           width: 22px;
         }
       }
-    }
-
-    &.sent {
-      background-color: #0084ff;
-      margin-left: 50px;
-    }
-
-    &.received {
-      background-color: #3e4042;
-      margin-left: 40px;
-      margin-right: 50px;
     }
 
     &.cant-decrypt {

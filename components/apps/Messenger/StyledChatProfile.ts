@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const StyledChatProfile = styled.span`
+const StyledChatProfile = styled.li`
   figure {
     display: flex;
     flex-direction: column;
@@ -47,6 +47,7 @@ const StyledChatProfile = styled.span`
         color: rgb(255, 255, 255, 55%);
         font-size: 10px;
         font-weight: 400;
+        overflow-wrap: break-word;
         padding-top: 5px;
         width: 60%;
       }

@@ -1,4 +1,4 @@
-import { useNostrEvents, type Metadata } from "nostr-react";
+import { useNostrEvents } from "nostr-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   getReceivedMessages,
@@ -8,62 +8,17 @@ import {
   toHexKey,
   getPublicHexKey,
   maybeGetExistingPublicKey,
-  dataToProfile,
-  verifyNip05,
+  getNip05Domain,
 } from "components/apps/Messenger/functions";
 import type { NIP05Result } from "nostr-tools/lib/nip05";
-import type {
-  NostrProfile,
-  NostrContacts,
-} from "components/apps/Messenger/types";
+import type { NostrContacts } from "components/apps/Messenger/types";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
-import { NOTIFICATION_SOUND } from "components/apps/Messenger/constants";
-import { MILLISECONDS_IN_MINUTE } from "utils/constants";
-
-const cachedNostrProfiles: Record<string, NostrProfile | undefined> = {};
-
-const PROFILE_CACHE_TIMEOUT_MINUTES = 60;
-
-export const useNostrProfile = (publicKey: string): NostrProfile => {
-  const cachedProfile = useMemo(
-    () => cachedNostrProfiles[publicKey],
-    [publicKey]
-  );
-  const [profile, setProfile] = useState<NostrProfile>({} as NostrProfile);
-  const { onEvent } = useNostrEvents({
-    enabled: !cachedProfile && !!publicKey,
-    filter: {
-      authors: [publicKey],
-      kinds: [0],
-    },
-  });
-
-  useEffect(() => {
-    setProfile(publicKey ? cachedProfile || dataToProfile(publicKey) : {});
-  }, [cachedProfile, publicKey]);
-
-  onEvent(({ content }) => {
-    try {
-      const metadata = JSON.parse(content) as Metadata;
-
-      if (metadata) {
-        const data = dataToProfile(publicKey, metadata);
-
-        setProfile(data);
-
-        cachedNostrProfiles[publicKey] = data;
-        window.setTimeout(() => {
-          cachedNostrProfiles[publicKey] = undefined;
-        }, MILLISECONDS_IN_MINUTE * PROFILE_CACHE_TIMEOUT_MINUTES);
-      }
-    } catch {
-      // Ignore errors parsing profile data
-    }
-  });
-
-  return cachedProfile || profile;
-};
+import {
+  BASE_NIP05_URL,
+  NOTIFICATION_SOUND,
+} from "components/apps/Messenger/constants";
+import { PACKAGE_DATA } from "utils/constants";
 
 export const useNip05 = (): NIP05Result => {
   const [nip05, setNip05] = useState<NIP05Result>();
@@ -71,16 +26,15 @@ export const useNip05 = (): NIP05Result => {
     const nostrJson = await fetch(url);
 
     if (nostrJson.ok) {
-      const { names = {}, relays = {} } =
-        ((await nostrJson.json()) as NIP05Result) || {};
+      const { names = {} } = ((await nostrJson.json()) as NIP05Result) || {};
 
-      setNip05({ names, relays });
+      setNip05({ names });
     }
 
     return nostrJson.ok;
   }, []);
   const fetchNip05Json = useCallback(async (): Promise<void> => {
-    if (!(await updateNip05("/.well-known/nostr.json"))) {
+    if (!(await updateNip05(BASE_NIP05_URL))) {
       setNip05({ relays: {} } as NIP05Result);
     }
   }, [updateNip05]);
@@ -99,7 +53,10 @@ export const useNostrContacts = (
   seenEventIds: string[]
 ): NostrContacts => {
   const globalContacts = useMemo(
-    () => Object.values(wellKnownNames || {}).map((key) => toHexKey(key)),
+    () =>
+      [PACKAGE_DATA?.author?.npub, ...Object.values(wellKnownNames || {})]
+        .filter(Boolean)
+        .map((key) => toHexKey(key)),
     [wellKnownNames]
   );
   const receivedEvents = useNostrEvents(getReceivedMessages(publicKey));
@@ -177,12 +134,12 @@ export const useUnreadStatus = (id: string, unreadCount: number): void => {
   }, [currentUnreadCount, unreadCount]);
 };
 
-export const useVerified = (nip05?: string, publicKey?: string): boolean => {
-  const [isVerified, setIsVerified] = useState(false);
+export const useNip05Domain = (nip05?: string, publicKey?: string): string => {
+  const [nip05Domain, setNip05Domain] = useState("");
 
   useEffect(() => {
-    verifyNip05(nip05, publicKey).then(setIsVerified);
+    getNip05Domain(nip05, publicKey).then(setNip05Domain);
   }, [nip05, publicKey]);
 
-  return isVerified;
+  return nip05Domain;
 };

@@ -3,9 +3,9 @@ import {
   decryptMessage,
   shortTimeStamp,
 } from "components/apps/Messenger/functions";
-import { MILLISECONDS_IN_MINUTE } from "utils/constants";
+import { MENU_SEPARATOR, MILLISECONDS_IN_MINUTE } from "utils/constants";
 import { nip19, type Event } from "nostr-tools";
-import { useNostrProfile } from "components/apps/Messenger/hooks";
+import { useNostrProfile } from "components/apps/Messenger/ProfileContext";
 import Button from "styles/common/Button";
 import { useMenu } from "contexts/menu";
 import Profile from "components/apps/Messenger/Profile";
@@ -40,12 +40,22 @@ const Contact: FC<ContactProps> = ({
     () =>
       contextMenu?.(() => [
         {
+          action: onClick,
+          icon: "🔐",
+          label: "Start end-to-end encrypted chat",
+        },
+        MENU_SEPARATOR,
+        {
           action: () =>
             navigator.clipboard?.writeText(nip19.npubEncode(pubkey)),
           label: "Copy npub address",
         },
+        {
+          action: () => navigator.clipboard?.writeText(pubkey),
+          label: "Copy hex address",
+        },
       ]),
-    [contextMenu, pubkey]
+    [contextMenu, onClick, pubkey]
   );
 
   useEffect(() => {
