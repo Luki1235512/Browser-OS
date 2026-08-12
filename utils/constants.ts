@@ -382,7 +382,7 @@ export const PACKAGE_DATA = {
   alias: "cuteOS",
   author: {
     name: "Luki1235512",
-    npub: "npub12aqtpxwy5qr3nu0f0lha9zw987c3xa9ctsy2t5t9vntyc3st7l2qjnnqyz",
+    npub: "npub10uc7hg6wdxhhd7ee8x9c5lr9d0ux7272rv2m0mc03ds54q7quxjss02r3p",
     url: "https://cute-os.vercel.app",
   },
   description: "Desktop environment in the browser",
