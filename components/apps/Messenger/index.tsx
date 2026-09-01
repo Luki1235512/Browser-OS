@@ -1,6 +1,6 @@
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { NostrProvider } from "nostr-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   getRelayUrls,
   getPublicHexFromNostrAddress,
@@ -31,12 +31,15 @@ import { AnimatePresence } from "framer-motion";
 import StyledChatContainer from "components/apps/Messenger/StyledChatContainer";
 import { useProcesses } from "contexts/process";
 import { MessageProvider } from "components/apps/Messenger/MessageContext";
+import { MILLISECONDS_IN_DAY } from "utils/constants";
+import GetMoreMessages from "components/apps/Messenger/GetMoreMessages";
 
 type NostrChatProps = {
   loginTime: number;
   processId: string;
   publicKey: string;
   relayUrls: string[];
+  setSince: React.Dispatch<React.SetStateAction<number>>;
   wellKnownNames: Record<string, string>;
 };
 
@@ -45,6 +48,7 @@ const NostrChat: FC<NostrChatProps> = ({
   loginTime,
   publicKey,
   relayUrls,
+  setSince,
   wellKnownNames,
 }) => {
   const [seenEventIds, setSeenEventIds] = useState<string[]>([]);
@@ -129,51 +133,55 @@ const NostrChat: FC<NostrChatProps> = ({
 
   return (
     <StyledMessenger>
-      <ProfileProvider>
-        <ProfileBanner
-          goHome={() => changeRecipient("", events)}
-          newChat={() => changeRecipient(UNKNOWN_PUBLIC_KEY)}
-          publicKey={publicKey}
-          relayUrls={relayUrls}
-          selectedRecipientKey={selectedRecipientKey}
-        />
-        <div>
-          <AnimatePresence initial={false} presenceAffectsLayout={false}>
-            {selectedRecipientKey ? (
-              <StyledChatContainer key="chat" {...inRightOutLeft}>
-                {selectedRecipientKey === UNKNOWN_PUBLIC_KEY && (
-                  <To setRecipientKey={setRecipientKey} />
-                )}
-                <ChatLog recipientPublicKey={selectedRecipientKey} />
-                <SendMessage recipientPublicKey={selectedRecipientKey} />
-              </StyledChatContainer>
-            ) : (
-              <StyledContacts
-                key="contacts"
-                onContextMenu={haltEvent}
-                {...inLeftOutRight}
-              >
-                {contactKeys.map((contactKey) => (
-                  <Contact
-                    key={contactKey}
-                    lastEvent={lastEvents[contactKey]}
-                    onClick={() => changeRecipient(contactKey, events)}
-                    pubkey={contactKey}
-                    publicKey={publicKey}
-                    unreadEvent={unreadEvents.includes(lastEvents[contactKey])}
-                  />
-                ))}
-              </StyledContacts>
-            )}
-          </AnimatePresence>
-        </div>
-      </ProfileProvider>
+      <ProfileBanner
+        goHome={() => changeRecipient("", events)}
+        newChat={() => changeRecipient(UNKNOWN_PUBLIC_KEY)}
+        publicKey={publicKey}
+        relayUrls={relayUrls}
+        selectedRecipientKey={selectedRecipientKey}
+      />
+      <div>
+        <AnimatePresence initial={false} presenceAffectsLayout={false}>
+          {selectedRecipientKey ? (
+            <StyledChatContainer key="chat" {...inRightOutLeft}>
+              {selectedRecipientKey === UNKNOWN_PUBLIC_KEY && (
+                <To setRecipientKey={setRecipientKey} />
+              )}
+              <ChatLog recipientPublicKey={selectedRecipientKey} />
+              <SendMessage recipientPublicKey={selectedRecipientKey} />
+            </StyledChatContainer>
+          ) : (
+            <StyledContacts
+              key="contacts"
+              onContextMenu={haltEvent}
+              {...inLeftOutRight}
+            >
+              {contactKeys.map((contactKey) => (
+                <Contact
+                  key={contactKey}
+                  lastEvent={lastEvents[contactKey]}
+                  onClick={() => changeRecipient(contactKey, events)}
+                  pubkey={contactKey}
+                  publicKey={publicKey}
+                  unreadEvent={unreadEvents.includes(lastEvents[contactKey])}
+                />
+              ))}
+              <GetMoreMessages setSince={setSince} />
+            </StyledContacts>
+          )}
+        </AnimatePresence>
+      </div>
     </StyledMessenger>
   );
 };
 
 const Messenger: FC<ComponentProcessProps> = ({ id }) => {
-  const [loginTime, setLoginTime] = useState<number>(0);
+  const [loginTime, setLoginTime] = useState(0);
+  const [since, setSince] = useState(() => MILLISECONDS_IN_DAY);
+  const timeSince = useMemo(
+    () => Math.floor((Date.now() - since) / 1000),
+    [since]
+  );
   const [relayUrls, setRelayUrls] = useState<string[] | undefined>();
   const initStarted = useRef(false);
   const { names } = useNip05();
@@ -192,15 +200,18 @@ const Messenger: FC<ComponentProcessProps> = ({ id }) => {
 
   return publicKey && relayUrls ? (
     <NostrProvider relayUrls={relayUrls}>
-      <MessageProvider publicKey={publicKey}>
-        <NostrChat
-          loginTime={loginTime}
-          processId={id}
-          publicKey={publicKey}
-          relayUrls={relayUrls}
-          wellKnownNames={names}
-        />
-      </MessageProvider>
+      <ProfileProvider>
+        <MessageProvider publicKey={publicKey} since={timeSince}>
+          <NostrChat
+            loginTime={loginTime}
+            processId={id}
+            publicKey={publicKey}
+            relayUrls={relayUrls}
+            setSince={setSince}
+            wellKnownNames={names}
+          />
+        </MessageProvider>
+      </ProfileProvider>
     </NostrProvider>
   ) : (
     <> </>
