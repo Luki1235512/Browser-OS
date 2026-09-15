@@ -223,6 +223,7 @@ Check out the live demo of the application [here](https://cute-os.vercel.app/).
 ##### Development
 
 ```
+yarn install
 yarn build:fs
 yarn dev
 ```
@@ -243,3 +244,7 @@ yarn start
 docker build -t cute-os .
 docker run -dp 3000:3000 --rm --name cute-os cute-os
 ```
+
+#### Notes
+
+- If during `yarn install` you receive the error `digital envelope routines::unsupported`, you need to set `NODE_OPTIONS` to `--openssl-legacy-provider`
