@@ -213,6 +213,24 @@ Check out the live demo of the application [here](https://cute-os.vercel.app/).
 - Playlist & streaming support
 - Visualization support (["Milkdrop"](https://github.com/jberg/butterchurn))
 
+# Games 🎮
+
+### [ClassiCube](https://www.classicube.net/)
+
+- Minecraft Classic compatible client
+
+### [DX-Ball](https://habr.com/en/post/147339/)
+
+- Block breaker arcade game like Arkanoid
+
+### [Space Cadet Pinball](https://github.com/alula/SpaceCadetPinball)
+
+- Reverse engineering of 3D Pinball from Windows
+
+### [Quake III Arena](https://github.com/lrusso/Quake3)
+
+- Port of the classic first-person shooter
+
 # Try It
 
 ##### Requirements
@@ -236,7 +254,7 @@ yarn build
 yarn start
 ```
 
-#### Docker
+##### Docker
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
@@ -245,6 +263,6 @@ docker build -t cute-os .
 docker run -dp 3000:3000 --rm --name cute-os cute-os
 ```
 
-#### Notes
+##### Notes
 
 - If during `yarn install` you receive the error `digital envelope routines::unsupported`, you need to set `NODE_OPTIONS` to `--openssl-legacy-provider`
