@@ -49,3 +49,5 @@ export const inRightOutLeft: MotionProps = {
   initial: { transform: "translateX(-100%)" },
   ...enterExitTransition,
 };
+
+export const SEEN_EVENTS_DEBOUNCE_MS = 16;
