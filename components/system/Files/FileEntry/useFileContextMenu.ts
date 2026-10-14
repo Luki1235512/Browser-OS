@@ -1,3 +1,4 @@
+import { EXTRACTABLE_EXTENSIONS } from "components/system/Files/FileEntry/constants";
 import extensions from "components/system/Files/FileEntry/extensions";
 import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
 import useFile from "components/system/Files/FileEntry/useFile";
@@ -92,7 +93,7 @@ const useFileContextMenu = (
   const { contextMenu } = useMenu();
   const { onContextMenuCapture, ...contextMenuHandlers } = useMemo(
     () =>
-      contextMenu?.(async () => {
+      contextMenu?.(() => {
         const urlExtension = getExtension(url);
         const { process: extensionProcesses = [] } =
           urlExtension in extensions ? extensions[urlExtension] : {};
@@ -407,10 +408,6 @@ const useFileContextMenu = (
                   // Ignore failure to use Share API
                 }
               }
-
-              const { EXTRACTABLE_EXTENSIONS } = await import(
-                "components/system/Files/FileEntry/constants"
-              );
 
               menuItems.unshift(
                 {
