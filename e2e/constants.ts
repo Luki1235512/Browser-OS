@@ -175,7 +175,6 @@ export const START_BUTTON_MENU_ITEMS = [
 ];
 
 export const START_MENU_APPS = [
-  /^AI Chat$/,
   /^Browser$/,
   /^DevTools$/,
   /^IRC$/,
