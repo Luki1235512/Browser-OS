@@ -118,12 +118,6 @@ Check out the live demo of the application [here](https://cute-os.vercel.app/).
   - /Users/Public/Snapshots
 - Automatic window resize
 
-### LLM Chat
-
-- Have conversations with LLM
-- Supports [OpenAI](https://platform.openai.com/docs/api-reference/chat) & [HuggingFace](https://huggingface.co/inference-api) API's
-- Can run locally using [WebLLM](https://mlc.ai/web-llm/)
-
 ### [Marked](https://marked.js.org/) (**_.md_**)
 
 - Markdown Viewer
