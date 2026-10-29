@@ -108,6 +108,7 @@
     "no-constant-binary-expression": "error",
     "no-implicit-coercion": "error",
     "no-new-wrappers": "error",
+    "no-plusplus": "off",
     "no-restricted-syntax": [
       "error",
       "ForInStatement",
