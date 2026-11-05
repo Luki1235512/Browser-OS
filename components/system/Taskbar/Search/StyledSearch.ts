@@ -1,7 +1,6 @@
 import TaskbarPanel from "components/system/Taskbar/TaskbarPanel";
 import { m as motion } from "framer-motion";
 import styled from "styled-components";
-import ScrollBars from "styles/common/ScrollBars";
 
 const StyledSearch = styled(motion.nav)`
   ${({ theme }) =>
@@ -26,7 +25,7 @@ const StyledSearch = styled(motion.nav)`
     width: 100%;
 
     input {
-      border: ${({ theme }) => `2px solid ${theme.colors.titleBar.background}`};
+      border: 2px solid rgb(255, 102, 255);
       color: #000;
       font-size: 15px;
       height: 40px;
@@ -35,14 +34,17 @@ const StyledSearch = styled(motion.nav)`
       width: 100%;
 
       &::placeholder {
-        color: rgb(65, 65, 65);
+        color: #000;
+        inset: 0;
+        left: 37px;
         opacity: 100%;
+        position: absolute;
+        top: 10px;
       }
     }
 
     svg {
       bottom: 12px;
-      fill: ${({ theme }) => theme.colors.titleBar.background};
       height: 16px;
       left: 12px;
       position: absolute;
@@ -66,8 +68,18 @@ const StyledSearch = styled(motion.nav)`
       }
     }
 
+    .no-results {
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      font-size: 30px;
+      height: calc(100% - 52px);
+      place-content: center;
+      place-items: center;
+    }
+
     .tab {
-      color: rgb(255, 200, 255);
+      color: hsla(300, 100%, 90%, 75%);
       display: flex;
       flex-direction: column;
       height: calc(100% - 52px);
@@ -87,7 +99,7 @@ const StyledSearch = styled(motion.nav)`
       }
 
       svg {
-        fill: rgb(255, 150, 255);
+        fill: hsla(300, 100%, 80%, 50%);
         height: 128px;
         width: 128px;
       }
@@ -99,118 +111,6 @@ const StyledSearch = styled(motion.nav)`
     flex-direction: column;
     height: 100%;
     width: 100%;
-
-    .tabs {
-      border-bottom: ${({ theme }) =>
-        `1px solid ${theme.colors.taskbar.peekBorder}`};
-      color: #fff;
-      display: flex;
-      font-size: 12px;
-      font-weight: 600;
-      gap: 1px;
-      padding: 2px 13px 0;
-
-      li {
-        color: rgb(255, 200, 255);
-        padding: 15px 13px 14px;
-
-        &.active {
-          border-bottom: ${({ theme }) =>
-            `4px solid ${theme.colors.highlight}`};
-          color: #fff;
-        }
-
-        &:hover {
-          color: #fff;
-        }
-      }
-    }
-
-    .sections {
-      ${ScrollBars()};
-      color: #fff;
-      display: flex;
-      gap: 20px;
-      height: calc(100% - 52px);
-      overflow: hidden auto;
-      place-content: space-evenly;
-      place-items: start;
-
-      figcaption {
-        font-size: 13px;
-        font-weight: 600;
-      }
-
-      .suggested {
-        display: grid;
-        padding: 9px 0 15px;
-
-        li {
-          border-radius: 5px;
-          display: flex;
-          flex-direction: column;
-          height: 51px;
-          place-items: start;
-          position: relative;
-          width: 100%;
-
-          figure {
-            display: flex;
-            padding: 9px 15px;
-            place-items: center;
-
-            figcaption {
-              font-size: 15px;
-              font-weight: 400;
-              padding-left: 13px;
-              padding-top: 1px;
-            }
-          }
-
-          &::before {
-            border-top: ${({ theme }) =>
-              `1px solid ${theme.colors.taskbar.peekBorder}`};
-            content: "";
-            height: 100%;
-            position: absolute;
-            width: 100%;
-          }
-
-          &:first-child {
-            &::before {
-              border-top: none;
-            }
-          }
-
-          &:hover {
-            background-color: hsla(300, 100%, 40%, 40%);
-
-            &::before {
-              border: none;
-            }
-
-            + li {
-              &::before {
-                border-top: none;
-              }
-            }
-          }
-
-          &:active {
-            background-color: hsla(300, 100%, 40%, 70%);
-          }
-        }
-      }
-
-      section {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        height: 100%;
-        padding: 20px 24px;
-        width: 100%;
-      }
-    }
   }
 `;
 
