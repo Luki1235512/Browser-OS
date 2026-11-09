@@ -1,11 +1,17 @@
+import { SINGLE_LINE_HEIGHT_ADDITION } from "components/system/Taskbar/Search";
 import TaskbarPanel from "components/system/Taskbar/TaskbarPanel";
 import { m as motion } from "framer-motion";
 import styled from "styled-components";
 
-const StyledSearch = styled(motion.nav)`
-  ${({ theme }) =>
+type StyledSearchProps = {
+  $singleLine: boolean;
+};
+
+const StyledSearch = styled(motion.nav)<StyledSearchProps>`
+  ${({ $singleLine, theme }) =>
     TaskbarPanel(
-      theme.sizes.search.maxHeight,
+      theme.sizes.search.maxHeight +
+        ($singleLine ? SINGLE_LINE_HEIGHT_ADDITION : 0),
       theme.sizes.search.size,
       theme.sizes.taskbar.button.width,
       true
@@ -26,6 +32,7 @@ const StyledSearch = styled(motion.nav)`
 
     input {
       border: 2px solid rgb(255, 102, 255);
+      border-radius: 0;
       color: #000;
       font-size: 15px;
       height: 40px;
@@ -38,6 +45,7 @@ const StyledSearch = styled(motion.nav)`
         inset: 0;
         left: 37px;
         opacity: 100%;
+        overflow: visible;
         position: absolute;
         top: 10px;
       }
@@ -69,13 +77,20 @@ const StyledSearch = styled(motion.nav)`
     }
 
     .no-results {
-      color: #fff;
       display: flex;
-      flex-direction: column;
-      font-size: 30px;
-      height: calc(100% - 52px);
-      place-content: center;
+      font-size: 14px;
+      font-weight: 300;
+      padding: 5px 15px;
       place-items: center;
+      pointer-events: none;
+      user-select: none;
+
+      svg {
+        fill: #fff;
+        height: 32px;
+        margin-right: 12px;
+        width: 32px;
+      }
     }
 
     .tab {

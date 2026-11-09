@@ -12,6 +12,7 @@ import type { ResultInfo } from "components/system/Taskbar/Search/functions";
 import { getResultInfo } from "components/system/Taskbar/Search/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
 import { basename, dirname, extname } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
@@ -20,8 +21,9 @@ import { DEFAULT_LOCALE, FOLDER_ICON } from "utils/constants";
 
 const Details: FC<{
   setActiveItem: React.Dispatch<React.SetStateAction<string>>;
+  singleLineView: boolean;
   url: string;
-}> = ({ setActiveItem, url }) => {
+}> = ({ setActiveItem, singleLineView, url }) => {
   const fs = useFileSystem();
   const { stat } = fs;
   const [stats, setStats] = useState<Stats>();
@@ -30,10 +32,11 @@ const Details: FC<{
   } as ResultInfo);
   const { open } = useProcesses();
   const extension = extname(url);
-  const openFile = useCallback(
-    () => open(info?.pid, { url: info?.url }),
-    [info?.pid, info?.url, open]
-  );
+  const { updateRecentFiles } = useSession();
+  const openFile = useCallback(() => {
+    open(info?.pid, { url: info?.url });
+    if (info?.url && info?.pid) updateRecentFiles(info?.url, info?.pid);
+  }, [info?.pid, info?.url, open, updateRecentFiles]);
   const elementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -48,10 +51,12 @@ const Details: FC<{
 
   return info?.url && stats ? (
     <StyledDetails ref={elementRef}>
-      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-      <div className="back" onClick={() => setActiveItem("")}>
-        <RightArrow />
-      </div>
+      {singleLineView && (
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+        <div className="back" onClick={() => setActiveItem("")}>
+          <RightArrow />
+        </div>
+      )}
       <Icon
         displaySize={64}
         imgSize={96}
@@ -87,14 +92,16 @@ const Details: FC<{
             Open
           </Button>
         </li>
-        <li>
-          <Button
-            onClick={() => open("FileExplorer", { url: dirname(info?.url) })}
-          >
-            <OpenFolder />
-            Open file location
-          </Button>
-        </li>
+        {dirname(info?.url) !== "." && (
+          <li>
+            <Button
+              onClick={() => open("FileExplorer", { url: dirname(info?.url) })}
+            >
+              <OpenFolder />
+              Open file location
+            </Button>
+          </li>
+        )}
       </ol>
     </StyledDetails>
   ) : (
