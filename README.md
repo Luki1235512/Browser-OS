@@ -54,6 +54,7 @@ Check out the live demo of the application [here](https://cute-os.vercel.app/).
 
 - [Peek](https://github.com/bubkoo/html-to-image) hover preview of windows
 - Focused window indicator
+- Search menu (w/Recent files)
 
 ### Clock
 
