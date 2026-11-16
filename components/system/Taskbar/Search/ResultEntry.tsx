@@ -74,9 +74,9 @@ const ResultEntry: FC<ResultEntryProps> = ({
   // TODO: Search for directories also?
 
   return (
-    // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
     <li
       className={active ? "active-item" : undefined}
+      // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
       onMouseOver={() => !details && setHovered(true)}
       title={lastModified ? `${url}\n\n${lastModified}` : url}
     >
